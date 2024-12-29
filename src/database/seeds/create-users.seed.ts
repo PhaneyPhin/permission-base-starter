@@ -23,9 +23,12 @@ const permissions = [
     { slug: 'admin.access.users.read', description: 'Read users' },
     { slug: 'admin.access.users.create', description: 'Create users' },
     { slug: 'admin.access.users.update', description: 'Update users' },
+    { slug: 'admin.access.users.import', description: 'Import users' },
+    { slug: 'admin.access.users.export', description: 'Update users' },
     { slug: 'admin.access.roles.read', description: 'Read Roles' },
     { slug: 'admin.access.roles.create', description: 'Create Roles' },
     { slug: 'admin.access.roles.update', description: 'Update Roles' },
+    
 ]
 
 const rolePermissions = {
@@ -40,14 +43,7 @@ const rolePermissions = {
   //   { slug: 'developer.access.permissions.create', description: 'Create permissions' },
   //   { slug: 'developer.access.permissions.update', description: 'Update permissions' },
   // ],
-  Admin: [
-    { slug: 'admin.access.users.read', description: 'Read users' },
-    { slug: 'admin.access.users.create', description: 'Create users' },
-    { slug: 'admin.access.users.update', description: 'Update users' },
-    { slug: 'admin.access.roles.read', description: 'Read Roles' },
-    { slug: 'admin.access.roles.create', description: 'Create Roles' },
-    { slug: 'admin.access.roles.update', description: 'Update Roles' },
-  ],
+  Admin: permissions,
 };
 
 async function seedDatabase(dataSource: DataSource) {

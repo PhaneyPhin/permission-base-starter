@@ -1,12 +1,15 @@
-import { ValidationPipe, ParseUUIDPipe, Controller, UseGuards, Param, Post, Body, Get, Put } from '@nestjs/common';
+import { ValidationPipe, ParseUUIDPipe, Controller, UseGuards, Param, Post, Body, Get, Put, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
-import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { CurrentUser, Permissions, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
 import { USER_FILTER_FIELD, UsersService } from './users.service';
 import { UserEntity } from './user.entity';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Multer } from 'multer';
+import { Response } from 'express';
 
 @ApiTags('Users')
 @ApiBearerAuth(TOKEN_NAME)
@@ -32,14 +35,6 @@ export class UsersController {
   @Get('/select-options')
   public getAllUserForSelect(): Promise<{ id: string, name: string }[]> {
     return this.usersService.getAllUser();
-  }
-
-  @ApiOperation({ description: 'Get user by id' })
-  @ApiGlobalResponse(UserResponseDto)
-  @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
-  @Get('/:id')
-  public getUserById(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponseDto> {
-    return this.usersService.getUserById(id);
   }
 
   @ApiOperation({ description: 'Create new user' })
@@ -73,5 +68,39 @@ export class UsersController {
     @CurrentUser() user: UserEntity,
   ): Promise<UserResponseDto> {
     return this.usersService.changePassword(changePassword, user.id);
+  }
+
+  @ApiOperation({ summary: 'Export all users to Excel' })
+  // @ApiResponse({ status: 200, description: 'Excel file containing user data' })
+  @Permissions('admin.access.users.export')
+  @Get('/export')
+  async exportUsers(@Res() res: Response) { 
+      const fileBuffer = await this.usersService.exportToExcel();
+      // Set headers for the Excel file download
+      res.setHeader('Content-Disposition', 'attachment; filename=users.xlsx');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+      // Send the file buffer as the response
+      res.send(fileBuffer);
+   }
+
+  @ApiOperation({ summary: 'Import users from Excel' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Users imported successfully' })
+  @ApiConflictResponse({ description: 'User already exists' })
+  @Permissions('admin.access.users.import')
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('/import')
+  async importUsers(@UploadedFile() file: Multer.File, @CurrentUser() currentUser) {
+    const createdUsernames = await this.usersService.importFromExcel(file.buffer, currentUser);
+    return { message: 'Users imported successfully', createdUsernames };
+  }
+  
+  @ApiOperation({ description: 'Get user by id' })
+  @ApiGlobalResponse(UserResponseDto)
+  @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
+  @Get('/:id')
+  public getUserById(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponseDto> {
+    return this.usersService.getUserById(id);
   }
 }

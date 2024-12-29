@@ -5,7 +5,7 @@ import { UserApproval } from '../user-approval';
 import { UserStatus } from '../user-status.enum';
 
 const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-export class CreateUserRequestDto {
+export class ImportUserDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty({
@@ -36,18 +36,6 @@ export class CreateUserRequestDto {
     example: 'Hello123',
   })
   password: string;
-
-  @ApiProperty({ example: [1, 2] })
-  @ArrayNotEmpty()
-  @IsArray()
-  @IsInt({ each: true })
-  roles: number[];
-
-  @ApiProperty({ example: [1, 2] })
-  @ArrayNotEmpty()
-  @IsArray()
-  @IsInt({ each: true })
-  warehouse: number[];
 
   createdBy: UserEntity
 

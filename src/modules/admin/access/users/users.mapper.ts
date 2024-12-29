@@ -2,6 +2,7 @@ import { PermissionMapper } from '../permissions/permission.mapper';
 import { RoleEntity } from '../roles/role.entity';
 import { RoleMapper } from '../roles/role.mapper';
 import { CreateUserRequestDto, UserResponseDto, UpdateUserRequestDto } from './dtos';
+import { UserExcelDto } from './dtos/user-excel.dto';
 import { UserEntity } from './user.entity';
 
 export class UserMapper {
@@ -22,6 +23,19 @@ export class UserMapper {
     return dto;
   }
 
+  public static async toExcelDto(entity: UserEntity) : Promise<any> {
+      const dto = new UserExcelDto();
+      dto.id = entity.id;
+      dto.username = entity.username;
+      dto.name = entity.name;
+      dto.status = entity.status;
+      dto.isSuperUser = entity.isSuperUser;
+      dto.expiredAt = entity.expiredAt
+      dto.createdByName = entity.createdBy?.name;
+
+      return dto
+  }
+
   public static async toDtoWithRelations(entity: UserEntity): Promise<UserResponseDto> {
     const dto = new UserResponseDto();
 
@@ -32,6 +46,8 @@ export class UserMapper {
     dto.expiredAt = entity.expiredAt
     dto.createdBy = entity.createdBy?.name;
     dto.permissions = await Promise.all((await entity.permissions).map(PermissionMapper.toDto));
+    /** @Todo when warehouse ready */
+    // dto.warehouse = await Promise.all((await entity.warehousee).map(WarehouseMapper.toDto));
     dto.roles = await Promise.all((await entity.roles).map(RoleMapper.toDtoWithRelations));
     dto.isSuperUser = entity.isSuperUser;
     dto.status = entity.status;
@@ -47,6 +63,7 @@ export class UserMapper {
     entity.password = dto.password;
     entity.email = dto.email;
     entity.createdBy = dto.createdBy;
+    // entity.warehouse = dto.warehouse
     
     entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
     entity.isSuperUser = false;

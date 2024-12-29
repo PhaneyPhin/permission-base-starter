@@ -81,7 +81,7 @@ export class UserEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, (user) => user.createdUsers, { nullable: true })
   @JoinColumn({ name: 'created_by' })
   createdBy: UserEntity;
-
+  
 
   // Relation for the users created by this user
   @OneToMany(() => UserEntity, (user) => user.createdBy)
@@ -104,6 +104,24 @@ export class UserEntity extends BaseEntity {
   })
   roles: Promise<RoleEntity[]>;
 
+  /** @Todo enable when warehouse enable */
+  // @ManyToMany(() => WarehouseEntity, (warehouse) => warehouse.id, {
+  //   lazy: true,
+  //   cascade: true,
+  // })
+  // @JoinTable({
+  //   name: 'user_warehouse',
+  //   joinColumn: {
+  //     name: 'user_id',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'warehouse_id',
+  //     referencedColumnName: 'id',
+  //   },
+  // })
+  // warehouse: Promise<RoleEntity[]>;
+
   @ManyToMany(() => PermissionEntity, (permission) => permission.id, {
     lazy: true,
     cascade: true,
@@ -120,6 +138,7 @@ export class UserEntity extends BaseEntity {
     },
   })
   permissions: Promise<PermissionEntity[]>;
+  
 
   constructor(user?: Partial<UserEntity>) {
     super();

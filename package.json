@@ -22,9 +22,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  -d ./src/database/data-source.ts",
     "migration:new": "npm run typeorm migration:create -- -n",
     "migration:gen": "npm run typeorm migration:generate -- -n",
-    
     "rollback": "npm run typeorm migration:revert",
-   "migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/database/data-source.ts",
+    "migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/database/data-source.ts",
     "migrate:drop": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./src/database/data-source.ts",
     "seed": "ts-node -r tsconfig-paths/register ./src/database/seeds/create-users.seed.ts",
     "migrate:fresh": "npm run migrate:drop && npm run typeorm query 'DROP SCHEMA IF EXISTS \"admin\" CASCADE;' && npm run migrate && npm run seed",
@@ -39,7 +38,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-express": "^10.4.15",
     "@nestjs/swagger": "^8.1.0",
     "@nestjs/typeorm": "^10.0.2",
     "bcrypt": "^5.1.1",
@@ -49,13 +48,15 @@
     "compression": "^1.7.5",
     "dotenv": "^16.4.7",
     "helmet": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

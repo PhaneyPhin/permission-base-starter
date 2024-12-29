@@ -1,21 +1,25 @@
-import { InternalServerErrorException, RequestTimeoutException, NotFoundException, Injectable } from '@nestjs/common';
+import * as XLSX from 'xlsx';
+import { InternalServerErrorException, RequestTimeoutException, NotFoundException, Injectable, BadRequestException, UnprocessableEntityException } from '@nestjs/common';
 import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
 import {
   InvalidCurrentPasswordException,
   ForeignKeyConflictException,
   UserExistsException,
 } from '@common/http/exceptions';
-import { Pagination, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { UsersRepository } from './users.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DBErrorCode } from '@common/enums';
 import { UserMapper } from './users.mapper';
 import { HashHelper } from '@helpers';
 import { TimeoutError } from 'rxjs';
+import { validate } from 'class-validator';
 import { UserEntity } from './user.entity';
 import { Filter } from 'typeorm';
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { query } from 'express';
+import { UserStatus } from './user-status.enum';
+import { UserApproval } from './user-approval';
+import { ImportUserDto } from './dtos/import-user.dto';
 export const USER_FILTER_FIELD =  ['username', 'name', 'email']
 @Injectable()
 export class UsersService extends BaseCrudService {
@@ -29,7 +33,7 @@ export class UsersService extends BaseCrudService {
   ) {
     super()
   }
-
+ 
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
@@ -37,6 +41,9 @@ export class UsersService extends BaseCrudService {
      return UserMapper.toDto;
   }
 
+  /**
+   * Customize filter by each field query logic on listing API
+   */
   protected getFilters() {
     const filters: { [key: string]: Filter<UserEntity> } = {
       expiredDate: (query, value) => {
@@ -44,23 +51,26 @@ export class UsersService extends BaseCrudService {
         return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
       },
       createdBy: (query, value) => {
-        return query.where('u.created_by = :createdBy', { createdBy: value })
+        return query.where('uc.name ILIKE :createdBy', { createdBy: value })
       }
     };
 
     return filters
   }
 
+  /** Require for base query list of feature */
   protected getListQuery() {
     return this.usersRepository.createQueryBuilder('u')
       .innerJoinAndSelect('u.roles', 'r')
       .leftJoinAndSelect('u.permissions', 'p')
       .leftJoinAndSelect('u.createdBy', 'uc')
+      // .leftJoinAndSelect('u.warehouse', 'w')
   }
 
   getAllUser() {
     return this.usersRepository.createQueryBuilder('u').select(['id', 'name']).getRawMany()
   }
+
   /**
    * Find user by username
    * @param username {string}
@@ -103,7 +113,6 @@ export class UsersService extends BaseCrudService {
       let userEntity = UserMapper.toCreateEntity(userDto);
       userEntity.createdBy = { id: userDto.createdBy.id } as any
       userEntity.password = await HashHelper.encrypt(userEntity.password);
-      console.log(userEntity)
 
       userEntity = await this.usersRepository.save(userEntity);
       return UserMapper.toDto({ ...userEntity, createdBy: userDto.createdBy });
@@ -191,6 +200,69 @@ export class UsersService extends BaseCrudService {
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  /**
+   * Export all users to Excel
+   * @returns Buffer - Excel file buffer
+   */
+  async exportToExcel(): Promise<Buffer> {
+    try {
+      const users = await this.usersRepository.find({ relations: ['createdBy', 'roles', 'permissions'] });
+
+      // Map data for Excel
+      const data = await Promise.all(users.map(UserMapper.toExcelDto));
+      console.log(data)
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
+      return XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    } catch (error) {
+      console.error('Error exporting users:', error);
+      throw new InternalServerErrorException('Failed to export users to Excel');
+    }
+  }
+
+  /**
+   * Import users from Excel
+   * @param fileBuffer - Buffer of the uploaded Excel file
+   * @returns string[] - List of created usernames
+   */
+  async importFromExcel(fileBuffer: Buffer, createdBy: UserEntity) {
+    try {
+      const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+
+      const data: Partial<ImportUserDto>[] = XLSX.utils.sheet_to_json(worksheet);
+      const userDtos: ImportUserDto[] = [];
+
+      for (const row of data) {
+        // Map Excel row to DTO
+        const userDto = new ImportUserDto();
+        Object.assign(userDto, row);
+
+        // Validate DTO
+        const errors = await validate(userDto);
+        if (errors.length > 0) {
+          throw new UnprocessableEntityException({
+            message: 'Validation failed for one or more users',
+            errors,
+          });
+        }
+
+        userDto.createdBy = { id: createdBy.id } as any;
+      
+        userDtos.push(userDto);
+      }
+
+      const newUsers = this.usersRepository.create(userDtos);
+      await this.usersRepository.save(newUsers);
+      return 'successfully import'
+    } catch (error) {
+      console.error('Error importing users:', error);
+      throw new BadRequestException('Failed to import users from Excel');
     }
   }
 }
