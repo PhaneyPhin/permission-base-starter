@@ -64,6 +64,247 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## CRUD Usage
+
+# BaseCrudService Documentation
+
+The `BaseCrudService` provides a reusable and extensible structure for implementing CRUD services in a NestJS application. It includes methods for pagination, filtering, and query building. Developers can extend this class to implement specific functionality for their services.
+
+---
+
+## Features
+
+- **Pagination**: Built-in support for paginated results.
+- **Filtering**: Dynamic filters based on query parameters.
+- **Search**: Configurable search logic across multiple fields.
+- **Extensibility**: Abstract methods and properties to override in derived classes.
+
+---
+
+## Usage
+
+### 1. Extend the `BaseCrudService`
+To create a specific service (e.g., `UsersService`), extend the `BaseCrudService` and implement the required abstract methods.
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { BaseCrudService } from './base-crud.service';
+
+@Injectable()
+export class UsersService extends BaseCrudService {
+  protected queryName = 'u';
+  protected FILTER_FIELDS = ['createdBy', 'expiredDate'];
+  protected SEARCH_FIELDS = ['username', 'email'];
+
+  protected getFilters() {
+    const filters = {
+      expiredDate: (query, value) => {
+        const [start, end] = value.split(',');
+        return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
+      },
+      createdBy: (query, value) => {
+        return query.andWhere('u.created_by = :createdBy', { createdBy: value });
+      },
+    };
+
+    return filters;
+  }
+
+  protected getListQuery() {
+    return this.usersRepository.createQueryBuilder(this.queryName);
+  }
+
+  protected getMapperResponseEntityFields() {
+    return (entity) => ({
+      id: entity.id,
+      username: entity.username,
+      email: entity.email,
+    });
+  }
+}
+```
+
+---
+
+## Methods and Properties
+
+### Abstract Methods
+
+#### `getFilters()`
+- **Purpose**: To define custom filters for querying the database.
+- **Example**:
+
+```typescript
+protected getFilters() {
+  const filters = {
+    expiredDate: (query, value) => {
+      const [start, end] = value.split(',');
+      return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
+    },
+    createdBy: (query, value) => {
+      return query.andWhere('u.created_by = :createdBy', { createdBy: value });
+    },
+  };
+  return filters;
+}
+```
+
+---
+
+#### `getListQuery()`
+- **Purpose**: To define the base query for fetching data.
+- **Example**:
+
+```typescript
+protected getListQuery() {
+  return this.usersRepository.createQueryBuilder('u');
+}
+```
+
+---
+
+#### `getMapperResponseEntityFields()`
+- **Purpose**: To map database entities to response DTOs.
+- **Example**:
+
+```typescript
+protected getMapperResponseEntityFields() {
+  return (entity) => ({
+    id: entity.id,
+    username: entity.username,
+    email: entity.email,
+  });
+}
+```
+
+---
+
+### Protected Properties
+
+#### `queryName`
+- **Type**: `string`
+- **Purpose**: Alias for the query (e.g., `'u'` for `users`).
+
+#### `FILTER_FIELDS`
+- **Type**: `string[]`
+- **Purpose**: List of fields for direct filtering.
+
+#### `SEARCH_FIELDS`
+- **Type**: `string[]`
+- **Purpose**: List of fields for search functionality.
+
+---
+
+### Public Methods
+
+#### `list(pagination: PaginationRequest): Promise<PaginationResponseDto<U>>`
+- **Purpose**: Retrieves a paginated list of entities with filters applied.
+- **Parameters**:
+  - `pagination`: Contains pagination, filter, and search parameters.
+- **Returns**: A paginated response DTO.
+- **Example**:
+
+```typescript
+const pagination: PaginationRequest = {
+  skip: 0,
+  limit: 10,
+  order: { 'u.created_at': 'DESC' },
+  params: { createdBy: 'admin-id' },
+};
+
+const result = await this.list(pagination);
+```
+
+---
+
+### Utility Methods
+
+#### `getAllFilters()`
+- **Purpose**: Dynamically generates filters for fields and search logic.
+- **Example**:
+
+```typescript
+protected getAllFilters() {
+  const filters = this.getFilters();
+
+  if (this.FILTER_FIELDS) {
+    this.FILTER_FIELDS.forEach((field) => {
+      filters[field] = (query, value) =>
+        query.andWhere(`${this.queryName}.${field} ILIKE :${field}`, {
+          [field]: `%${value}%`,
+        });
+    });
+  }
+
+  if (this.SEARCH_FIELDS && this.SEARCH_FIELDS.length > 0) {
+    filters['search'] = (query, searchValue) => {
+      const searchConditions = this.SEARCH_FIELDS.map(
+        (field) => `${this.queryName}.${field} ILIKE :search`,
+      ).join(' OR ');
+
+      query.andWhere(`(${searchConditions})`, { search: `%${searchValue}%` });
+    };
+  }
+
+  return filters;
+}
+```
+
+#### `applyQueryFilters(query, params)`
+- **Purpose**: Applies filters to a query based on parameters.
+- **Parameters**:
+  - `query`: The TypeORM query builder.
+  - `params`: The filter parameters.
+- **Example**:
+
+```typescript
+protected applyQueryFilters(query, params) {
+  const filters = this.getAllFilters();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value && filters && filters[key]) {
+      filters[key](query, value);
+    }
+  }
+}
+```
+
+---
+
+## Example Use Case
+
+To implement a service for managing users with filtering and pagination:
+
+```typescript
+@Injectable()
+export class UsersService extends BaseCrudService {
+  protected queryName = 'u';
+  protected FILTER_FIELDS = ['username', 'email'];
+  protected SEARCH_FIELDS = ['username', 'name', 'email'];
+
+  protected getFilters() {
+    return {
+      username: (query, value) =>
+        query.andWhere('u.username ILIKE :username', { username: `%${value}%` }),
+      email: (query, value) =>
+        query.andWhere('u.email ILIKE :email', { email: `%${value}%` }),
+    };
+  }
+
+  protected getListQuery() {
+    return this.usersRepository.createQueryBuilder(this.queryName);
+  }
+
+  protected getMapperResponseEntityFields() {
+    return (entity) => ({
+      id: entity.id,
+      username: entity.username,
+      email: entity.email,
+    });
+  }
+}
+```
+
 
 ## Deployment
 
@@ -104,3 +345,4 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
