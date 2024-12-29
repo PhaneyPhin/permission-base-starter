@@ -1,3 +1,4 @@
+import { HashHelper } from '@helpers';
 import { PermissionMapper } from '../permissions/permission.mapper';
 import { RoleEntity } from '../roles/role.entity';
 import { RoleMapper } from '../roles/role.mapper';
@@ -18,8 +19,9 @@ export class UserMapper {
 
     if (entity.createdBy) {
     }
-    dto.roles = await Promise.all((await entity.roles).map(RoleMapper.toDto));
-
+    if (entity.roles) {
+      dto.roles = await Promise.all((await entity.roles).map(RoleMapper.toDto));
+    }
     return dto;
   }
 
@@ -29,7 +31,7 @@ export class UserMapper {
       dto.username = entity.username;
       dto.name = entity.name;
       dto.status = entity.status;
-      dto.isSuperUser = entity.isSuperUser;
+      dto.userApproval = entity.userApproval
       dto.expiredAt = entity.expiredAt
       dto.createdByName = entity.createdBy?.name;
 

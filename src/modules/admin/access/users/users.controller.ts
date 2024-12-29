@@ -1,7 +1,7 @@
 import { ValidationPipe, ParseUUIDPipe, Controller, UseGuards, Param, Post, Body, Get, Put, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
-import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiResponse, ApiConsumes } from '@nestjs/swagger';
+import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { CurrentUser, Permissions, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
 import { USER_FILTER_FIELD, UsersService } from './users.service';
@@ -70,8 +70,19 @@ export class UsersController {
     return this.usersService.changePassword(changePassword, user.id);
   }
 
+  @ApiOperation({ description: 'Change user password' })
+  @ApiGlobalResponse(UserResponseDto)
+  @Post(':id/change/password')
+  async changePasswordOfUser(
+    @Body(ValidationPipe) changePassword: ChangePasswordRequestDto,
+    @Param('id') id: string
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.findUserById(id)
+    return this.usersService.changePassword(changePassword, user.id);
+  }
+
   @ApiOperation({ summary: 'Export all users to Excel' })
-  // @ApiResponse({ status: 200, description: 'Excel file containing user data' })
+  @ApiResponse({ status: 200, description: 'Excel file containing user data' })
   @Permissions('admin.access.users.export')
   @Get('/export')
   async exportUsers(@Res() res: Response) { 
@@ -84,10 +95,21 @@ export class UsersController {
       res.send(fileBuffer);
    }
 
-  @ApiOperation({ summary: 'Import users from Excel' })
-  @ApiConsumes('multipart/form-data')
-  @ApiResponse({ status: 201, description: 'Users imported successfully' })
-  @ApiConflictResponse({ description: 'User already exists' })
+   @ApiOperation({ summary: 'Import users from an Excel file' })
+   @ApiConsumes('multipart/form-data')
+   @ApiResponse({ status: 201, description: 'Users imported successfully' })
+   @ApiBody({
+     description: 'Excel file for importing users',
+     schema: {
+       type: 'object',
+       properties: {
+         file: {
+           type: 'string',
+           format: 'binary',
+         },
+       },
+     },
+   })
   @Permissions('admin.access.users.import')
   @UseInterceptors(FileInterceptor('file'))
   @Post('/import')

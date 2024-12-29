@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import { InternalServerErrorException, RequestTimeoutException, NotFoundException, Injectable, BadRequestException, UnprocessableEntityException } from '@nestjs/common';
+import { InternalServerErrorException, RequestTimeoutException, NotFoundException, Injectable, BadRequestException, UnprocessableEntityException, HttpException } from '@nestjs/common';
 import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
 import {
   InvalidCurrentPasswordException,
@@ -20,6 +20,7 @@ import { query } from 'express';
 import { UserStatus } from './user-status.enum';
 import { UserApproval } from './user-approval';
 import { ImportUserDto } from './dtos/import-user.dto';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 export const USER_FILTER_FIELD =  ['username', 'name', 'email']
 @Injectable()
 export class UsersService extends BaseCrudService {
@@ -61,7 +62,7 @@ export class UsersService extends BaseCrudService {
   /** Require for base query list of feature */
   protected getListQuery() {
     return this.usersRepository.createQueryBuilder('u')
-      .innerJoinAndSelect('u.roles', 'r')
+      .leftJoinAndSelect('u.roles', 'r')
       .leftJoinAndSelect('u.permissions', 'p')
       .leftJoinAndSelect('u.createdBy', 'uc')
       // .leftJoinAndSelect('u.warehouse', 'w')
@@ -203,13 +204,17 @@ export class UsersService extends BaseCrudService {
     }
   }
 
+  async findUserById(id: string) {
+    return this.usersRepository.findOneBy({ id: id })
+  }
+
   /**
    * Export all users to Excel
    * @returns Buffer - Excel file buffer
    */
   async exportToExcel(): Promise<Buffer> {
     try {
-      const users = await this.usersRepository.find({ relations: ['createdBy', 'roles', 'permissions'] });
+      const users = await this.getListQuery().getMany();
 
       // Map data for Excel
       const data = await Promise.all(users.map(UserMapper.toExcelDto));
@@ -252,7 +257,8 @@ export class UsersService extends BaseCrudService {
         }
 
         userDto.createdBy = { id: createdBy.id } as any;
-      
+        userDto.password = await HashHelper.encrypt(userDto.password)
+
         userDtos.push(userDto);
       }
 
@@ -260,7 +266,11 @@ export class UsersService extends BaseCrudService {
       await this.usersRepository.save(newUsers);
       return 'successfully import'
     } catch (error) {
+      if (error instanceof UnprocessableEntityException) {
+        throw error;
+      }
       console.error('Error importing users:', error);
+  
       throw new BadRequestException('Failed to import users from Excel');
     }
   }

@@ -40,4 +40,7 @@ export class UserExcelDto {
 
   @ApiProperty()
   createdByName: string;
+  
+  @ApiProperty()
+  userApproval: UserApproval;
 }

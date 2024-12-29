@@ -30,7 +30,7 @@ export class ImportUserDto {
 
   @Matches(passwordRegex, { message: 'Password too weak' })
   @IsNotEmpty()
-  @IsAlphanumeric()
+  // @IsAlphanumeric()
   @Length(6, 20)
   @ApiProperty({
     example: 'Hello123',
