@@ -213,7 +213,6 @@ export class UsersService extends BaseCrudService {
 
       // Map data for Excel
       const data = await Promise.all(users.map(UserMapper.toExcelDto));
-      console.log(data)
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.json_to_sheet(data);
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
