@@ -1,5 +1,5 @@
 export interface AuthAccessDto {
-  additionalPermissions: string[];
+  allPermissions: string[]
   roles: {
     name: string;
     permissions: string[];
