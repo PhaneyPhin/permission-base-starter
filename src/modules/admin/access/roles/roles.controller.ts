@@ -13,7 +13,7 @@ import { Permissions, TOKEN_NAME } from '@auth';
   version: '1',
 })
 export class RolesController {
-  constructor(private RolesService: RolesService) {}
+  constructor(private rolesService: RolesService) {}
 
   @ApiOperation({ description: 'Get a paginated role list' })
   @ApiPaginatedResponse(RoleResponseDto)
@@ -26,16 +26,24 @@ export class RolesController {
   @Permissions('admin.access.roles.read', 'admin.access.roles.create', 'admin.access.roles.update')
   @Get()
   public getRoles(@PaginationParams() pagination: PaginationRequest): Promise<PaginationResponseDto<RoleResponseDto>> {
-    return this.RolesService.getRoles(pagination);
+    return this.rolesService.getRoles(pagination);
   }
 
+  @ApiOperation({ description: 'Get all user list form select form' })  
+  @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
+  @Get('/select-options')
+  public getAllUserForSelect(): Promise<{ id: number, name: string }[]> {
+    return this.rolesService.getAllRole();
+  }
+  
   @ApiOperation({ description: 'Get role by id' })
   @ApiGlobalResponse(RoleResponseDto)
   @Permissions('admin.access.roles.read', 'admin.access.roles.create', 'admin.access.roles.update')
   @Get('/:id')
   public getRoleById(@Param('id', ParseIntPipe) id: number): Promise<RoleResponseDto> {
-    return this.RolesService.getRoleById(id);
+    return this.rolesService.getRoleById(id);
   }
+
 
   @ApiOperation({ description: 'Create new role' })
   @ApiGlobalResponse(RoleResponseDto)
@@ -43,7 +51,7 @@ export class RolesController {
   @Permissions('admin.access.roles.create')
   @Post()
   public createRole(@Body(ValidationPipe) roleDto: CreateRoleRequestDto): Promise<RoleResponseDto> {
-    return this.RolesService.createRole(roleDto);
+    return this.rolesService.createRole(roleDto);
   }
 
   @ApiOperation({ description: 'Update role by id' })
@@ -55,6 +63,6 @@ export class RolesController {
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) roleDto: UpdateRoleRequestDto,
   ): Promise<RoleResponseDto> {
-    return this.RolesService.updateRole(id, roleDto);
+    return this.rolesService.updateRole(id, roleDto);
   }
 }

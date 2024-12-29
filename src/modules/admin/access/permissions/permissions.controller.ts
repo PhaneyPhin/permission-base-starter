@@ -37,6 +37,27 @@ export class PermissionsController {
     return this.permissionsService.getPermissions(pagination);
   }
 
+  @ApiOperation({ description: 'Get a paginated permission list' })
+  @ApiQuery({
+    name: 'search',
+    type: 'string',
+    required: false,
+    example: 'admin',
+  })
+  @ApiPaginatedResponse(PermissionResponseDto)
+  @Permissions(
+    'admin.access.permissions.read',
+    'admin.access.permissions.create',
+    'admin.access.permissions.update',
+    'admin.access.roles.create',
+    'admin.access.roles.update',
+  )
+  @Get('/selection-options')
+  public getAllPermissions(): Promise<{ id: number, name: string }[]> {
+    return this.permissionsService.getAllPermissions();
+  }
+
+
   @ApiOperation({ description: 'Get permission by id' })
   @ApiGlobalResponse(PermissionResponseDto)
   @Permissions(

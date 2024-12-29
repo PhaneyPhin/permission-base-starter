@@ -56,6 +56,10 @@ export class RolesService {
     return RoleMapper.toDtoWithRelations(roleEntity);
   }
 
+  public async getAllRole() : Promise<{ id: number, name: string }[]> {
+    return this.rolesRepository.createQueryBuilder('r').select(['name', 'id']).getRawMany()
+  }
+
   /**
    * Create new role
    * @param roleDto {CreateRoleRequestDto}

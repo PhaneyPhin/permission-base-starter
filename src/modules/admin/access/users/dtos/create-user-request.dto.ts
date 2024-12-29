@@ -1,5 +1,8 @@
-import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsInt, IsNotEmpty, Length, Matches, MaxLength } from 'class-validator';
+import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsEmail, isEnum, IsEnum, IsInt, IsNotEmpty, Length, Matches, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserEntity } from '../user.entity';
+import { UserApproval } from '../user-approval';
+import { UserStatus } from '../user-status.enum';
 
 const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
 export class CreateUserRequestDto {
@@ -15,14 +18,15 @@ export class CreateUserRequestDto {
   @ApiProperty({
     example: 'John',
   })
-  firstName: string;
+  name: string;
 
   @IsNotEmpty()
   @MaxLength(100)
+  @IsEmail()
   @ApiProperty({
-    example: 'Doe',
+    example: 'admin@gmail.com',
   })
-  lastName: string;
+  email: string;
 
   @Matches(passwordRegex, { message: 'Password too weak' })
   @IsNotEmpty()
@@ -37,11 +41,21 @@ export class CreateUserRequestDto {
   @ArrayNotEmpty()
   @IsArray()
   @IsInt({ each: true })
-  permissions: number[];
-
-  @ApiProperty({ example: [1, 2] })
-  @ArrayNotEmpty()
-  @IsArray()
-  @IsInt({ each: true })
   roles: number[];
+
+  createdBy: UserEntity
+
+  @ApiProperty({
+    enum: UserApproval
+  })
+  @IsNotEmpty()
+  @IsEnum(UserApproval)
+  userApproval: UserApproval
+
+  @ApiProperty({
+    enum: UserStatus
+  })
+  @IsNotEmpty()
+  @IsEnum(UserStatus)
+  status: UserStatus
 }

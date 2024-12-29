@@ -13,73 +13,54 @@ import { UserMapper } from './users.mapper';
 import { HashHelper } from '@helpers';
 import { TimeoutError } from 'rxjs';
 import { UserEntity } from './user.entity';
-
+import { Filter } from 'typeorm';
+import { BaseCrudService } from '@common/services/base-crud.service';
+import { query } from 'express';
+export const USER_FILTER_FIELD =  ['username', 'name', 'email']
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseCrudService {
+  protected queryName: string = 'u';
+  protected FILTER_FIELDS = USER_FILTER_FIELD;
+  protected SEARCH_FIELDS = ['username', 'name', 'email'];
+
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: UsersRepository,
-  ) {}
+  ) {
+    super()
+  }
 
   /**
-   * Get a paginated user list
-   * @param pagination {PaginationRequest}
-   * @returns {Promise<PaginationResponseDto<UserResponseDto>>}
+   * Convert a UserEntity to a UserResponseDto with relations.
    */
-  public async getUsers(pagination: PaginationRequest): Promise<PaginationResponseDto<UserResponseDto>> {
-    try {
-      const [userEntities, totalUsers] = await this.getUsersAndCount(pagination);
-
-      const UserDtos = await Promise.all(userEntities.map(UserMapper.toDtoWithRelations));
-      return Pagination.of(pagination, totalUsers, UserDtos);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException();
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      } else {
-        throw new InternalServerErrorException();
-      }
-    }
+  protected getMapperResponseEntityFields(){
+     return UserMapper.toDto;
   }
 
-   /**
-   * Get users list
-   * @param pagination {PaginationRequest}
-   * @returns [userEntities: UserEntity[], totalUsers: number]
-   */
-   public async getUsersAndCount(
-    pagination: PaginationRequest,
-  ): Promise<[UserEntity[], number]> {
-    const {
-      skip,
-      limit: take,
-      order,
-      params: { search },
-    } = pagination;
+  protected getFilters() {
+    const filters: { [key: string]: Filter<UserEntity> } = {
+      expiredDate: (query, value) => {
+        const [start, end] = value.split(',');
+        return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
+      },
+      createdBy: (query, value) => {
+        return query.where('u.created_by = :createdBy', { createdBy: value })
+      }
+    };
 
-    const query = this.usersRepository.createQueryBuilder('u')
+    return filters
+  }
+
+  protected getListQuery() {
+    return this.usersRepository.createQueryBuilder('u')
       .innerJoinAndSelect('u.roles', 'r')
       .leftJoinAndSelect('u.permissions', 'p')
-      .skip(skip)
-      .take(take)
-      .orderBy(order);
-
-    if (search) {
-      query.where(
-        `
-            u.username ILIKE :search
-            OR u.first_name ILIKE :search
-            OR u.last_name ILIKE :search
-            `,
-        { search: `%${search}%` },
-      );
-    }
-
-    return query.getManyAndCount();
+      .leftJoinAndSelect('u.createdBy', 'uc')
   }
 
+  getAllUser() {
+    return this.usersRepository.createQueryBuilder('u').select(['id', 'name']).getRawMany()
+  }
   /**
    * Find user by username
    * @param username {string}
@@ -90,6 +71,7 @@ export class UsersService {
       .leftJoinAndSelect('u.roles', 'r', 'r.active = true')
       .leftJoinAndSelect('r.permissions', 'rp', 'rp.active = true')
       .leftJoinAndSelect('u.permissions', 'p', 'p.active = true')
+      .leftJoinAndSelect('u.createdBy', 'uc')
       .where('u.username = :username', { username })
       .getOne();
   }
@@ -119,10 +101,14 @@ export class UsersService {
   public async createUser(userDto: CreateUserRequestDto): Promise<UserResponseDto> {
     try {
       let userEntity = UserMapper.toCreateEntity(userDto);
+      userEntity.createdBy = { id: userDto.createdBy.id } as any
       userEntity.password = await HashHelper.encrypt(userEntity.password);
+      console.log(userEntity)
+
       userEntity = await this.usersRepository.save(userEntity);
-      return UserMapper.toDto(userEntity);
+      return UserMapper.toDto({ ...userEntity, createdBy: userDto.createdBy });
     } catch (error) {
+      console.log(error)
       if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
         throw new UserExistsException(userDto.username);
       }

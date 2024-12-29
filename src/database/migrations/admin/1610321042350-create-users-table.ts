@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
 const tableName = 'admin.users';
@@ -24,13 +24,14 @@ export class createUsersTable1610321042350 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'first_name',
+            name: 'email',
             type: 'varchar',
             length: '100',
+            isUnique: true,
             isNullable: false,
           },
           {
-            name: 'last_name',
+            name: 'name',
             type: 'varchar',
             length: '100',
             isNullable: false,
@@ -52,14 +53,49 @@ export class createUsersTable1610321042350 implements MigrationInterface {
             length: '30',
             isNullable: false,
           },
+          {
+            name: 'user_approval',
+            type: 'varchar',
+            length: '30',
+            isNullable: false,
+          },
+          {
+            name: 'expired_at',
+            type: 'timestamp with time zone',
+            isNullable: true
+          },
+          {
+            name: 'created_by',
+            type: 'uuid',
+            isNullable: true,
+          },
           ...commonFields,
         ],
       }),
       true,
     );
+
+    // Add the foreign key constraint
+    await queryRunner.createForeignKey(
+      tableName,
+      new TableForeignKey({
+        columnNames: ['created_by'],
+        referencedColumnNames: ['id'],
+        referencedTableName: tableName,
+        onDelete: 'SET NULL',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(tableName, true);
+    // Remove the foreign key constraint
+    const table = await queryRunner.getTable(tableName);
+    const foreignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('created_by') !== -1,
+    );
+    await queryRunner.dropForeignKey(tableName, foreignKey);
+
+    // Remove the created_by column
+    await queryRunner.dropColumn(tableName, 'created_by');
   }
 }

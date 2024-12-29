@@ -40,6 +40,10 @@ export class PermissionsService {
 
     return query.getManyAndCount();
   }
+
+  public getAllPermissions() : Promise<{ id: number, name: string }[]> {
+     return this.permissionsRepository.createQueryBuilder('p').select(['id', 'name']).getRawMany()
+  }
   /**
    * Get a paginated permission list
    * @param pagination {PaginationRequest}

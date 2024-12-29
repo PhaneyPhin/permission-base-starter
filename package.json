@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  -d ./src/database/data-source.ts",
     "migration:new": "npm run typeorm migration:create -- -n",
     "migration:gen": "npm run typeorm migration:generate -- -n",
     
@@ -27,7 +27,7 @@
    "migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/database/data-source.ts",
     "migrate:drop": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./src/database/data-source.ts",
     "seed": "ts-node -r tsconfig-paths/register ./src/database/seeds/create-users.seed.ts",
-    "migrate:fresh": "npm run migrate:drop && npm run migrate && npm run seed",
+    "migrate:fresh": "npm run migrate:drop && npm run typeorm query 'DROP SCHEMA IF EXISTS \"admin\" CASCADE;' && npm run migrate && npm run seed",
     "schema:drop": "npm run typeorm schema:drop",
     "schema:sync": "npm run typeorm schema:sync",
     "typeorm-seeding": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",

@@ -5,31 +5,41 @@ import { RoleEntity } from '@admin/access/roles/role.entity';
 import { PermissionEntity } from '@admin/access/permissions/permission.entity';
 import { UserStatus } from '@admin/access/users/user-status.enum';
 import { HashHelper } from '@helpers';
+import { UserApproval } from '@modules/admin/access/users/user-approval';
 
 // Define seed data
 const users = [
   {
-    firstName: 'Admin',
-    lastName: 'Admin',
+    name: 'Admin',
     password: 'Hello123',
+    email: 'admin@mongkul.com',
     username: 'Admin',
     isSuperUser: true,
+    userApproval: UserApproval.Approved,
     status: UserStatus.Active,
   },
 ];
+const permissions = [
+    { slug: 'admin.access.users.read', description: 'Read users' },
+    { slug: 'admin.access.users.create', description: 'Create users' },
+    { slug: 'admin.access.users.update', description: 'Update users' },
+    { slug: 'admin.access.roles.read', description: 'Read Roles' },
+    { slug: 'admin.access.roles.create', description: 'Create Roles' },
+    { slug: 'admin.access.roles.update', description: 'Update Roles' },
+]
 
 const rolePermissions = {
-  Developer: [
-    { slug: 'developer.access.users.read', description: 'Read users' },
-    { slug: 'developer.access.users.create', description: 'Create users' },
-    { slug: 'developer.access.users.update', description: 'Update users' },
-    { slug: 'developer.access.roles.read', description: 'Read Roles' },
-    { slug: 'developer.access.roles.create', description: 'Create Roles' },
-    { slug: 'developer.access.roles.update', description: 'Update Roles' },
-    { slug: 'developer.access.permissions.read', description: 'Read permissions' },
-    { slug: 'developer.access.permissions.create', description: 'Create permissions' },
-    { slug: 'developer.access.permissions.update', description: 'Update permissions' },
-  ],
+  // Developer: [
+  //   { slug: 'developer.access.users.read', description: 'Read users' },
+  //   { slug: 'developer.access.users.create', description: 'Create users' },
+  //   { slug: 'developer.access.users.update', description: 'Update users' },
+  //   { slug: 'developer.access.roles.read', description: 'Read Roles' },
+  //   { slug: 'developer.access.roles.create', description: 'Create Roles' },
+  //   { slug: 'developer.access.roles.update', description: 'Update Roles' },
+  //   { slug: 'developer.access.permissions.read', description: 'Read permissions' },
+  //   { slug: 'developer.access.permissions.create', description: 'Create permissions' },
+  //   { slug: 'developer.access.permissions.update', description: 'Update permissions' },
+  // ],
   Admin: [
     { slug: 'admin.access.users.read', description: 'Read users' },
     { slug: 'admin.access.users.create', description: 'Create users' },

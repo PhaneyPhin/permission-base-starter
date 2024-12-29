@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToMany, JoinTable, PrimaryColumn } from 'typeorm';
+import { Entity, Column, ManyToMany, JoinTable, PrimaryColumn, UpdateDateColumn, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '@database/entities';
 import { PermissionEntity } from '../permissions/permission.entity';
 import { RoleEntity } from '../roles/role.entity';
 import { UserStatus } from './user-status.enum';
+import { UserApproval } from './user-approval';
 
 @Entity({ schema: 'admin', name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -17,20 +18,19 @@ export class UserEntity extends BaseEntity {
   username: string;
 
   @Column({
-    name: 'first_name',
+    name: 'name',
     type: 'varchar',
     length: 100,
     nullable: false,
   })
-  firstName: string;
+  name: string;
 
   @Column({
-    name: 'last_name',
+    name: 'email',
     type: 'varchar',
-    length: 100,
-    nullable: false,
+    unique: true,
   })
-  lastName: string;
+  email: string;
 
   @Column({
     name: 'password',
@@ -54,6 +54,38 @@ export class UserEntity extends BaseEntity {
     nullable: false,
   })
   status: UserStatus;
+
+  @Column({
+    name: 'user_approval',
+    type: 'enum',
+    enum: UserApproval,
+    nullable: false,
+    default: UserApproval.Approved
+  })
+  userApproval: UserApproval;
+
+  @Column({
+    name: 'expired_at',
+    type: 'timestamp',
+    nullable: true,
+  })
+  expiredAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  // New created_by column
+  @ManyToOne(() => UserEntity, (user) => user.createdUsers, { nullable: true })
+  @JoinColumn({ name: 'created_by' })
+  createdBy: UserEntity;
+
+
+  // Relation for the users created by this user
+  @OneToMany(() => UserEntity, (user) => user.createdBy)
+  createdUsers: UserEntity[];
 
   @ManyToMany(() => RoleEntity, (role) => role.id, {
     lazy: true,

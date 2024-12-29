@@ -4,8 +4,9 @@ import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, U
 import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, Permissions, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
-import { UsersService } from './users.service';
+import { USER_FILTER_FIELD, UsersService } from './users.service';
 import { UserEntity } from './user.entity';
+import { ApiFields } from '@common/decorators/api-fields.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth(TOKEN_NAME)
@@ -18,16 +19,19 @@ export class UsersController {
 
   @ApiOperation({ description: 'Get a paginated user list' })
   @ApiPaginatedResponse(UserResponseDto)
-  @ApiQuery({
-    name: 'search',
-    type: 'string',
-    required: false,
-    example: 'admin',
-  })
+  @ApiQuery({ name: 'search',type: 'string', required: false, example: 'admin',})
+  @ApiFields(USER_FILTER_FIELD)
   @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
   @Get()
   public getUsers(@PaginationParams() pagination: PaginationRequest): Promise<PaginationResponseDto<UserResponseDto>> {
-    return this.usersService.getUsers(pagination);
+    return this.usersService.list<UserEntity, UserResponseDto>(pagination);
+  }
+
+  @ApiOperation({ description: 'Get all user list form select form' })  
+  @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
+  @Get('/select-options')
+  public getAllUserForSelect(): Promise<{ id: string, name: string }[]> {
+    return this.usersService.getAllUser();
   }
 
   @ApiOperation({ description: 'Get user by id' })
@@ -44,7 +48,8 @@ export class UsersController {
   @ApiGlobalResponse(UserResponseDto)
   @Permissions('admin.access.users.create')
   @Post()
-  public createUser(@Body(ValidationPipe) UserDto: CreateUserRequestDto): Promise<UserResponseDto> {
+  public createUser(@Body() UserDto: CreateUserRequestDto, @CurrentUser() user: UserEntity): Promise<UserResponseDto> {
+    UserDto.createdBy = user
     return this.usersService.createUser(UserDto);
   }
 
