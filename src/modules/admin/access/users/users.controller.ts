@@ -23,6 +23,8 @@ export class UsersController {
   @ApiOperation({ description: 'Get a paginated user list' })
   @ApiPaginatedResponse(UserResponseDto)
   @ApiQuery({ name: 'search',type: 'string', required: false, example: 'admin',})
+  @ApiQuery({ name: 'expiredDate',type: 'string', required: false, example: '',})
+  @ApiQuery({ name: 'createdBy',type: 'string', required: false, example: 'admin',})
   @ApiFields(USER_FILTER_FIELD)
   @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
   @Get()
