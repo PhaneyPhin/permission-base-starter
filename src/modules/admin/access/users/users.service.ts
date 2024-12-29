@@ -16,11 +16,7 @@ import { validate } from 'class-validator';
 import { UserEntity } from './user.entity';
 import { Filter } from 'typeorm';
 import { BaseCrudService } from '@common/services/base-crud.service';
-import { query } from 'express';
-import { UserStatus } from './user-status.enum';
-import { UserApproval } from './user-approval';
 import { ImportUserDto } from './dtos/import-user.dto';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 export const USER_FILTER_FIELD =  ['username', 'name', 'email']
 @Injectable()
 export class UsersService extends BaseCrudService {

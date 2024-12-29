@@ -72,6 +72,7 @@ export class UsersController {
 
   @ApiOperation({ description: 'Change user password' })
   @ApiGlobalResponse(UserResponseDto)
+  @Permissions('admin.access.users.update')
   @Post(':id/change/password')
   async changePasswordOfUser(
     @Body(ValidationPipe) changePassword: ChangePasswordRequestDto,
