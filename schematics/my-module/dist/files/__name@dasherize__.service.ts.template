@@ -1,0 +1,133 @@
+import {
+  InternalServerErrorException,
+  RequestTimeoutException,
+  NotFoundException,
+  Injectable,
+} from '@nestjs/common';
+import {
+  Create<%= classify(name) %>RequestDto,
+  Update<%= classify(name) %>RequestDto,
+  <%= classify(name) %>ResponseDto,
+} from './dtos';
+import {
+  PaginationRequest,
+  PaginationResponseDto,
+  Pagination,
+} from '@libs/pagination';
+import { <%= classify(name) %>Mapper } from './<%= name %>.mapper';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DBErrorCode } from '@common/enums';
+import { TimeoutError } from 'rxjs';
+import { <%= classify(name) %>Entity } from './<%= name %>.entity';
+import { Repository } from 'typeorm';
+import { <%= classify(name) %>ExistsException } from '@common/http/exceptions'; // e.g., custom exception
+
+@Injectable()
+export class <%= classify(name) %>Service {
+  constructor(
+    @InjectRepository(<%= classify(name) %>Entity)
+    private <%= camelize(name) %>Repository: Repository<<%= classify(name) %>Entity>,
+  ) {}
+
+  public async get<%= classify(name) %>AndCount(
+    pagination: PaginationRequest,
+  ): Promise[<<%= classify(name) %>Entity[], number]> {
+    const {
+      skip,
+      limit: take,
+      order,
+      params: { search },
+    } = pagination;
+
+    const query = this.<%= camelize(name) %>Repository
+      .createQueryBuilder()
+      .skip(skip)
+      .take(take)
+      .orderBy(order);
+
+    if (search) {
+      query.where('description ILIKE :search', {
+        search: `%${search}%`,
+      });
+    }
+
+    return query.getManyAndCount();
+  }
+
+  /**
+   * Get a paginated <%= name %> list
+   */
+  public async get<%= classify(name) %>(
+    pagination: PaginationRequest,
+  ): Promise<PaginationResponseDto<<%= classify(name) %>ResponseDto>> {
+    try {
+      const [entities, total] = await this.get<%= classify(name) %>AndCount(pagination);
+      const dtos = entities.map(<%= classify(name) %>Mapper.toDto);
+      return Pagination.of(pagination, total, dtos);
+    } catch (error) {
+      if (error instanceof TimeoutError) {
+        throw new RequestTimeoutException();
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  /**
+   * Get <%= name %> by id
+   */
+  public async get<%= classify(name) %>ById(id: number): Promise<<%= classify(name) %>ResponseDto> {
+    const entity = await this.<%= camelize(name) %>Repository.findOneBy({ id });
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    return <%= classify(name) %>Mapper.toDto(entity);
+  }
+
+  /**
+   * Create new <%= name %>
+   */
+  public async create<%= classify(name) %>(
+    dto: Create<%= classify(name) %>RequestDto,
+  ): Promise<<%= classify(name) %>ResponseDto> {
+    try {
+      let entity = <%= classify(name) %>Mapper.toCreateEntity(dto);
+      entity = await this.<%= camelize(name) %>Repository.save(entity);
+      return <%= classify(name) %>Mapper.toDto(entity);
+    } catch (error) {
+      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
+        throw new <%= classify(name) %>ExistsException(dto.slug);
+      }
+      if (error instanceof TimeoutError) {
+        throw new RequestTimeoutException();
+      }
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Update <%= name %> by id
+   */
+  public async update<%= classify(name) %>(
+    id: number,
+    dto: Update<%= classify(name) %>RequestDto,
+  ): Promise<<%= classify(name) %>ResponseDto> {
+    let entity = await this.<%= camelize(name) %>Repository.findOneBy({ id });
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    try {
+      entity = <%= classify(name) %>Mapper.toUpdateEntity(entity, dto);
+      entity = await this.<%= camelize(name) %>Repository.save(entity);
+      return <%= classify(name) %>Mapper.toDto(entity);
+    } catch (error) {
+      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
+        throw new <%= classify(name) %>ExistsException(dto.slug);
+      }
+      if (error instanceof TimeoutError) {
+        throw new RequestTimeoutException();
+      }
+      throw new InternalServerErrorException();
+    }
+  }
+}

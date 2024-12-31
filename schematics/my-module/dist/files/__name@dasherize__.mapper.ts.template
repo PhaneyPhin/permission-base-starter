@@ -1,0 +1,35 @@
+import { <%= classify(name) %>Entity } from './<%= name %>.entity';
+import {
+  Create<%= classify(name) %>RequestDto,
+  Update<%= classify(name) %>RequestDto,
+  <%= classify(name) %>ResponseDto,
+} from './dtos';
+
+export class <%= classify(name) %>Mapper {
+  public static toDto(entity: <%= classify(name) %>Entity): <%= classify(name) %>ResponseDto {
+    const dto = new <%= classify(name) %>ResponseDto();
+    dto.id = entity.id;
+    dto.slug = entity.slug;
+    dto.description = entity.description;
+    dto.active = entity.active;
+    return dto;
+  }
+
+  public static toCreateEntity(dto: Create<%= classify(name) %>RequestDto): <%= classify(name) %>Entity {
+    const entity = new <%= classify(name) %>Entity();
+    entity.slug = dto.slug;
+    entity.description = dto.description;
+    entity.active = true;
+    return entity;
+  }
+
+  public static toUpdateEntity(
+    entity: <%= classify(name) %>Entity,
+    dto: Update<%= classify(name) %>RequestDto,
+  ): <%= classify(name) %>Entity {
+    entity.slug = dto.slug;
+    entity.description = dto.description;
+    entity.active = dto.active;
+    return entity;
+  }
+}

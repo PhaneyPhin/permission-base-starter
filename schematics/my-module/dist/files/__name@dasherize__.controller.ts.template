@@ -1,0 +1,60 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  ParseIntPipe,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiOperation,
+  ApiTags,
+  ApiQuery,
+} from '@nestjs/swagger';
+
+import { <%= classify(name) %>Service } from './<%= name %>.service';
+import {
+  Create<%= classify(name) %>RequestDto,
+  Update<%= classify(name) %>RequestDto,
+  <%= classify(name) %>ResponseDto,
+} from './dtos';
+
+import { Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
+import { ApiGlobalResponse } from '@common/decorators';
+import { PaginationRequest, PaginationResponseDto } from '@libs/pagination';
+
+@ApiTags('<%= classify(name) %>')
+@ApiBearerAuth(TOKEN_NAME)
+@Controller({
+  path: 'access/<%= name %>',
+  version: '1',
+})
+export class <%= classify(name) %>Controller {
+  constructor(private readonly <%= camelize(name) %>Service: <%= classify(name) %>Service) {}
+
+  @ApiOperation({ description: 'Get a paginated <%= name %> list' })
+  @ApiQuery({
+    name: 'search',
+    type: 'string',
+    required: false,
+    example: 'admin',
+  })
+  // Example of custom pagination decorator
+  // @ApiPaginatedResponse(<%= classify(name) %>ResponseDto)
+  @Permissions(
+    'admin.access.<%= name %>.read',
+    'admin.access.<%= name %>.create',
+    'admin.access.<%= name %>.update',
+    'admin.access.roles.create',
+    'admin.access.roles.update',
+  )
+  @Get()
+  public get<%= classify(name) %>(
+    @Body() pagination: PaginationRequest, // or @PaginationParams()
+  ): Promise<PaginationResponseDto<<%= classify(name) %>ResponseDto>> {
+    return
