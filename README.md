@@ -64,6 +64,12 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## General Consistence module
+```
+$ nest g my-module modules/admin/access/{muduleName} \
+  --collection ./schematics/my-module/collection.json
+```
 ## CRUD Usage
 
 # BaseCrudService Documentation
