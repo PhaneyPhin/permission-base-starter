@@ -1,19 +1,19 @@
 import { InternalServerErrorException, RequestTimeoutException, NotFoundException, Injectable } from '@nestjs/common';
 import { CreatePermissionRequestDto, UpdatePermissionRequestDto, PermissionResponseDto } from './dtos';
 import { Pagination, PaginationResponseDto, PaginationRequest } from '@libs/pagination';
-import { PermissionsRepository } from './permissions.repository';
 import { PermissionExistsException } from '@common/http/exceptions';
 import { PermissionMapper } from './permission.mapper';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DBErrorCode } from '@common/enums';
 import { TimeoutError } from 'rxjs';
 import { PermissionEntity } from './permission.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PermissionsService {
   constructor(
     @InjectRepository(PermissionEntity)
-    private permissionsRepository: PermissionsRepository,
+    private permissionsRepository: Repository<PermissionEntity>,
   ) {}
 
   /**

@@ -5,6 +5,8 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "schematics": "./schematics/my-module/collection.json",
+
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -60,8 +62,10 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@angular-devkit/core": "^19.0.6",
+    "@angular-devkit/schematics": "^19.0.6",
     "@nestjs/cli": "^10.0.0",
-    "@nestjs/schematics": "^10.0.0",
+    "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.2",
