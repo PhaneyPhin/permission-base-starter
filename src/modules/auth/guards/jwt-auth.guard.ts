@@ -25,11 +25,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(context.switchToHttp().getRequest());
+    const isValid = this.tokenService.isTokenValid(accessToken);
+
+    if (! isValid) {
+      throw new UnauthorizedException('Token is invalid or blacklisted');
+    }
+
     if (!accessToken) {
       throw new InvalidTokenException();
     }
 
     const payload = this.tokenService.verifyToken(accessToken, TokenType.AccessToken);
+    
     if (!payload) {
       throw new UnauthorizedException();
     }

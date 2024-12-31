@@ -11,15 +11,20 @@ import {
 } from '@common/http/exceptions';
 import { ValidateTokenResponseDto, JwtPayload, TokenDto } from '../dtos';
 import { TokenError, TokenType } from '../enums';
+import * as NodeCache from 'node-cache';
 
 @Injectable()
 export class TokenService {
+  private readonly cache: NodeCache;
+  
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+  ) {
+      this.cache = new NodeCache({ stdTTL: 24 * 3600, checkperiod: 600 }); // 1 hour TTL, clean every 10 minutes
+  }
 
   /**
    * Generate Auth token(JWT) service for login user
@@ -101,5 +106,13 @@ export class TokenService {
   private generateToken(payload: JwtPayload, expiresIn: string): string {
     const token = this.jwtService.sign(payload, { expiresIn });
     return token;
+  }
+
+  invalidateToken(token: string, ttl: number): void {
+    this.cache.set(token, true, ttl);
+  }
+
+  isTokenValid(token: string): boolean {
+    return !this.cache.has(token);
   }
 }
