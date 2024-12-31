@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 const slugRegex = /^[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*$/;
 
-export class Create<%= classify(name) %>RequestDto {
+export class CreateWarehouseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @Matches(slugRegex)

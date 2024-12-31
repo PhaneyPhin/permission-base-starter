@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class <%= classify(name) %>ResponseDto {
+export class WarehouseResponseDto {
   @ApiProperty()
   id: number;
 

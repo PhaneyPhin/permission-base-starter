@@ -1,8 +1,8 @@
 import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ schema: 'admin', name: '<%= dasherize(name) %>' })
-export class <%= classify(name) %>Entity extends BaseEntity {
+@Entity({ schema: 'admin', name: 'warehouse' })
+export class WarehouseEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
@@ -31,7 +31,7 @@ export class <%= classify(name) %>Entity extends BaseEntity {
   })
   active: boolean;
 
-  constructor(partial?: Partial<<%= classify(name) %>Entity>) {
+  constructor(partial?: Partial<WarehouseEntity>) {
     super();
     Object.assign(this, partial);
   }
