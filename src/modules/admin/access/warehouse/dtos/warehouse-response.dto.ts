@@ -5,10 +5,22 @@ export class WarehouseResponseDto {
   id: number;
 
   @ApiProperty()
-  name: string;
+  branch: string;
+
+  @ApiProperty()
+  nameEn: string;
+
+  @ApiProperty()
+  nameKh: string;
 
   @ApiProperty()
   description: string;
+
+  @ApiProperty()
+  createdBy: string;
+
+  @ApiProperty()
+  contactPhone: string;
 
   @ApiProperty()
   active: boolean;

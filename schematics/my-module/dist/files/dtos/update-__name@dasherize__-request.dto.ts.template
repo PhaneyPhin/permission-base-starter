@@ -1,9 +1,14 @@
 import { Create<%= classify(name) %>RequestDto } from './create-<%= name %>-request.dto';
-import { IsBoolean, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsNotEmpty, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Update<%= classify(name) %>RequestDto extends Create<%= classify(name) %>RequestDto {
-  @ApiProperty()
+  <% fields.forEach((field) => { %>@ApiProperty()
+  @IsNotEmpty()
+  @Length(160)
+  <%= camelize(field) %>: string;
+
+  <% }) %>@ApiProperty()
   @IsNotEmpty()
   @IsBoolean()
   active: boolean;

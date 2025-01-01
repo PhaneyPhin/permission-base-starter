@@ -18,7 +18,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 
-import { WarehouseService } from './warehouse.service';
+import { WAREHOUSE_FILTER_FIELDS, WarehouseService } from './warehouse.service';
 import {
   CreateWarehouseRequestDto,
   UpdateWarehouseRequestDto,
@@ -43,7 +43,7 @@ export class WarehouseController {
   @ApiOperation({ description: 'Get a paginated warehouse list' })
   @ApiPaginatedResponse(WarehouseResponseDto)
   @ApiQuery({ name: 'search',type: 'string', required: false, example: '',})
-  @ApiFields(['name'])
+  @ApiFields(WAREHOUSE_FILTER_FIELDS)
   @Permissions(
     'admin.access.warehouse.read',
     'admin.access.warehouse.create',

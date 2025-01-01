@@ -1,17 +1,36 @@
-import { IsNotEmpty, Length, Matches, MaxLength } from 'class-validator';
+import { IsNotEmpty, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
-const slugRegex = /^[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*$/;
 
 export class CreateWarehouseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
-  @Matches(slugRegex)
-  @MaxLength(60)
-  name: string;
+  @Length(160)
+  branch: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @Length(3, 160)
+  @Length(160)
+  nameEn: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Length(160)
+  nameKh: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Length(160)
   description: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Length(160)
+  createdBy: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Length(160)
+  contactPhone: string;
+
+  
 }

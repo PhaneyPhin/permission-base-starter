@@ -1,17 +1,11 @@
-import { IsNotEmpty, Length, Matches, MaxLength } from 'class-validator';
+import { IsNotEmpty, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-const slugRegex = /^[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*$/;
-
 export class Create<%= classify(name) %>RequestDto {
-  @ApiProperty()
+  <% fields.forEach((field) => { %>@ApiProperty()
   @IsNotEmpty()
-  @Matches(slugRegex)
-  @MaxLength(60)
-  name: string;
+  @Length(160)
+  <%= camelize(field) %>: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @Length(3, 160)
-  description: string;
+  <% }) %>
 }

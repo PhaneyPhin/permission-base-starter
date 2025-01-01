@@ -1,27 +1,54 @@
 import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ schema: 'admin', name: 'warehouse' })
 export class WarehouseEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
+  
   @Column({
-    name: 'slug',
+    name: 'branch',
     type: 'varchar',
-    nullable: false,
-    unique: true,
-    length: 60,
+    nullable: true,
   })
-  name: string;
-
+  branch: string;
+  
+  @Column({
+    name: 'name_en',
+    type: 'varchar',
+    nullable: true,
+  })
+  nameEn: string;
+  
+  @Column({
+    name: 'name_kh',
+    type: 'varchar',
+    nullable: true,
+  })
+  nameKh: string;
+  
   @Column({
     name: 'description',
     type: 'varchar',
-    nullable: false,
-    length: 160,
+    nullable: true,
   })
   description: string;
+  
+  @Column({
+    name: 'created_by',
+    type: 'varchar',
+    nullable: true,
+  })
+  createdBy: string;
+  
+  @Column({
+    name: 'contact_phone',
+    type: 'varchar',
+    nullable: true,
+  })
+  contactPhone: string;
+  
 
   @Column({
     name: 'active',
@@ -31,6 +58,11 @@ export class WarehouseEntity extends BaseEntity {
   })
   active: boolean;
 
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
   constructor(partial?: Partial<WarehouseEntity>) {
     super();
     Object.assign(this, partial);

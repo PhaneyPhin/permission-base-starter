@@ -19,11 +19,12 @@ import { WarehouseExistsException } from './warehouse-exist.exception'; // e.g.,
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
 
+export const WAREHOUSE_FILTER_FIELDS = ['branch', 'nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone', ];
 @Injectable()
 export class WarehouseService extends BaseCrudService {
   protected queryName: string = 'warehouse';
-  protected FILTER_FIELDS = ['createdAt'];
-  protected SEARCH_FIELDS = ['username', 'name', 'email'];
+  protected SEARCH_FIELDS = ['branch', 'nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone', ];
+  protected FILTER_FIELDS = WAREHOUSE_FILTER_FIELDS
 
   constructor(
     @InjectRepository(WarehouseEntity)
@@ -85,7 +86,7 @@ export class WarehouseService extends BaseCrudService {
       return WarehouseMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.name);
+        throw new WarehouseExistsException(dto.branch);
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -111,7 +112,7 @@ export class WarehouseService extends BaseCrudService {
       return WarehouseMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.name);
+        throw new WarehouseExistsException(dto.branch);
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
