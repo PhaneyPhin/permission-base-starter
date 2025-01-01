@@ -22,9 +22,6 @@ export class CreateWarehouseRequestDto {
   @MaxLength(160)
   description: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
   createdBy: string;
 
   @ApiProperty()

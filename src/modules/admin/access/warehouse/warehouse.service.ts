@@ -62,7 +62,7 @@ export class WarehouseService extends BaseCrudService {
   }
 
   getAllWarehouse() {
-    return this.warehouseRepository.createQueryBuilder('warehouse').select(['id', 'name']).getRawMany()
+    return this.warehouseRepository.createQueryBuilder('warehouse').select(['id', 'name_en', 'name_kh']).getRawMany()
   }
 
   /**
