@@ -1,5 +1,6 @@
 import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { UserEntity } from '../users/user.entity';
 
 @Entity({ schema: 'admin', name: 'warehouse' })
 export class WarehouseEntity extends BaseEntity {
@@ -37,11 +38,15 @@ export class WarehouseEntity extends BaseEntity {
   
   @Column({
     name: 'created_by',
-    type: 'varchar',
+    type: 'uuid',
     nullable: true,
   })
   createdBy: string;
   
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'created_by' })
+  createdByUser: UserEntity;
+
   @Column({
     name: 'contact_phone',
     type: 'varchar',

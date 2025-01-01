@@ -57,6 +57,8 @@ export class WarehouseService extends BaseCrudService {
   /** Require for base query list of feature */
   protected getListQuery() {
     return this.warehouseRepository.createQueryBuilder('warehouse')
+      .leftJoinAndSelect('warehouse.createdByUser', 'uc')
+
   }
 
   getAllWarehouse() {
@@ -67,7 +69,10 @@ export class WarehouseService extends BaseCrudService {
    * Get warehouse by id
    */
   public async getWarehouseById(id: number): Promise<WarehouseResponseDto> {
-    const entity = await this.warehouseRepository.findOneBy({ id });
+    const entity = await this.getListQuery()
+      .where('warehouse.id = :id', { id })
+      .getOne();
+
     if (!entity) {
       throw new NotFoundException();
     }

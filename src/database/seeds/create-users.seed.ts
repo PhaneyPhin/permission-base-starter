@@ -28,7 +28,11 @@ const permissions = [
     { slug: 'admin.access.roles.read', description: 'Read Roles' },
     { slug: 'admin.access.roles.create', description: 'Create Roles' },
     { slug: 'admin.access.roles.update', description: 'Update Roles' },
-    
+    { slug: 'admin.access.warehouse.read', description: 'Read warehouse' },
+    { slug: 'admin.access.warehouse.create', description: 'Create warehouse' },
+    { slug: 'admin.access.warehouse.update', description: 'Update warehouse' },
+    { slug: 'admin.access.warehouse.delete', description: 'Delete warehouse' },
+
 ]
 
 const rolePermissions = {

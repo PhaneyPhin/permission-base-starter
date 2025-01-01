@@ -96,6 +96,6 @@ export class createUsersTable1610321042350 implements MigrationInterface {
     await queryRunner.dropForeignKey(tableName, foreignKey);
 
     // Remove the created_by column
-    await queryRunner.dropColumn(tableName, 'created_by');
+    await queryRunner.dropTable(tableName);
   }
 }

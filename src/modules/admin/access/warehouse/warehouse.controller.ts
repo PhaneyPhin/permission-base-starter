@@ -25,11 +25,12 @@ import {
   WarehouseResponseDto,
 } from './dtos';
 
-import { Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
+import { CurrentUser, Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { WarehouseEntity } from './warehouse.entity';
+import { UserEntity } from '../users/user.entity';
 
 @ApiTags('Warehouse')
 @ApiBearerAuth(TOKEN_NAME)
@@ -85,8 +86,9 @@ export class WarehouseController {
   @Post()
   public createWarehouse(
     @Body(ValidationPipe) dto: CreateWarehouseRequestDto,
+    @CurrentUser() user: UserEntity,
   ): Promise<WarehouseResponseDto> {
-    return this.warehouseService.createWarehouse(dto);
+    return this.warehouseService.createWarehouse({ ...dto, createdBy: user.id });
   }
 
   @ApiOperation({ description: 'Update warehouse by id' })

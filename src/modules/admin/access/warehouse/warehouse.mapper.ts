@@ -4,9 +4,10 @@ import {
   UpdateWarehouseRequestDto,
   WarehouseResponseDto,
 } from './dtos';
+import { UserMapper } from '../users/users.mapper';
 
 export class WarehouseMapper {
-  public static toDto(entity: WarehouseEntity): WarehouseResponseDto {
+  public static async toDto(entity: WarehouseEntity): Promise<WarehouseResponseDto> {
     const dto = new WarehouseResponseDto();
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
@@ -15,8 +16,11 @@ export class WarehouseMapper {
     dto.nameKh = entity.nameKh;
     dto.description = entity.description;
     dto.createdBy = entity.createdBy;
-    dto.contactPhone = entity.contactPhone;
+    dto.contactPhone = entity.contactPhone;  
     
+    if (entity.createdByUser) {
+      dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
+    }
 
     return dto;
   }
@@ -44,7 +48,6 @@ export class WarehouseMapper {
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
-    entity.createdBy = dto.createdBy;
     entity.contactPhone = dto.contactPhone;
     
 

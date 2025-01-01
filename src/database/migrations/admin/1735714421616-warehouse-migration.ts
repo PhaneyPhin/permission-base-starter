@@ -1,9 +1,9 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
 const tableName = 'admin.warehouse';
 
-export class WarehouseMigration-timestamp implements MigrationInterface {
+export class WarehouseMigration1735714421616 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -16,46 +16,43 @@ export class WarehouseMigration-timestamp implements MigrationInterface {
             isPrimary: true,
             isNullable: false,
           },
-          
           {
             name: 'branch',
             type: 'varchar',
-            length: 160,
+            length: '160',
             isNullable: false,
           },
           
           {
             name: 'name_en',
             type: 'varchar',
-            length: 160,
+            length: '160',
             isNullable: false,
           },
           
           {
             name: 'name_kh',
             type: 'varchar',
-            length: 160,
+            length: '160',
             isNullable: false,
           },
           
           {
             name: 'description',
             type: 'varchar',
-            length: 160,
-            isNullable: false,
+            length: '160',
+            isNullable: true,
           },
           
           {
             name: 'created_by',
-            type: 'varchar',
-            length: 160,
+            type: 'uuid',
             isNullable: false,
           },
-          
           {
             name: 'contact_phone',
             type: 'varchar',
-            length: 160,
+            length: '160',
             isNullable: false,
           },
           
@@ -70,9 +67,28 @@ export class WarehouseMigration-timestamp implements MigrationInterface {
       }),
       true,
     );
+
+    // Add the foreign key constraint
+    await queryRunner.createForeignKey(
+        tableName,
+        new TableForeignKey({
+          columnNames: ['created_by'],
+          referencedColumnNames: ['id'],
+          referencedTableName: 'admin.users',
+          onDelete: 'SET NULL',
+        }),
+      );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(tableName, true);
+    const table = await queryRunner.getTable(tableName);
+
+    const foreignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('created_by') !== -1,
+    );
+    await queryRunner.dropForeignKey(tableName, foreignKey);
+
+    // Remove the created_by column
+    await queryRunner.dropTable(tableName);
   }
 }

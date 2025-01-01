@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserResponseDto } from '../../users/dtos';
 
 export class WarehouseResponseDto {
   @ApiProperty()
@@ -24,4 +25,7 @@ export class WarehouseResponseDto {
 
   @ApiProperty()
   active: boolean;
+
+  @ApiProperty()
+  createdByUser: UserResponseDto;
 }
