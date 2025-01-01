@@ -67,7 +67,7 @@ $ npm run test:cov
 
 ## General Consistence module
 ```
-$ nest g my-module modules/admin/access/{muduleName} \
+$ nest g my-module "modules/admin/access/company:fields=name_en,name_kh,email,website,address_en,address_kh,logo"   \
   --collection ./schematics/my-module/collection.json
 ```
 ## CRUD Usage
