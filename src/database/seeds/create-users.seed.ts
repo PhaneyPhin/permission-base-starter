@@ -6,6 +6,7 @@ import { PermissionEntity } from '@admin/access/permissions/permission.entity';
 import { UserStatus } from '@admin/access/users/user-status.enum';
 import { HashHelper } from '@helpers';
 import { UserApproval } from '@modules/admin/access/users/user-approval';
+import minioClient from '@libs/pagination/minio';
 
 // Define seed data
 const users = [
@@ -33,6 +34,10 @@ const permissions = [
     { slug: 'admin.access.warehouse.update', description: 'Update warehouse' },
     { slug: 'admin.access.warehouse.delete', description: 'Delete warehouse' },
 
+    { slug: 'admin.access.company.read', description: 'Read company' },
+    { slug: 'admin.access.company.create', description: 'Create company' },
+    { slug: 'admin.access.company.update', description: 'Update company' },
+    { slug: 'admin.access.company.delete', description: 'Delete company' },
 ]
 
 const rolePermissions = {
@@ -50,6 +55,14 @@ const rolePermissions = {
   Admin: permissions,
 };
 
+const seedBuckets = ['images', 'files'];
+
+async function createBucket(bucketName) {
+  const exists = await minioClient.bucketExists(bucketName);
+  if (! exists) {
+    await minioClient.makeBucket(bucketName, 'us-east-1');
+  }
+}
 async function seedDatabase(dataSource: DataSource) {
   const roleNames = Object.keys(rolePermissions);
 
@@ -82,6 +95,7 @@ async function seedDatabase(dataSource: DataSource) {
       password: hashedPassword,
       roles: savedRoles,
     } as any);
+    console.log(userEntity)
     await dataSource.manager.save(userEntity);
   }
 
@@ -108,7 +122,7 @@ async function bootstrap() {
     synchronize: false,
     logging: configService.get<boolean>('TYPEORM_LOGGING', false),
   });
-
+  await Promise.all(seedBuckets.map(createBucket));
   await dataSource.initialize();
   await seedDatabase(dataSource);
   await dataSource.destroy();

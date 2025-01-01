@@ -3,15 +3,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AdminModule } from '@admin/admin.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { DatabaseModule } from '@database/database.module';
+import { MinioModule } from './minio/minio.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: ['.env'],
+      isGlobal: true,
     }),
     DatabaseModule,
     AdminModule,
     AuthModule,
+    MinioModule,
   ],
 })
 export class AppModule {

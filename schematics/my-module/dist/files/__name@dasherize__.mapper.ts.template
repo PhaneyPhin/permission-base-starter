@@ -1,4 +1,5 @@
 import { <%= classify(name) %>Entity } from './<%= name %>.entity';
+import { UserMapper } from '@admin/access/users/users.mapper';
 import {
   Create<%= classify(name) %>RequestDto,
   Update<%= classify(name) %>RequestDto,
@@ -6,12 +7,16 @@ import {
 } from './dtos';
 
 export class <%= classify(name) %>Mapper {
-  public static toDto(entity: <%= classify(name) %>Entity): <%= classify(name) %>ResponseDto {
+  public static async toDto(entity: <%= classify(name) %>Entity): Promise<<%= classify(name) %>ResponseDto> {
     const dto = new <%= classify(name) %>ResponseDto();
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
     <% fields.forEach(field => { %>dto.<%= camelize(field) %> = entity.<%= camelize(field) %>;
     <% }) %>
+
+     if (entity.createdByUser) {
+      dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
+    }
 
     return dto;
   }

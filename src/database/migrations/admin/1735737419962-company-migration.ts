@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.<%= dasherize(name) %>';
+const tableName = 'admin.company';
 
-export class <%= classify(name) %>Migration-timestamp implements MigrationInterface {
+export class CompanyMigration1735737419962 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -16,14 +16,55 @@ export class <%= classify(name) %>Migration-timestamp implements MigrationInterf
             isPrimary: true,
             isNullable: false,
           },
-          <% fields.forEach(field => { %>
+          
           {
-            name: '<%= field %>',
+            name: 'name_en',
             type: 'varchar',
             length: '160',
             isNullable: false,
           },
-          <% }) %>
+          
+          {
+            name: 'name_kh',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'email',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'website',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'address_en',
+            type: 'varchar',
+            length: '400',
+            isNullable: false,
+          },
+          
+          {
+            name: 'address_kh',
+            type: 'varchar',
+            length: '400',
+            isNullable: false,
+          },
+          
+          {
+            name: 'logo',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          }, 
           {
             name: 'created_by',
             type: 'uuid',
@@ -45,12 +86,12 @@ export class <%= classify(name) %>Migration-timestamp implements MigrationInterf
     await queryRunner.createForeignKey(
         tableName,
         new TableForeignKey({
-            columnNames: ['created_by'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'admin.users',
-            onDelete: 'SET NULL',
+          columnNames: ['created_by'],
+          referencedColumnNames: ['id'],
+          referencedTableName: 'admin.users',
+          onDelete: 'SET NULL',
         }),
-    );
+      );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -60,6 +101,7 @@ export class <%= classify(name) %>Migration-timestamp implements MigrationInterf
       (fk) => fk.columnNames.indexOf('created_by') !== -1,
     );
     await queryRunner.dropForeignKey(tableName, foreignKey);
+
     await queryRunner.dropTable(tableName, true);
   }
 }
