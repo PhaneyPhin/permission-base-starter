@@ -25,11 +25,12 @@ import {
   <%= classify(name) %>ResponseDto,
 } from './dtos';
 
-import { Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
+import { CurrentUser, Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { <%= classify(name) %>Entity } from './<%= name %>.entity';
+import { UserEntity } from '@admin/access/users/user.entity';
 
 @ApiTags('<%= classify(name) %>')
 @ApiBearerAuth(TOKEN_NAME)
@@ -85,8 +86,9 @@ export class <%= classify(name) %>Controller {
   @Post()
   public create<%= classify(name) %>(
     @Body(ValidationPipe) dto: Create<%= classify(name) %>RequestDto,
+    @CurrentUser() user: UserEntity,
   ): Promise<<%= classify(name) %>ResponseDto> {
-    return this.<%= camelize(name) %>Service.create<%= classify(name) %>(dto);
+    return this.<%= camelize(name) %>Service.create<%= classify(name) %>({ ...dto,  createdBy: user.id });
   }
 
   @ApiOperation({ description: 'Update <%= name %> by id' })

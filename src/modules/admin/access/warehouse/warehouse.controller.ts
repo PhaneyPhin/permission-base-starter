@@ -30,7 +30,7 @@ import { ApiGlobalResponse } from '@common/decorators';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { WarehouseEntity } from './warehouse.entity';
-import { UserEntity } from '../users/user.entity';
+import { UserEntity } from '@admin/access/users/user.entity';
 
 @ApiTags('Warehouse')
 @ApiBearerAuth(TOKEN_NAME)

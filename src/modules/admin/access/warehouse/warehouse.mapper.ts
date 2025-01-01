@@ -35,7 +35,6 @@ export class WarehouseMapper {
     entity.description = dto.description;
     entity.createdBy = dto.createdBy;
     entity.contactPhone = dto.contactPhone;
-    
 
     return entity;
   }
@@ -50,7 +49,6 @@ export class WarehouseMapper {
     entity.description = dto.description;
     entity.contactPhone = dto.contactPhone;
     
-
     return entity;
   }
 }

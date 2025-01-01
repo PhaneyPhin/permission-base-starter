@@ -77,6 +77,7 @@ export class UserEntity extends BaseEntity {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
+  // New created_by column
   @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: 'created_by' })
   createdBy: UserEntity;
