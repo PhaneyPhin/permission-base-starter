@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/schema",
-    "id": "myModule",
+    "$id": "myModule",
     "title": "NestJS Module Generator",
     "type": "object",
     "properties": {

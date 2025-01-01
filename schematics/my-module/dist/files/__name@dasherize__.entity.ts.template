@@ -1,27 +1,19 @@
 import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ schema: 'admin', name: '<%= dasherize(name) %>' })
 export class <%= classify(name) %>Entity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
+  <% fields.forEach((field) => { %>
   @Column({
-    name: 'slug',
+    name: '<%= field %>',
     type: 'varchar',
-    nullable: false,
-    unique: true,
-    length: 60,
+    nullable: true,
   })
-  name: string;
-
-  @Column({
-    name: 'description',
-    type: 'varchar',
-    nullable: false,
-    length: 160,
-  })
-  description: string;
+  <%=  camelize(field) %>: string;
+  <% }) %>
 
   @Column({
     name: 'active',
@@ -31,6 +23,11 @@ export class <%= classify(name) %>Entity extends BaseEntity {
   })
   active: boolean;
 
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
   constructor(partial?: Partial<<%= classify(name) %>Entity>) {
     super();
     Object.assign(this, partial);

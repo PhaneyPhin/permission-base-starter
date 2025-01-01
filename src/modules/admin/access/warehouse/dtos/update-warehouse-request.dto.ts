@@ -1,8 +1,33 @@
 import { CreateWarehouseRequestDto } from './create-warehouse-request.dto';
-import { IsBoolean, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateWarehouseRequestDto extends CreateWarehouseRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  branch: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  nameEn: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  nameKh: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  description: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  contactPhone: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsBoolean()

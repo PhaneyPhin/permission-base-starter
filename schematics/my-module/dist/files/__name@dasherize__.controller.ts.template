@@ -18,7 +18,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 
-import { <%= classify(name) %>Service } from './<%= name %>.service';
+import { <%= name.toUpperCase() %>_FILTER_FIELDS, <%= classify(name) %>Service } from './<%= name %>.service';
 import {
   Create<%= classify(name) %>RequestDto,
   Update<%= classify(name) %>RequestDto,
@@ -43,7 +43,7 @@ export class <%= classify(name) %>Controller {
   @ApiOperation({ description: 'Get a paginated <%= name %> list' })
   @ApiPaginatedResponse(<%= classify(name) %>ResponseDto)
   @ApiQuery({ name: 'search',type: 'string', required: false, example: '',})
-  @ApiFields(['name'])
+  @ApiFields(<%= name.toUpperCase() %>_FILTER_FIELDS)
   @Permissions(
     'admin.access.<%= name %>.read',
     'admin.access.<%= name %>.create',

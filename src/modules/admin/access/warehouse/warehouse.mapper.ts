@@ -4,22 +4,39 @@ import {
   UpdateWarehouseRequestDto,
   WarehouseResponseDto,
 } from './dtos';
+import { UserMapper } from '../users/users.mapper';
 
 export class WarehouseMapper {
-  public static toDto(entity: WarehouseEntity): WarehouseResponseDto {
+  public static async toDto(entity: WarehouseEntity): Promise<WarehouseResponseDto> {
     const dto = new WarehouseResponseDto();
     dto.id = entity.id;
-    dto.name = entity.name;
+    dto.active = (entity as any).active; // or your default fields
+    dto.branch = entity.branch;
+    dto.nameEn = entity.nameEn;
+    dto.nameKh = entity.nameKh;
     dto.description = entity.description;
-    dto.active = entity.active;
+    dto.createdBy = entity.createdBy;
+    dto.contactPhone = entity.contactPhone;  
+    
+    if (entity.createdByUser) {
+      dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
+    }
+
     return dto;
   }
 
   public static toCreateEntity(dto: CreateWarehouseRequestDto): WarehouseEntity {
     const entity = new WarehouseEntity();
-    entity.name = dto.name;
-    entity.description = dto.description;
+    // default fields?
     entity.active = true;
+    entity.branch = dto.branch;
+    entity.nameEn = dto.nameEn;
+    entity.nameKh = dto.nameKh;
+    entity.description = dto.description;
+    entity.createdBy = dto.createdBy;
+    entity.contactPhone = dto.contactPhone;
+    
+
     return entity;
   }
 
@@ -27,9 +44,13 @@ export class WarehouseMapper {
     entity: WarehouseEntity,
     dto: UpdateWarehouseRequestDto,
   ): WarehouseEntity {
-    entity.name = dto.name;
+    entity.branch = dto.branch;
+    entity.nameEn = dto.nameEn;
+    entity.nameKh = dto.nameKh;
     entity.description = dto.description;
-    entity.active = dto.active;
+    entity.contactPhone = dto.contactPhone;
+    
+
     return entity;
   }
 }

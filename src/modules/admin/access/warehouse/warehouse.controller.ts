@@ -18,18 +18,19 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 
-import { WarehouseService } from './warehouse.service';
+import { WAREHOUSE_FILTER_FIELDS, WarehouseService } from './warehouse.service';
 import {
   CreateWarehouseRequestDto,
   UpdateWarehouseRequestDto,
   WarehouseResponseDto,
 } from './dtos';
 
-import { Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
+import { CurrentUser, Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { WarehouseEntity } from './warehouse.entity';
+import { UserEntity } from '../users/user.entity';
 
 @ApiTags('Warehouse')
 @ApiBearerAuth(TOKEN_NAME)
@@ -43,7 +44,7 @@ export class WarehouseController {
   @ApiOperation({ description: 'Get a paginated warehouse list' })
   @ApiPaginatedResponse(WarehouseResponseDto)
   @ApiQuery({ name: 'search',type: 'string', required: false, example: '',})
-  @ApiFields(['name'])
+  @ApiFields(WAREHOUSE_FILTER_FIELDS)
   @Permissions(
     'admin.access.warehouse.read',
     'admin.access.warehouse.create',
@@ -85,8 +86,9 @@ export class WarehouseController {
   @Post()
   public createWarehouse(
     @Body(ValidationPipe) dto: CreateWarehouseRequestDto,
+    @CurrentUser() user: UserEntity,
   ): Promise<WarehouseResponseDto> {
-    return this.warehouseService.createWarehouse(dto);
+    return this.warehouseService.createWarehouse({ ...dto, createdBy: user.id });
   }
 
   @ApiOperation({ description: 'Update warehouse by id' })

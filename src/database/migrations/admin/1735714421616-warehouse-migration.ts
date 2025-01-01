@@ -1,8 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.users';
-export class createUsersTable1610321042350 implements MigrationInterface {
+const tableName = 'admin.warehouse';
+
+export class WarehouseMigration1735714421616 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -10,64 +11,56 @@ export class createUsersTable1610321042350 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-            generationStrategy: 'uuid',
+            type: 'integer',
             isGenerated: true,
+            isPrimary: true,
             isNullable: false,
           },
           {
-            name: 'username',
+            name: 'branch',
             type: 'varchar',
-            length: '20',
-            isUnique: true,
+            length: '160',
             isNullable: false,
           },
+          
           {
-            name: 'email',
+            name: 'name_en',
             type: 'varchar',
-            length: '100',
-            isUnique: true,
+            length: '160',
             isNullable: false,
           },
+          
           {
-            name: 'name',
+            name: 'name_kh',
             type: 'varchar',
-            length: '100',
+            length: '160',
             isNullable: false,
           },
+          
           {
-            name: 'password',
+            name: 'description',
             type: 'varchar',
-            isNullable: false,
+            length: '160',
+            isNullable: true,
           },
-          {
-            name: 'is_super_user',
-            type: 'boolean',
-            isNullable: false,
-            default: false,
-          },
-          {
-            name: 'status',
-            type: 'varchar',
-            length: '30',
-            isNullable: false,
-          },
-          {
-            name: 'user_approval',
-            type: 'varchar',
-            length: '30',
-            isNullable: false,
-          },
-          {
-            name: 'expired_at',
-            type: 'timestamp with time zone',
-            isNullable: true
-          },
+          
           {
             name: 'created_by',
             type: 'uuid',
-            isNullable: true,
+            isNullable: false,
+          },
+          {
+            name: 'contact_phone',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'active',
+            type: 'boolean',
+            isNullable: false,
+            default: true,
           },
           ...commonFields,
         ],
@@ -77,19 +70,19 @@ export class createUsersTable1610321042350 implements MigrationInterface {
 
     // Add the foreign key constraint
     await queryRunner.createForeignKey(
-      tableName,
-      new TableForeignKey({
-        columnNames: ['created_by'],
-        referencedColumnNames: ['id'],
-        referencedTableName: tableName,
-        onDelete: 'SET NULL',
-      }),
-    );
+        tableName,
+        new TableForeignKey({
+          columnNames: ['created_by'],
+          referencedColumnNames: ['id'],
+          referencedTableName: 'admin.users',
+          onDelete: 'SET NULL',
+        }),
+      );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // Remove the foreign key constraint
     const table = await queryRunner.getTable(tableName);
+
     const foreignKey = table.foreignKeys.find(
       (fk) => fk.columnNames.indexOf('created_by') !== -1,
     );
