@@ -43,6 +43,10 @@ const permissions = [
     { slug: 'admin.access.branch.create', description: 'Create branch' },
     { slug: 'admin.access.branch.update', description: 'Update branch' },
     { slug: 'admin.access.branch.delete', description: 'Delete branch' },
+
+    { slug: 'admin.access.department.create', description: 'Create department' },
+    { slug: 'admin.access.department.update', description: 'Update department' },
+    { slug: 'admin.access.department.delete', description: 'Delete department' },
 ]
 
 const rolePermissions = {
