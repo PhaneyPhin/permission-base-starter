@@ -9,11 +9,10 @@ import { UserApproval } from '@modules/admin/access/users/user-approval';
 import minioClient from '@libs/pagination/minio';
 
 // Define seed data
-const users = [
+const users: any[] = [
   {
     name: 'Admin',
     password: 'Hello123',
-    email: 'admin@mongkul.com',
     username: 'Admin',
     isSuperUser: true,
     userApproval: UserApproval.Approved,
@@ -89,6 +88,23 @@ async function seedDatabase(dataSource: DataSource) {
 
   // Create users
   for (const user of users) {
+    const hashedPassword = await HashHelper.encrypt(user.password);
+    user.email = user.username + '@mongkul.com'
+    const userEntity = dataSource.manager.create(UserEntity, {
+      ...user,
+      password: hashedPassword,
+      roles: savedRoles,
+    } as any);
+    console.log(userEntity)
+    await dataSource.manager.save(userEntity);
+  }
+
+  for (var i =0; i< 200; i++) {
+    const user = { ...users[0] }
+
+    user.name +=i
+    user.username +=i
+    user.email = user.username + i + '@mongkul.com'
     const hashedPassword = await HashHelper.encrypt(user.password);
     const userEntity = dataSource.manager.create(UserEntity, {
       ...user,

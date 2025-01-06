@@ -1,6 +1,7 @@
 import { Pagination, PaginationRequest, PaginationResponseDto } from "@libs/pagination";
 import { InternalServerErrorException, NotFoundException, RequestTimeoutException } from "@nestjs/common";
 import { TimeoutError } from "rxjs";
+import { SelectQueryBuilder } from "typeorm";
 
 export abstract class BaseCrudService {
     /**
@@ -103,13 +104,16 @@ export abstract class BaseCrudService {
           params,
         } = pagination;
 
-        const query = this.getListQuery()
+        let query = this.getListQuery() as SelectQueryBuilder<T>;
         this.applyQueryFilters(query, params)
-        
+
+        for (var key in order) {
+          query = query.addOrderBy(this.queryName + '.' + key);
+        }
+   
         return query
             .skip(skip)
             .take(take)
-            .orderBy(order)
             .getManyAndCount();
       }
   }

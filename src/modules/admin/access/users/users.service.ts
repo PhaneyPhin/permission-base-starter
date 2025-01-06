@@ -20,7 +20,7 @@ import { ImportUserDto } from './dtos/import-user.dto';
 export const USER_FILTER_FIELD =  ['username', 'name', 'email']
 @Injectable()
 export class UsersService extends BaseCrudService {
-  protected queryName: string = 'u';
+  protected queryName: string = 'users';
   protected FILTER_FIELDS = USER_FILTER_FIELD;
   protected SEARCH_FIELDS = ['username', 'name', 'email'];
 
@@ -45,7 +45,11 @@ export class UsersService extends BaseCrudService {
     const filters: { [key: string]: Filter<UserEntity> } = {
       expiredDate: (query, value) => {
         const [start, end] = value.split(',');
-        return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
+        return query.andWhere(`${this.queryName}.created_at BETWEEN :start AND :end`, { start, end });
+      },
+      createdAt: (query, value) => {
+        const [start, end] = value.split(' to ');
+        return query.andWhere(`${this.queryName}.created_at BETWEEN :start AND :end`, { start, end });
       },
       createdBy: (query, value) => {
         return query.where('uc.name ILIKE :createdBy', { createdBy: value })
@@ -57,10 +61,10 @@ export class UsersService extends BaseCrudService {
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.usersRepository.createQueryBuilder('u')
-      .leftJoinAndSelect('u.roles', 'r')
-      .leftJoinAndSelect('u.permissions', 'p')
-      .leftJoinAndSelect('u.createdBy', 'uc')
+    return this.usersRepository.createQueryBuilder(this.queryName)
+      .leftJoinAndSelect(`${this.queryName}.roles`, 'r')
+      .leftJoinAndSelect(`${this.queryName}.permissions`, 'p')
+      .leftJoinAndSelect(`${this.queryName}.createdBy`, 'uc')
       // .leftJoinAndSelect('u.warehouse', 'w')
   }
 

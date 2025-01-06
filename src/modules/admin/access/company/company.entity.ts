@@ -84,6 +84,7 @@ export class CompanyEntity extends BaseEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+  
   constructor(partial?: Partial<CompanyEntity>) {
     super();
     Object.assign(this, partial);

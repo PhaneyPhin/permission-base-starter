@@ -37,4 +37,7 @@ export class UserResponseDto {
 
   @ApiProperty()
   createdBy: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }

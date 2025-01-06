@@ -12,10 +12,12 @@ export class UserMapper {
     dto.id = entity.id;
     dto.username = entity.username;
     dto.name = entity.name;
+    dto.email = entity.email
+    dto.createdAt = entity.createdAt
     dto.status = entity.status;
     dto.isSuperUser = entity.isSuperUser;
-    dto.expiredAt = entity.expiredAt
-    dto.createdBy = entity.createdBy?.name;
+    dto.expiredAt = entity.expiredAt || new Date()
+    dto.createdBy = entity.createdBy?.name || 'System';
 
     if (entity.createdBy) {
     }

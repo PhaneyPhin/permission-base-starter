@@ -17,6 +17,7 @@ export const AppDataSource = new DataSource({
   database: configService.get<string>('TYPEORM_DATABASE', 'nestjs_sample'),
   entities: [join(__dirname, '/../modules/**/*.entity.{ts,js}')],
   migrations: [join(__dirname, '/migrations/admin/*.{ts,js}')],
+  logging: ['query'], // Enable query logging
   synchronize: false,
 });
 console.log( AppDataSource)
