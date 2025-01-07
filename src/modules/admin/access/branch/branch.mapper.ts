@@ -11,6 +11,7 @@ export class BranchMapper {
     const dto = new BranchResponseDto();
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
+    dto.code = entity.code;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
     dto.contactPerson = entity.contactPerson;
@@ -31,6 +32,7 @@ export class BranchMapper {
     const entity = new BranchEntity();
     // default fields?
     entity.active = true;
+    entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.contactPerson = dto.contactPerson;

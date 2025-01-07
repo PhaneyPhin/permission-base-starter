@@ -7,7 +7,13 @@ export class DepartmentEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
-  
+  @Column({
+    name: 'code',
+    type: 'varchar',
+    nullable: true,
+  })
+  code: string;
+
   @Column({
     name: 'name_en',
     type: 'varchar',

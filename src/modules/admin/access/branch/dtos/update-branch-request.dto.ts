@@ -6,6 +6,11 @@ export class UpdateBranchRequestDto extends CreateBranchRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
+  code: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
   nameEn: string;
 
   @ApiProperty()

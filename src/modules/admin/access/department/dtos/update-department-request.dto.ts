@@ -3,6 +3,12 @@ import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateDepartmentRequestDto extends CreateDepartmentRequestDto {
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  code: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)

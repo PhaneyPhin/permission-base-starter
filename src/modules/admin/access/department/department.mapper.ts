@@ -11,6 +11,7 @@ export class DepartmentMapper {
     const dto = new DepartmentResponseDto();
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
+    dto.code = entity.code;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
     dto.description = entity.description;

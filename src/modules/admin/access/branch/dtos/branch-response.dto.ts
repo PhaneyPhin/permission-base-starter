@@ -6,6 +6,9 @@ export class BranchResponseDto {
   id: number;
 
   @ApiProperty()
+  code: string;
+
+  @ApiProperty()
   nameEn: string;
 
   @ApiProperty()

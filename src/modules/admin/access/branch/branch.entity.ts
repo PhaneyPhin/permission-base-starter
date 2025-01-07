@@ -7,7 +7,11 @@ export class BranchEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
-  
+  @Column({
+    name: 'name_en',
+  })
+  code: string;
+
   @Column({
     name: 'name_en',
   })

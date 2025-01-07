@@ -19,11 +19,11 @@ import { BranchExistsException } from './branch-exist.exception'; // e.g., custo
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
 
-export const BRANCH_FILTER_FIELDS = ['nameEn', 'nameKh', 'contactPerson', 'phoneNumber', 'addressEn', 'addressKh', 'description', ];
+export const BRANCH_FILTER_FIELDS = ['code','nameEn', 'nameKh', 'contactPerson', 'phoneNumber', 'addressEn', 'addressKh', 'description', ];
 @Injectable()
 export class BranchService extends BaseCrudService {
   protected queryName: string = 'branch';
-  protected SEARCH_FIELDS = ['nameEn', 'nameKh', 'contactPerson', 'phoneNumber', 'addressEn', 'addressKh', 'description', ];
+  protected SEARCH_FIELDS = ['code','nameEn', 'nameKh', 'contactPerson', 'phoneNumber', 'addressEn', 'addressKh', 'description', ];
   protected FILTER_FIELDS = BRANCH_FILTER_FIELDS
 
   constructor(
@@ -61,7 +61,7 @@ export class BranchService extends BaseCrudService {
   }
 
   getAllBranch() {
-    return this.branchRepository.createQueryBuilder('branch').select(['id', 'name']).getRawMany()
+    return this.branchRepository.createQueryBuilder('branch').select(['id', 'nameEn']).getRawMany()
   }
 
   /**

@@ -16,6 +16,13 @@ export class BranchMigration1735788878288 implements MigrationInterface {
             isPrimary: true,
             isNullable: false,
           },
+
+          {
+            name: 'code',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
           
           {
             name: 'name_en',

@@ -16,7 +16,12 @@ export class DepartmentMigration1735886960101 implements MigrationInterface {
             isPrimary: true,
             isNullable: false,
           },
-          
+          {
+            name: 'code',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
           {
             name: 'name_en',
             type: 'varchar',

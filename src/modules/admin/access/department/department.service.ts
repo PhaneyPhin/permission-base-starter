@@ -19,11 +19,11 @@ import { DepartmentExistsException } from './department-exist.exception'; // e.g
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
 
-export const DEPARTMENT_FILTER_FIELDS = ['nameEn', 'nameKh', 'description', ];
+export const DEPARTMENT_FILTER_FIELDS = ['code','nameEn', 'nameKh', 'description', ];
 @Injectable()
 export class DepartmentService extends BaseCrudService {
   protected queryName: string = 'department';
-  protected SEARCH_FIELDS = ['nameEn', 'nameKh', 'description', ];
+  protected SEARCH_FIELDS = ['code','nameEn', 'nameKh', 'description', ];
   protected FILTER_FIELDS = DEPARTMENT_FILTER_FIELDS
 
   constructor(
