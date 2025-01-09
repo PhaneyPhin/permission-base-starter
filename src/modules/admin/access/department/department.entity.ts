@@ -2,59 +2,52 @@ import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
 
-@Entity({ schema: 'admin', name: 'branch' })
-export class BranchEntity extends BaseEntity {
+@Entity({ schema: 'admin', name: 'department' })
+export class DepartmentEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
   @Column({
-    name: 'name_en',
+    name: 'code',
+    type: 'varchar',
+    nullable: true,
   })
   code: string;
 
   @Column({
     name: 'name_en',
+    type: 'varchar',
+    nullable: true,
   })
   nameEn: string;
   
   @Column({
     name: 'name_kh',
+    type: 'varchar',
+    nullable: true,
   })
   nameKh: string;
   
   @Column({
-    name: 'contact_person',
-  })
-  contactPerson: string;
-  
-  @Column({
-    name: 'phone_number',
-  })
-  phoneNumber: string;
-  
-  @Column({
-    name: 'address_en',
-  })
-  addressEn: string;
-  
-  @Column({
-    name: 'address_kh',
-  })
-  addressKh: string;
-  
-  @Column({
     name: 'description',
+    type: 'varchar',
+    nullable: true,
   })
   description: string;
   
 
   @Column({
     name: 'active',
+    type: 'boolean',
+    nullable: false,
+    default: true,
   })
   active: boolean;
 
   @Column({
     name: 'created_by',
+    type: 'uuid',
+    nullable: true,
   })
   createdBy: string;
   
@@ -67,7 +60,7 @@ export class BranchEntity extends BaseEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
-  constructor(partial?: Partial<BranchEntity>) {
+  constructor(partial?: Partial<DepartmentEntity>) {
     super();
     Object.assign(this, partial);
   }

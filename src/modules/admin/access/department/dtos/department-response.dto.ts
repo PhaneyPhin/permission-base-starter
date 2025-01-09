@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
 
-export class BranchResponseDto {
+export class DepartmentResponseDto {
   @ApiProperty()
   id: number;
 
@@ -13,18 +13,6 @@ export class BranchResponseDto {
 
   @ApiProperty()
   nameKh: string;
-
-  @ApiProperty()
-  contactPerson: string;
-
-  @ApiProperty()
-  phoneNumber: string;
-
-  @ApiProperty()
-  addressEn: string;
-
-  @ApiProperty()
-  addressKh: string;
 
   @ApiProperty()
   description: string;
