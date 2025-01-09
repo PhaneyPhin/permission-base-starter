@@ -17,6 +17,7 @@ export class WarehouseMapper {
     dto.description = entity.description;
     dto.createdBy = entity.createdBy;
     dto.contactPhone = entity.contactPhone;  
+    dto.createdAt = entity.createdAt
     
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
@@ -39,6 +40,18 @@ export class WarehouseMapper {
     return entity;
   }
 
+  public static toSelectDto(warehouse: any) {
+    console.log({nameEn: warehouse.name_en,
+      nameKh: warehouse.name_kh,
+      branch: warehouse.branch,
+      id: warehouse.id})
+    return {
+      nameEn: warehouse.name_en,
+      nameKh: warehouse.name_kh,
+      branch: warehouse.branch,
+      id: warehouse.id
+    }
+  }
   public static toUpdateEntity(
     entity: WarehouseEntity,
     dto: UpdateWarehouseRequestDto,

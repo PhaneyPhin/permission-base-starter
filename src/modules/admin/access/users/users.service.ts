@@ -14,7 +14,7 @@ import { HashHelper } from '@helpers';
 import { TimeoutError } from 'rxjs';
 import { validate } from 'class-validator';
 import { UserEntity } from './user.entity';
-import { Filter } from 'typeorm';
+import { Filter, SelectQueryBuilder } from 'typeorm';
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { ImportUserDto } from './dtos/import-user.dto';
 export const USER_FILTER_FIELD =  ['username', 'name', 'email']
@@ -43,8 +43,11 @@ export class UsersService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<UserEntity> } = {
+      status: (query: SelectQueryBuilder<UserEntity>, value) => {
+        return query.andWhere(`${this.queryName}.status IN (:...status)`, { status: value.split(',') });
+      },
       expiredDate: (query, value) => {
-        const [start, end] = value.split(',');
+        const [start, end] = value.split(' to ');
         return query.andWhere(`${this.queryName}.created_at BETWEEN :start AND :end`, { start, end });
       },
       createdAt: (query, value) => {

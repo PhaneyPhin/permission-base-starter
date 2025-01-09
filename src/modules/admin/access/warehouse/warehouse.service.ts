@@ -61,8 +61,10 @@ export class WarehouseService extends BaseCrudService {
 
   }
 
-  getAllWarehouse() {
-    return this.warehouseRepository.createQueryBuilder('warehouse').select(['id', 'name_en', 'name_kh']).getRawMany()
+  async getAllWarehouse() {
+    return (await this.warehouseRepository.createQueryBuilder('warehouse')
+      .select(['id', 'name_en', 'name_kh','branch'])
+      .getRawMany()).map(WarehouseMapper.toSelectDto)
   }
 
   /**

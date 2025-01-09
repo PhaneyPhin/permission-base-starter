@@ -28,4 +28,7 @@ export class WarehouseResponseDto {
 
   @ApiProperty()
   createdByUser: UserResponseDto;
+
+  @ApiProperty()
+  createdAt: Date;
 }

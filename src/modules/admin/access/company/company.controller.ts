@@ -51,7 +51,7 @@ export class CompanyController {
     'admin.access.company.update',
   )
   @Get()
-  public getCompanys(@PaginationParams() pagination: PaginationRequest): Promise<PaginationResponseDto<CompanyResponseDto>> {
+  public getCompanys(@PaginationParams({ maxAllowedSize: 100 }) pagination: PaginationRequest): Promise<PaginationResponseDto<CompanyResponseDto>> {
     return this.companyService.list<CompanyEntity, CompanyResponseDto>(pagination);
   }
 

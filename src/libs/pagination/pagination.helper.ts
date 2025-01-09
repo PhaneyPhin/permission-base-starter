@@ -13,6 +13,7 @@ export class Pagination {
     const totalPages = Math.floor(totalRecords / limit) + (totalRecords % limit > 0 ? 1 : 0);
     const currentPage = +page > 0 ? +page : 1;
     const hasNext = currentPage <= totalPages - 1;
+    console.log(limit, totalRecords)
 
     return {
       totalPages: totalPages,

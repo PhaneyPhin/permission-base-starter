@@ -74,7 +74,6 @@ export abstract class BaseCrudService {
     public async list<T, U>(pagination: PaginationRequest): Promise<PaginationResponseDto<U>> {
         try {
           const [entities, total] = await this.getListAndCount<T>(pagination);
-    
           const dtos: U[] = await Promise.all(entities.map(this.getMapperResponseEntityFields()));
           return Pagination.of<U>(pagination, total, dtos);
         } catch (error) {
@@ -103,14 +102,14 @@ export abstract class BaseCrudService {
           order,
           params,
         } = pagination;
-
+        console.log(pagination)
         let query = this.getListQuery() as SelectQueryBuilder<T>;
         this.applyQueryFilters(query, params)
 
         for (var key in order) {
-          query = query.addOrderBy(this.queryName + '.' + key);
+          query = query.addOrderBy(this.queryName + '.' + key, order[key]);
         }
-   
+       
         return query
             .skip(skip)
             .take(take)

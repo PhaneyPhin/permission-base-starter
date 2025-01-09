@@ -62,8 +62,8 @@ export class WarehouseController {
     'admin.access.warehouse.update',
   )
   @Get('/select-options')
-  public getAllWarehouseForSelect(): Promise<{ id: string, name: string }[]> {
-    return this.warehouseService.getAllWarehouse();
+  public async  getAllWarehouseForSelect(): Promise<{ id: string, nameEn: string, nameKh: string, branch: string }[]> {
+    return await this.warehouseService.getAllWarehouse();
   }
 
   @ApiOperation({ description: 'Get warehouse by id' })

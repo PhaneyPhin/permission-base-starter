@@ -38,7 +38,6 @@ export const PaginationParams = createParamDecorator(
       page = Math.floor(+skip / limit);
     }
 
-    limit = +limit < +maxAllowedSize ? limit : maxAllowedSize;
     return Object.assign(data ? data : {}, {
       skip,
       page,

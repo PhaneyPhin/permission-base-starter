@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsEmail, isEnum, IsEnum, IsInt, IsNotEmpty, Length, Matches, MaxLength } from 'class-validator';
+import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsDate, IsEmail, isEnum, IsEnum, IsInt, IsNotEmpty, Length, Matches, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../user.entity';
 import { UserApproval } from '../user-approval';
@@ -38,6 +38,11 @@ export class ImportUserDto {
   password: string;
 
   createdBy: UserEntity
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDate()
+  expiredDate: Date
 
   @ApiProperty({
     enum: UserApproval
