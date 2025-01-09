@@ -90,7 +90,7 @@ export class <%= classify(name) %>Service extends BaseCrudService {
       return <%= classify(name) %>Mapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new <%= classify(name) %>ExistsException(dto.<%= fields[0] %>);
+        throw new <%= classify(name) %>ExistsException(dto.<%= camelize(fields[0]) %>);
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -116,7 +116,7 @@ export class <%= classify(name) %>Service extends BaseCrudService {
       return <%= classify(name) %>Mapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new <%= classify(name) %>ExistsException(dto.<%= fields[0] %>);
+        throw new <%= classify(name) %>ExistsException(dto.<%= camelize(fields[0]) %>);
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
