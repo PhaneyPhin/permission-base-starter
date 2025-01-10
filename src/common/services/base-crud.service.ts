@@ -61,7 +61,9 @@ export abstract class BaseCrudService {
 
         for (const [key, value] of Object.entries(params)) {
           if (value && filters && filters[key]) {
-            filters[key](query, value);
+            if (! (Array.isArray(filters[key]) && filters[key].length == 0)) {
+              filters[key](query, value);
+            }
           }
         }
     }
