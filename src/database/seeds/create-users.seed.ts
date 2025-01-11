@@ -93,7 +93,6 @@ async function seedDatabase(dataSource: DataSource) {
       name: roleName,
       permissions: rolePermissions[roleName].map((p) => permissionMap[p.slug]),
     }),
-    
   );
   const savedRoles = await dataSource.manager.save(roleEntities);
 
