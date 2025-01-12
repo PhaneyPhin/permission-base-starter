@@ -99,12 +99,12 @@ import { BaseCrudService } from './base-crud.service';
 @Injectable()
 export class UsersService extends BaseCrudService {
   protected queryName = 'u';
-  protected FILTER_FIELDS = ['createdBy', 'expiredDate'];
+  protected FILTER_FIELDS = ['createdBy', 'expiredAt'];
   protected SEARCH_FIELDS = ['username', 'email'];
 
   protected getFilters() {
     const filters = {
-      expiredDate: (query, value) => {
+      expiredAt: (query, value) => {
         const [start, end] = value.split(',');
         return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
       },
@@ -143,7 +143,7 @@ export class UsersService extends BaseCrudService {
 ```typescript
 protected getFilters() {
   const filters = {
-    expiredDate: (query, value) => {
+    expiredAt: (query, value) => {
       const [start, end] = value.split(',');
       return query.andWhere('u.created_at BETWEEN :start AND :end', { start, end });
     },

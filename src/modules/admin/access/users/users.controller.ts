@@ -18,13 +18,13 @@ import { Response } from 'express';
   version: '1',
 })
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   @ApiOperation({ description: 'Get a paginated user list' })
   @ApiPaginatedResponse(UserResponseDto)
-  @ApiQuery({ name: 'search',type: 'string', required: false, example: 'admin',})
-  @ApiQuery({ name: 'expiredDate',type: 'string', required: false, example: '', description: '2024-10-10,2024-10-11'})
-  @ApiQuery({ name: 'createdBy',type: 'string', required: false, example: 'admin',})
+  @ApiQuery({ name: 'search', type: 'string', required: false, example: 'admin', })
+  @ApiQuery({ name: 'expiredAt', type: 'string', required: false, example: '', description: '2024-10-10,2024-10-11' })
+  @ApiQuery({ name: 'createdBy', type: 'string', required: false, example: 'admin', })
   @ApiFields(USER_FILTER_FIELD)
   @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
   @Get()
@@ -32,7 +32,7 @@ export class UsersController {
     return this.usersService.list<UserEntity, UserResponseDto>(pagination);
   }
 
-  @ApiOperation({ description: 'Get all user list form select form' })  
+  @ApiOperation({ description: 'Get all user list form select form' })
   @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')
   @Get('/select-options')
   public getAllUserForSelect(): Promise<{ id: string, name: string }[]> {
@@ -88,31 +88,31 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Excel file containing user data' })
   @Permissions('admin.access.users.export')
   @Get('/export')
-  async exportUsers(@Res() res: Response) { 
-      const fileBuffer = await this.usersService.exportToExcel();
-      // Set headers for the Excel file download
-      res.setHeader('Content-Disposition', 'attachment; filename=users.xlsx');
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  async exportUsers(@Res() res: Response) {
+    const fileBuffer = await this.usersService.exportToExcel();
+    // Set headers for the Excel file download
+    res.setHeader('Content-Disposition', 'attachment; filename=users.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-      // Send the file buffer as the response
-      res.send(fileBuffer);
-   }
+    // Send the file buffer as the response
+    res.send(fileBuffer);
+  }
 
-   @ApiOperation({ summary: 'Import users from an Excel file' })
-   @ApiConsumes('multipart/form-data')
-   @ApiResponse({ status: 201, description: 'Users imported successfully' })
-   @ApiBody({
-     description: 'Excel file for importing users',
-     schema: {
-       type: 'object',
-       properties: {
-         file: {
-           type: 'string',
-           format: 'binary',
-         },
-       },
-     },
-   })
+  @ApiOperation({ summary: 'Import users from an Excel file' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Users imported successfully' })
+  @ApiBody({
+    description: 'Excel file for importing users',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @Permissions('admin.access.users.import')
   @UseInterceptors(FileInterceptor('file'))
   @Post('/import')
@@ -120,7 +120,7 @@ export class UsersController {
     const createdUsernames = await this.usersService.importFromExcel(file.buffer, currentUser);
     return { message: 'Users imported successfully', createdUsernames };
   }
-  
+
   @ApiOperation({ description: 'Get user by id' })
   @ApiGlobalResponse(UserResponseDto)
   @Permissions('admin.access.users.read', 'admin.access.users.create', 'admin.access.users.update')

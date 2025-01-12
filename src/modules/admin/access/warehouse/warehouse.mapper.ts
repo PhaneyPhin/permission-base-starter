@@ -16,9 +16,9 @@ export class WarehouseMapper {
     dto.nameKh = entity.nameKh;
     dto.description = entity.description;
     dto.createdBy = entity.createdBy;
-    dto.contactPhone = entity.contactPhone;  
+    dto.contactPhone = entity.contactPhone;
     dto.createdAt = entity.createdAt
-    
+
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
@@ -41,10 +41,6 @@ export class WarehouseMapper {
   }
 
   public static toSelectDto(warehouse: any) {
-    console.log({nameEn: warehouse.name_en,
-      nameKh: warehouse.name_kh,
-      branch: warehouse.branch,
-      id: warehouse.id})
     return {
       nameEn: warehouse.name_en,
       nameKh: warehouse.name_kh,
@@ -61,7 +57,7 @@ export class WarehouseMapper {
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
     entity.contactPhone = dto.contactPhone;
-    
+
     return entity;
   }
 }

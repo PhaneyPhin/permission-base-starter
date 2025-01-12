@@ -104,7 +104,6 @@ export abstract class BaseCrudService {
           order,
           params,
         } = pagination;
-        console.log(pagination)
         let query = this.getListQuery() as SelectQueryBuilder<T>;
         this.applyQueryFilters(query, params)
 

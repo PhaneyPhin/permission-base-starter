@@ -55,8 +55,8 @@ export class CreateUserRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  expiredDate: Date
-  
+  expiredAt: Date
+
   @ApiProperty({
     enum: UserApproval
   })

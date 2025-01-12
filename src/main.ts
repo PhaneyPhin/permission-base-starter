@@ -22,16 +22,15 @@ const bootstrap = async () => {
     new ValidationPipe({
       transform: true, // Automatically transform payloads to DTOs
       whitelist: true, // Automatically strip properties that do not have decorators
-      forbidNonWhitelisted: true, // Throw an error if non-whitelisted properties are provided
-      exceptionFactory: (errors: ValidationError[]) =>
-        { 
-          const formattedErrors = errors.map((error) => ({
-            property: error.property,
-            constraints: error.constraints,
-            message: Object.values(error.constraints || {}).join(', '),
-          }))
-          throw new UnprocessableEntityException(formattedErrors);
-        },        
+      forbidNonWhitelisted: false, // Throw an error if non-whitelisted properties are provided
+      exceptionFactory: (errors: ValidationError[]) => {
+        const formattedErrors = errors.map((error) => ({
+          property: error.property,
+          constraints: error.constraints,
+          message: Object.values(error.constraints || {}).join(', '),
+        }))
+        throw new UnprocessableEntityException(formattedErrors);
+      },
     }),
   );
 

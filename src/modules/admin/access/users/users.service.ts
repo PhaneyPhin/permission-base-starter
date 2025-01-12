@@ -17,7 +17,7 @@ import { UserEntity } from './user.entity';
 import { Filter, SelectQueryBuilder } from 'typeorm';
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { ImportUserDto } from './dtos/import-user.dto';
-export const USER_FILTER_FIELD =  ['username', 'name', 'email']
+export const USER_FILTER_FIELD = ['username', 'name', 'email']
 @Injectable()
 export class UsersService extends BaseCrudService {
   protected queryName: string = 'users';
@@ -30,12 +30,12 @@ export class UsersService extends BaseCrudService {
   ) {
     super()
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return UserMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return UserMapper.toDto;
   }
 
   /**
@@ -46,7 +46,7 @@ export class UsersService extends BaseCrudService {
       status: (query: SelectQueryBuilder<UserEntity>, value) => {
         return query.andWhere(`${this.queryName}.status IN (:...status)`, { status: value.split(',') });
       },
-      expiredDate: (query, value) => {
+      expiredAt: (query, value) => {
         const [start, end] = value.split(' to ');
         return query.andWhere(`${this.queryName}.created_at BETWEEN :start AND :end`, { start, end });
       },
@@ -68,7 +68,7 @@ export class UsersService extends BaseCrudService {
       .leftJoinAndSelect(`${this.queryName}.roles`, 'r')
       .leftJoinAndSelect(`${this.queryName}.permissions`, 'p')
       .leftJoinAndSelect(`${this.queryName}.createdBy`, 'uc')
-      // .leftJoinAndSelect('u.warehouse', 'w')
+    // .leftJoinAndSelect('u.warehouse', 'w')
   }
 
   getAllUser() {
@@ -273,7 +273,7 @@ export class UsersService extends BaseCrudService {
         throw error;
       }
       console.error('Error importing users:', error);
-  
+
       throw new BadRequestException('Failed to import users from Excel');
     }
   }

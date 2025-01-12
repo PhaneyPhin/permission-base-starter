@@ -42,7 +42,7 @@ export class ImportUserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsDate()
-  expiredDate: Date
+  expiredAt: Date
 
   @ApiProperty({
     enum: UserApproval

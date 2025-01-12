@@ -9,6 +9,7 @@ import { UserEntity } from './user.entity';
 export class UserMapper {
   public static async toDto(entity: UserEntity): Promise<UserResponseDto> {
     const dto = new UserResponseDto();
+    console.log('entity', entity.expiredAt)
     dto.id = entity.id;
     dto.username = entity.username;
     dto.name = entity.name;
@@ -27,22 +28,22 @@ export class UserMapper {
     return dto;
   }
 
-  public static async toExcelDto(entity: UserEntity) : Promise<any> {
-      const dto = new UserExcelDto();
-      dto.id = entity.id;
-      dto.username = entity.username;
-      dto.name = entity.name;
-      dto.status = entity.status;
-      dto.userApproval = entity.userApproval
-      dto.expiredAt = entity.expiredAt
-      dto.createdByName = entity.createdBy?.name;
+  public static async toExcelDto(entity: UserEntity): Promise<any> {
+    const dto = new UserExcelDto();
+    dto.id = entity.id;
+    dto.username = entity.username;
+    dto.name = entity.name;
+    dto.status = entity.status;
+    dto.userApproval = entity.userApproval
+    dto.expiredAt = entity.expiredAt
+    dto.createdByName = entity.createdBy?.name;
 
-      return dto
+    return dto
   }
 
   public static async toDtoWithRelations(entity: UserEntity): Promise<UserResponseDto> {
     const dto = new UserResponseDto();
-
+    console.log('entity', entity)
     dto.id = entity.id;
     dto.username = entity.username;
     dto.name = entity.name;
@@ -67,8 +68,9 @@ export class UserMapper {
     entity.password = dto.password;
     entity.email = dto.email;
     entity.createdBy = dto.createdBy;
+    entity.expiredAt = dto.expiredAt
     // entity.warehouse = dto.warehouse
-    
+
     entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
     entity.isSuperUser = false;
     return entity;
@@ -81,6 +83,8 @@ export class UserMapper {
     entity.status = dto.status
     entity.email = dto.email;
     entity.createdBy = dto.createdBy;
+    entity.expiredAt = dto.expiredAt
+
     entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
     return entity;
   }
