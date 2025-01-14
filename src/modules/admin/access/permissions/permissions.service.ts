@@ -28,13 +28,32 @@ export class PermissionsService {
       skip,
       limit: take,
       order,
-      params: { search },
+      params: { search, slug, description },
     } = pagination;
-    const query = this.permissionsRepository.createQueryBuilder().skip(skip).take(take).orderBy(order);
+    const orderBy = {}
+    for (var key in order) {
+      orderBy['p.' + key] = order[key]
+    }
+    const query = this.permissionsRepository.createQueryBuilder('p')
+      .skip(skip)
+      .take(take)
+      .orderBy(orderBy);
 
     if (search) {
-      query.where('description ILIKE :search', {
+      query.where('description ILIKE :search or slug ILIKE :search', {
         search: `%${search}%`,
+      });
+    }
+
+    if (slug) {
+      query.where('slug ILIKE :search', {
+        slug: `%${slug}%`,
+      });
+    }
+
+    if (description) {
+      query.where('description ILIKE :search', {
+        slug: `%${description}%`,
       });
     }
 
@@ -42,8 +61,9 @@ export class PermissionsService {
   }
 
   public getAllPermissions() : Promise<{ id: number, name: string }[]> {
-     return this.permissionsRepository.createQueryBuilder('p').select(['id', 'name']).getRawMany()
+     return this.permissionsRepository.createQueryBuilder('p').select(['id', 'slug', 'description']).getRawMany()
   }
+  
   /**
    * Get a paginated permission list
    * @param pagination {PaginationRequest}

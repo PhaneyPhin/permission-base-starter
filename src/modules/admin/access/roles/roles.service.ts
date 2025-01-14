@@ -21,7 +21,9 @@ export class RolesService {
    * @param pagination {PaginationRequest}
    * @returns {Promise<PaginationResponseDto<RoleResponseDto>>}
    */
-  public async getRoles(pagination: PaginationRequest): Promise<PaginationResponseDto<RoleResponseDto>> {
+  public async getRoles(
+    pagination: PaginationRequest,
+  ): Promise<PaginationResponseDto<RoleResponseDto>> {
     try {
       const [roleEntities, totalRoles] = await this.getRolesAndCount(pagination);
 
@@ -134,18 +136,32 @@ export class RolesService {
       skip,
       limit: take,
       order,
-      params: { search },
+      params: { search, name },
     } = pagination;
-    const query = this.rolesRepository.createQueryBuilder('r')
-      .innerJoinAndSelect('r.permissions', 'p')
-      .skip(skip)
-      .take(take)
-      .orderBy(order);
+    try {
+      const orderBy = {}
+      for (var key in order) {
+        orderBy['r.' + key] = order[key]
+      }
+      const query = this.rolesRepository.createQueryBuilder('r')
+        .innerJoinAndSelect('r.permissions', 'p')
+        .skip(skip)
+        .take(take)
+        .orderBy(orderBy)
 
-    if (search) {
-      query.where('name ILIKE :search', { search: `%${search}%` });
+      // .orderBy({[`r.${order.orderBy}`]: order.orderDirection });
+      if (name) {
+        query.where('r.name ILIKE :search', { search: `%${name}%` });
+      }
+
+      if (search) {
+        query.where('r.name ILIKE :search', { search: `%${search}%` });
+      }
+
+    return await query.getManyAndCount();
+    } catch (e) {
+      console.log(e)
+      throw e;
     }
-
-    return query.getManyAndCount();
   }
 }

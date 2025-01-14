@@ -52,7 +52,7 @@ export class PermissionsController {
     'admin.access.roles.create',
     'admin.access.roles.update',
   )
-  @Get('/selection-options')
+  @Get('/select-options')
   public getAllPermissions(): Promise<{ id: number, name: string }[]> {
     return this.permissionsService.getAllPermissions();
   }
