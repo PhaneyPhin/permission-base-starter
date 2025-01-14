@@ -1,4 +1,4 @@
-import { ValidationPipe, ParseIntPipe, Controller, UseGuards, Param, Body, Get, Post, Put } from '@nestjs/common';
+import { ValidationPipe, ParseIntPipe, Controller, UseGuards, Param, Body, Get, Post, Put, Delete } from '@nestjs/common';
 import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UpdateRoleRequestDto, CreateRoleRequestDto, RoleResponseDto } from './dtos';
@@ -60,6 +60,18 @@ export class RolesController {
   @Permissions('admin.access.roles.update')
   @Put('/:id')
   public updateRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(ValidationPipe) roleDto: UpdateRoleRequestDto,
+  ): Promise<RoleResponseDto> {
+    return this.rolesService.updateRole(id, roleDto);
+  }
+
+  @ApiOperation({ description: 'Delete role by id' })
+  @ApiGlobalResponse(RoleResponseDto)
+  @ApiConflictResponse({ description: 'Role already exists' })
+  @Permissions('admin.access.roles.delete')
+  @Delete('/:id')
+  public delete(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) roleDto: UpdateRoleRequestDto,
   ): Promise<RoleResponseDto> {
