@@ -1,6 +1,7 @@
 import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
+import { BranchEntity } from '../branch/branch.entity';
 
 @Entity({ schema: 'admin', name: 'warehouse' })
 export class WarehouseEntity extends BaseEntity {
@@ -9,11 +10,20 @@ export class WarehouseEntity extends BaseEntity {
 
   
   @Column({
-    name: 'branch',
+    name: 'branch_id',
     type: 'varchar',
     nullable: true,
   })
-  branch: string;
+  branch_id: number;
+  
+  @ManyToOne(() => BranchEntity, { nullable: true, eager: true })
+  @JoinColumn({ name: 'branch_id' })
+  branch: BranchEntity;
+
+  @Column({
+    name: 'code',
+  })
+  code: string;
   
   @Column({
     name: 'name_en',
@@ -46,13 +56,6 @@ export class WarehouseEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: 'created_by' })
   createdByUser: UserEntity;
-
-  @Column({
-    name: 'contact_phone',
-    type: 'varchar',
-    nullable: true,
-  })
-  contactPhone: string;
   
 
   @Column({

@@ -89,6 +89,7 @@ export class DepartmentService extends BaseCrudService {
       entity = await this.departmentRepository.save(entity);
       return DepartmentMapper.toDto(entity);
     } catch (error) {
+      console.log(error)
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new DepartmentExistsException(dto.nameEn);
       }

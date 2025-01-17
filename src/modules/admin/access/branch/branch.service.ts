@@ -61,7 +61,10 @@ export class BranchService extends BaseCrudService {
   }
 
   getAllBranch() {
-    return this.branchRepository.createQueryBuilder('branch').select(['id', 'nameEn']).getRawMany()
+    return this.branchRepository
+      .createQueryBuilder('branch')
+      .select(['branch.nameEn', 'branch.id'])
+      .getMany()
   }
 
   /**
@@ -89,6 +92,7 @@ export class BranchService extends BaseCrudService {
       entity = await this.branchRepository.save(entity);
       return BranchMapper.toDto(entity);
     } catch (error) {
+      console.log(error)
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new BranchExistsException(dto.nameEn);
       }

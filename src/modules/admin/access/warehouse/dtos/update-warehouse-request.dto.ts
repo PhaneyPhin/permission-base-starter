@@ -5,8 +5,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateWarehouseRequestDto extends CreateWarehouseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
-  @MaxLength(160)
-  branch: string;
+  branch_id: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(50)
+  code: string;
 
   @ApiProperty()
   @IsNotEmpty()

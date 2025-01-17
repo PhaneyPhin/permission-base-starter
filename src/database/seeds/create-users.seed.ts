@@ -10,6 +10,7 @@ import { UserApproval } from '@modules/admin/access/users/user-approval';
 import minioClient from '@libs/pagination/minio';
 import { WarehouseEntity } from '@modules/admin/access/warehouse/warehouse.entity';
 import { DepartmentEntity } from '@modules/admin/access/department/department.entity';
+import { BranchEntity } from '@modules/admin/access/branch/branch.entity';
 
 // Define seed data
 const baseUsers: any[] = [
@@ -116,7 +117,7 @@ async function seedDatabase(dataSource: DataSource) {
   await dataSource.manager.save(firstUserEntity);
 
   // Create 200 additional users with Faker data
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 20; i++) {
     const fakeName = faker.person.fullName();
     const fakeUsername = 'admin' + i;
     const fakeEmail = faker.internet.email();
@@ -140,16 +141,29 @@ async function seedDatabase(dataSource: DataSource) {
   }
 
   const user = await dataSource.manager.findOneByOrFail(UserEntity, { username: 'admin1'})
-
+  const branch = await dataSource.manager.save(BranchEntity, {
+    nameEn: faker.person.fullName(),
+    nameKh: faker.person.fullName(),
+    active: true,
+    code: '00001',
+    createdBy: user.id,
+    contactPerson: faker.person.fullName(),
+    phoneNumber: faker.phone.number(),
+    addressEn: faker.person.jobArea(),
+    addressKh: faker.person.jobArea(),
+    description: faker.person.jobDescriptor()
+  })
+  console.log('branch==>', branch)
   for (var index = 0; index< 200; index ++) {
+
       const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
         active: true,
-        branch: faker.company.name(),
+        code: '00000' + (index + 1),
+        branch_id: branch.id,
         createdBy: user.id,
         description: faker.person.jobDescriptor(),
-        contactPhone: faker.phone.number(),
         nameEn: faker.person.fullName(),
-        nameKh: faker.person.fullName(),
+        nameKh: faker.person.fullName()
       })
 
 
@@ -185,7 +199,7 @@ async function bootstrap() {
     username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
     password: configService.get<string>('TYPEORM_PASSWORD', 'password'),
     database: configService.get<string>('TYPEORM_DATABASE', 'nestjs_sample'),
-    entities: [UserEntity, RoleEntity, PermissionEntity, WarehouseEntity, DepartmentEntity],
+    entities: [require('path').join(__dirname, '../../modules/**/*.entity.{ts,js}')],
     synchronize: false,
     logging: configService.get<boolean>('TYPEORM_LOGGING', false),
   });

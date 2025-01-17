@@ -4,8 +4,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateWarehouseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
-  @MaxLength(160)
-  branch: string;
+  branch_id: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(50)
+  code: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -24,10 +28,10 @@ export class CreateWarehouseRequestDto {
 
   createdBy: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  contactPhone: string;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // @MaxLength(160)
+  // contactPhone: string;
 
   
 }

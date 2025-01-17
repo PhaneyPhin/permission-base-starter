@@ -48,7 +48,7 @@ export class BranchMigration1735788878288 implements MigrationInterface {
           {
             name: 'phone_number',
             type: 'varchar',
-            length: '15',
+            length: '20',
             isNullable: false,
           },
           

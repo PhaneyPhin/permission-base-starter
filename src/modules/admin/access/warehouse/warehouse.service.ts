@@ -58,6 +58,7 @@ export class WarehouseService extends BaseCrudService {
   protected getListQuery() {
     return this.warehouseRepository.createQueryBuilder('warehouse')
       .leftJoinAndSelect('warehouse.createdByUser', 'uc')
+      .leftJoinAndSelect('warehouse.branch', 'b')
 
   }
 
@@ -92,8 +93,9 @@ export class WarehouseService extends BaseCrudService {
       entity = await this.warehouseRepository.save(entity);
       return WarehouseMapper.toDto(entity);
     } catch (error) {
+      console.log(error)
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.branch);
+        throw new WarehouseExistsException(dto.branch_id + '');
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -119,7 +121,7 @@ export class WarehouseService extends BaseCrudService {
       return WarehouseMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.branch);
+        throw new WarehouseExistsException(dto.branch_id + '');
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();

@@ -5,19 +5,24 @@ import {
   WarehouseResponseDto,
 } from './dtos';
 import { UserMapper } from '../users/users.mapper';
+import { BranchMapper } from '../branch/branch.mapper';
 
 export class WarehouseMapper {
   public static async toDto(entity: WarehouseEntity): Promise<WarehouseResponseDto> {
     const dto = new WarehouseResponseDto();
     dto.id = entity.id;
+    dto.code = entity.code;
     dto.active = (entity as any).active; // or your default fields
-    dto.branch = entity.branch;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
     dto.description = entity.description;
     dto.createdBy = entity.createdBy;
-    dto.contactPhone = entity.contactPhone;
+    dto.code = entity.code;
     dto.createdAt = entity.createdAt
+
+    if (entity.branch) {
+      dto.branch = await BranchMapper.toDto(entity.branch);
+    }
 
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
@@ -30,12 +35,13 @@ export class WarehouseMapper {
     const entity = new WarehouseEntity();
     // default fields?
     entity.active = true;
-    entity.branch = dto.branch;
+    entity.code = dto.code;
+    entity.branch_id = dto.branch_id;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
     entity.createdBy = dto.createdBy;
-    entity.contactPhone = dto.contactPhone;
+    // entity.contactPhone = dto.contactPhone;
 
     return entity;
   }
@@ -52,11 +58,12 @@ export class WarehouseMapper {
     entity: WarehouseEntity,
     dto: UpdateWarehouseRequestDto,
   ): WarehouseEntity {
-    entity.branch = dto.branch;
+    entity.branch_id = dto.branch_id;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
-    entity.contactPhone = dto.contactPhone;
+    entity.code = dto.code;
+    // entity.contactPhone = dto.contactPhone;
 
     return entity;
   }

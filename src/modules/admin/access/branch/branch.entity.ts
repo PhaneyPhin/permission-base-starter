@@ -8,7 +8,7 @@ export class BranchEntity extends BaseEntity {
   id: number;
 
   @Column({
-    name: 'name_en',
+    name: 'code',
   })
   code: string;
 

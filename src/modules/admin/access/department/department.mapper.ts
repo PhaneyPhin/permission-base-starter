@@ -28,6 +28,7 @@ export class DepartmentMapper {
     const entity = new DepartmentEntity();
     // default fields?
     entity.active = true;
+    entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
@@ -42,6 +43,7 @@ export class DepartmentMapper {
   ): DepartmentEntity {
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
+    entity.code = dto.code;
     entity.description = dto.description;
     
 

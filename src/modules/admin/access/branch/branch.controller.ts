@@ -62,7 +62,7 @@ export class BranchController {
     'admin.access.branch.update',
   )
   @Get('/select-options')
-  public getAllBranchForSelect(): Promise<{ id: string, name: string }[]> {
+  public getAllBranchForSelect(): Promise<BranchEntity[]> {
     return this.branchService.getAllBranch();
   }
 

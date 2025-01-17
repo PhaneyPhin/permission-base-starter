@@ -17,12 +17,16 @@ export class WarehouseMigration1735714421616 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'branch',
-            type: 'varchar',
-            length: '160',
+            name: 'branch_id',
+            type: 'integer',
             isNullable: false,
           },
-          
+          {
+            name: 'code',
+            type: 'varchar',
+            length: '100',
+            isNullable: false,
+          },
           {
             name: 'name_en',
             type: 'varchar',
@@ -50,13 +54,6 @@ export class WarehouseMigration1735714421616 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'contact_phone',
-            type: 'varchar',
-            length: '160',
-            isNullable: false,
-          },
-          
-          {
             name: 'active',
             type: 'boolean',
             isNullable: false,
@@ -78,6 +75,16 @@ export class WarehouseMigration1735714421616 implements MigrationInterface {
           onDelete: 'SET NULL',
         }),
       );
+
+      // await queryRunner.createForeignKey(
+      //   tableName,
+      //   new TableForeignKey({
+      //     columnNames: ['branch_id'],
+      //     referencedColumnNames: ['id'],
+      //     referencedTableName: 'admin.branch',
+      //     onDelete: 'SET NULL',
+      //   }),
+      // );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
