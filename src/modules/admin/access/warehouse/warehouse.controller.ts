@@ -62,7 +62,7 @@ export class WarehouseController {
     'admin.access.warehouse.update',
   )
   @Get('/select-options')
-  public async  getAllWarehouseForSelect(): Promise<{ id: string, nameEn: string, nameKh: string, branch: string }[]> {
+  public async  getAllWarehouseForSelect() {
     return await this.warehouseService.getAllWarehouse();
   }
 

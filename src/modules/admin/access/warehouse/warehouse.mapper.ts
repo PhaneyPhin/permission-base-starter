@@ -46,11 +46,12 @@ export class WarehouseMapper {
     return entity;
   }
 
-  public static toSelectDto(warehouse: any) {
+  public static toSelectDto(warehouse: WarehouseEntity) {
     return {
-      nameEn: warehouse.name_en,
-      nameKh: warehouse.name_kh,
-      branch: warehouse.branch,
+      nameEn: warehouse.nameEn,
+      nameKh: warehouse.nameKh,
+      branchEn: warehouse.branch.nameEn,
+      branchKh: warehouse.branch?.nameKh,
       id: warehouse.id
     }
   }
