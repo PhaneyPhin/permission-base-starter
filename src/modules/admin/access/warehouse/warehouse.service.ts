@@ -48,6 +48,9 @@ export class WarehouseService extends BaseCrudService {
       createdAt: (query, value) => {
         const [start, end] = value.split(',');
         return query.andWhere('warehouse.created_at BETWEEN :start AND :end', { start, end });
+      },
+      branch: (query, value) => {
+        return query.andWhere('b.name_en ILIKE %branch% or b.name_kh ILIKE %branch%', { branch: value })
       }
     };
 
