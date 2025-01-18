@@ -1,4 +1,4 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateWarehouseRequestDto {
@@ -22,7 +22,7 @@ export class CreateWarehouseRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   description: string;
 

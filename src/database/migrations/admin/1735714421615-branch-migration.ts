@@ -42,14 +42,14 @@ export class BranchMigration1735788878288 implements MigrationInterface {
             name: 'contact_person',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
           },
           
           {
             name: 'phone_number',
             type: 'varchar',
             length: '20',
-            isNullable: false,
+            isNullable: true,
           },
           
           {
@@ -67,7 +67,7 @@ export class BranchMigration1735788878288 implements MigrationInterface {
           {
             name: 'description',
             type: 'text',
-            isNullable: false,
+            isNullable: true,
           },
           
           {

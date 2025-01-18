@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsPhoneNumber, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPhoneNumber, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBranchRequestDto {
@@ -18,12 +18,12 @@ export class CreateBranchRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   contactPerson: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   @IsPhoneNumber("KH")
   phoneNumber: string;
@@ -39,7 +39,7 @@ export class CreateBranchRequestDto {
   addressKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   description: string;
 

@@ -1,5 +1,5 @@
 import { CreateCompanyRequestDto } from './create-company-request.dto';
-import { IsBoolean, IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {
@@ -14,13 +14,13 @@ export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   @IsEmail()
   email: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   website: string;
 
@@ -35,7 +35,7 @@ export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {
   addressKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   logo: string;
 

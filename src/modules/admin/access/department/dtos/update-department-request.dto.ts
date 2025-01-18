@@ -1,5 +1,5 @@
 import { CreateDepartmentRequestDto } from './create-department-request.dto';
-import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateDepartmentRequestDto extends CreateDepartmentRequestDto {
@@ -20,7 +20,7 @@ export class UpdateDepartmentRequestDto extends CreateDepartmentRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   description: string;
 

@@ -40,7 +40,7 @@ export class DepartmentMigration1735886960102 implements MigrationInterface {
             name: 'description',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
           },
           
           {

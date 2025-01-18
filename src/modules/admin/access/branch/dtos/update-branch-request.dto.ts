@@ -1,5 +1,5 @@
 import { CreateBranchRequestDto } from './create-branch-request.dto';
-import { IsBoolean, IsNotEmpty, IsPhoneNumber, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsPhoneNumber, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateBranchRequestDto extends CreateBranchRequestDto {
@@ -19,12 +19,12 @@ export class UpdateBranchRequestDto extends CreateBranchRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   contactPerson: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   @IsPhoneNumber('KH')
   phoneNumber: string;
@@ -40,7 +40,7 @@ export class UpdateBranchRequestDto extends CreateBranchRequestDto {
   addressKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   description: string;
 

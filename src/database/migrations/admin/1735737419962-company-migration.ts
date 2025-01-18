@@ -35,14 +35,14 @@ export class CompanyMigration1735737419962 implements MigrationInterface {
             name: 'email',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
           },
           
           {
             name: 'website',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
           },
           
           {
@@ -63,7 +63,7 @@ export class CompanyMigration1735737419962 implements MigrationInterface {
             name: 'logo',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
           }, 
           {
             name: 'created_by',
