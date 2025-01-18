@@ -68,7 +68,7 @@ export class DimensionService extends BaseCrudService {
    */
   public async getDimensionById(id: number): Promise<DimensionResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where('dimension.id = :id', { id })
       .getOne();
 
     if (!entity) {

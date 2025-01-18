@@ -69,7 +69,7 @@ export class AnalysisCodeService extends BaseCrudService {
    */
   public async getAnalysisCodeById(id: number): Promise<AnalysisCodeResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where('analysisCode.id = :id', { id })
       .getOne();
 
     if (!entity) {

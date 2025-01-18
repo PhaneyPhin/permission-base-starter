@@ -1,23 +1,22 @@
+import { DBErrorCode } from '@common/enums';
+import { BaseCrudService } from '@common/services/base-crud.service';
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TimeoutError } from 'rxjs';
+import { Filter, Repository } from 'typeorm';
 import {
   CreateMasterPlanRequestDto,
-  UpdateMasterPlanRequestDto,
   MasterPlanResponseDto,
+  UpdateMasterPlanRequestDto,
 } from './dtos';
-import { MasterPlanMapper } from './master-plan.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { MasterPlanEntity } from './master-plan.entity';
-import { Repository } from 'typeorm';
 import { MasterPlanExistsException } from './master-plan-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+import { MasterPlanEntity } from './master-plan.entity';
+import { MasterPlanMapper } from './master-plan.mapper';
 
 export const MASTER_PLAN_FILTER_FIELDS = ['unitCode', 'project', 'block', 'building', 'street', 'unitNumber', 'division', 'unitType', 'landSize', 'unitSize', 'description', 'boq', 'startBuildDate', 'endBuildDate', 'actualFinishDate', 'completedPercentage', 'duration', 'standardCost', 'actualCost', 'unearnAccount', 'note', 'isHandover', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', ];
 @Injectable()
@@ -69,7 +68,7 @@ export class MasterPlanService extends BaseCrudService {
    */
   public async getMasterPlanById(id: number): Promise<MasterPlanResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where('master_plan.id = :id', { id })
       .getOne();
 
     if (!entity) {

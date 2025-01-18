@@ -5,7 +5,6 @@ import { CreateAnalysisCodeRequestDto } from './create-analysis-code-request.dto
 export class UpdateAnalysisCodeRequestDto extends CreateAnalysisCodeRequestDto {
   @ApiProperty()
   @IsNotEmpty()
-  @MaxLength(160)
   dimensionId: number;
 
   @ApiProperty()

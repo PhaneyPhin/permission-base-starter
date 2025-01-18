@@ -5,7 +5,12 @@ import { UserEntity } from '@admin/access/users/user.entity';
 import { faker } from '@faker-js/faker';
 import { HashHelper } from '@helpers';
 import minioClient from '@libs/pagination/minio';
+import { BranchEntity } from '@modules/admin/access/branch/branch.entity';
+import { AnalysisCodeEntity } from '@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity';
+import { DimensionEntity } from '@modules/admin/access/construction/master-data/dimension/dimension.entity';
+import { DepartmentEntity } from '@modules/admin/access/department/department.entity';
 import { UserApproval } from '@modules/admin/access/users/user-approval';
+import { WarehouseEntity } from '@modules/admin/access/warehouse/warehouse.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 
@@ -73,10 +78,10 @@ const rolePermissions = {
 
 const seedBuckets = ['images', 'files'];
 
-// Utility function for random status selection
-function getRandomStatus(): UserStatus {
-  return Math.random() < 0.5 ? UserStatus.Active : UserStatus.Inactive;
-}
+// // Utility function for random status selection
+// function getRandomStatus(): UserStatus {
+//   return Math.random() < 0.5 ? UserStatus.Active : UserStatus.Inactive;
+// }
 
 async function createBucket(bucketName: string) {
   const exists = await minioClient.bucketExists(bucketName);
@@ -153,45 +158,100 @@ async function seedDatabase(dataSource: DataSource) {
   }
 
   const user = await dataSource.manager.findOneByOrFail(UserEntity, { username: 'admin1'})
-  // const branch = await dataSource.manager.save(BranchEntity, {
-  //   nameEn: faker.person.fullName(),
-  //   nameKh: faker.person.fullName(),
-  //   active: true,
-  //   code: '00001',
-  //   createdBy: user.id,
-  //   contactPerson: faker.person.fullName(),
-  //   phoneNumber: faker.phone.number(),
-  //   addressEn: faker.person.jobArea(),
-  //   addressKh: faker.person.jobArea(),
-  //   description: faker.person.jobDescriptor()
-  // })
-  // console.log('branch==>', branch)
-  // for (var index = 0; index< 200; index ++) {
+  const branch = await dataSource.manager.save(BranchEntity, {
+    nameEn: faker.person.fullName(),
+    nameKh: faker.person.fullName(),
+    active: true,
+    code: '00001',
+    createdBy: user.id,
+    contactPerson: faker.person.fullName(),
+    phoneNumber: faker.phone.number(),
+    addressEn: faker.person.jobArea(),
+    addressKh: faker.person.jobArea(),
+    description: faker.person.jobDescriptor()
+  })
+  console.log('branch==>', branch)
+  for (var index = 0; index< 5; index ++) {
 
-  //     const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
-  //       active: true,
-  //       code: '00000' + (index + 1),
-  //       branch_id: branch.id,
-  //       createdBy: user.id,
-  //       description: faker.person.jobDescriptor(),
-  //       nameEn: faker.person.fullName(),
-  //       nameKh: faker.person.fullName()
-  //     })
+      const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
+        active: true,
+        code: '00000' + (index + 1),
+        branch_id: branch.id,
+        createdBy: user.id,
+        description: faker.person.jobDescriptor(),
+        nameEn: faker.person.fullName(),
+        nameKh: faker.person.fullName()
+      })
 
 
-  //     const department = dataSource.manager.create(DepartmentEntity, {
-  //       active: true,
-  //       code: (index+1).toString().padStart(7, '0'),
-  //       createdBy: user.id,
-  //       nameEn: faker.person.fullName(),
-  //       nameKh: faker.person.fullName(),
-  //       description: faker.book.title()
-  //     })
+      const department = dataSource.manager.create(DepartmentEntity, {
+        active: true,
+        code: (index+1).toString().padStart(7, '0'),
+        createdBy: user.id,
+        nameEn: faker.person.fullName(),
+        nameKh: faker.person.fullName(),
+        description: faker.book.title()
+      })
 
-  //     await dataSource.manager.save(warehouseEntity)
-  //     await dataSource.manager.save(department)
-  // }
+      await dataSource.manager.save(warehouseEntity)
+      await dataSource.manager.save(department)
+  }
 
+  const defaultDimension = {
+    createdBy: user.id,
+    updatedBy: user.id,
+  }
+  const dimensions = dataSource.manager.create(DimensionEntity, [
+    {
+      ...defaultDimension,
+      code: '000001',
+      nameEn: 'Project',
+      nameKh: 'គម្រោង'
+    },
+    {
+      ...defaultDimension,
+      code: '000002',
+      nameEn: 'Block',
+      nameKh: 'ប្លុក'
+    },
+    {
+      ...defaultDimension,
+      code: '000003',
+      nameEn: 'Building',
+      nameKh: 'អាគារ'
+    },
+    {
+      ...defaultDimension,
+      code: '000004',
+      nameEn: 'Street',
+      nameKh: 'ផ្លូវ'
+    },
+    {
+      ...defaultDimension,
+      code: '000005',
+      nameEn: 'Division',
+      nameKh: 'ផ្នែក'
+    },
+    {
+      ...defaultDimension,
+      code: '000006',
+      nameEn: 'Unit Type',
+      nameKh: 'ប្រភេទផ្ទះ'
+    }
+  ])
+
+  const dimensionEntities = await dataSource.manager.save(dimensions)
+
+  const analysisCodes = dimensionEntities.map((dimension) => {
+    return dataSource.manager.create(AnalysisCodeEntity, {
+      dimensionId: dimension.id,
+      nameEn: faker.person.firstName(),
+      nameKh: faker.person.firstName(),
+      code: dimension.code
+    })
+  })
+
+  await dataSource.manager.save(analysisCodes)
   console.log('Database seeded successfully!');
 }
 
