@@ -6,6 +6,7 @@ import { WarehouseModule } from './warehouse/warehouse.module';
 import { CompanyModule } from './company/company.module';
 import { BranchModule } from './branch/branch.module';
 import { DepartmentModule } from './department/department.module';
+import { MasterDataModule } from './construction/master-data/master-data.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { DepartmentModule } from './department/department.module';
     WarehouseModule,
     CompanyModule,
     BranchModule,
-    DepartmentModule
+    DepartmentModule,
+    MasterDataModule
   ],
 })
 export class AccessModule {}

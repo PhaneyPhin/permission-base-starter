@@ -1,16 +1,13 @@
+import { PermissionEntity } from '@admin/access/permissions/permission.entity';
+import { RoleEntity } from '@admin/access/roles/role.entity';
+import { UserStatus } from '@admin/access/users/user-status.enum';
+import { UserEntity } from '@admin/access/users/user.entity';
+import { faker } from '@faker-js/faker';
+import { HashHelper } from '@helpers';
+import minioClient from '@libs/pagination/minio';
+import { UserApproval } from '@modules/admin/access/users/user-approval';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
-import { faker } from '@faker-js/faker';
-import { UserEntity } from '@admin/access/users/user.entity';
-import { RoleEntity } from '@admin/access/roles/role.entity';
-import { PermissionEntity } from '@admin/access/permissions/permission.entity';
-import { UserStatus } from '@admin/access/users/user-status.enum';
-import { HashHelper } from '@helpers';
-import { UserApproval } from '@modules/admin/access/users/user-approval';
-import minioClient from '@libs/pagination/minio';
-import { WarehouseEntity } from '@modules/admin/access/warehouse/warehouse.entity';
-import { DepartmentEntity } from '@modules/admin/access/department/department.entity';
-import { BranchEntity } from '@modules/admin/access/branch/branch.entity';
 
 // Define seed data
 const baseUsers: any[] = [
@@ -51,6 +48,21 @@ const permissions = [
   { slug: 'admin.access.department.create', description: 'Create department' },
   { slug: 'admin.access.department.update', description: 'Update department' },
   { slug: 'admin.access.department.delete', description: 'Delete department' },
+
+  { slug: 'admin.access.dimension.read', description: 'Read branch' },
+  { slug: 'admin.access.dimension.create', description: 'Create branch' },
+  { slug: 'admin.access.dimension.update', description: 'Update branch' },
+  { slug: 'admin.access.dimension.delete', description: 'Delete branch' },
+
+  { slug: 'admin.access.analysis-code.read', description: 'Read branch' },
+  { slug: 'admin.access.analysis-code.create', description: 'Create branch' },
+  { slug: 'admin.access.analysis-code.update', description: 'Update branch' },
+  { slug: 'admin.access.analysis-code.delete', description: 'Delete branch' },
+
+  { slug: 'admin.access.master-plan.read', description: 'Read branch' },
+  { slug: 'admin.access.master-plan.create', description: 'Create branch' },
+  { slug: 'admin.access.master-plan.update', description: 'Update branch' },
+  { slug: 'admin.access.master-plan.delete', description: 'Delete branch' },
 ];
 
 const rolePermissions = {
