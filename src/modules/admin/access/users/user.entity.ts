@@ -4,6 +4,7 @@ import { PermissionEntity } from '../permissions/permission.entity';
 import { RoleEntity } from '../roles/role.entity';
 import { UserStatus } from './user-status.enum';
 import { UserApproval } from './user-approval';
+import { WarehouseEntity } from '../warehouse/warehouse.entity';
 
 @Entity({ schema: 'admin', name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -104,23 +105,22 @@ export class UserEntity extends BaseEntity {
   })
   roles: Promise<RoleEntity[]>;
 
-  /** @Todo enable when warehouse enable */
-  // @ManyToMany(() => WarehouseEntity, (warehouse) => warehouse.id, {
-  //   lazy: true,
-  //   cascade: true,
-  // })
-  // @JoinTable({
-  //   name: 'user_warehouse',
-  //   joinColumn: {
-  //     name: 'user_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'warehouse_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // warehouse: Promise<RoleEntity[]>;
+  @ManyToMany(() => WarehouseEntity, (warehouse) => warehouse.id, {
+    lazy: true,
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'users_warehouses',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'warehouse_id',
+      referencedColumnName: 'id',
+    },
+  })
+  warehouses: Promise<WarehouseEntity[]>;
 
   @ManyToMany(() => PermissionEntity, (permission) => permission.id, {
     lazy: true,

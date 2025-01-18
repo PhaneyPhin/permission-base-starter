@@ -3,7 +3,7 @@ import { commonFields } from '../common.fields';
 
 const tableName = 'admin.department';
 
-export class DepartmentMigration1735886960101 implements MigrationInterface {
+export class DepartmentMigration1735886960102 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

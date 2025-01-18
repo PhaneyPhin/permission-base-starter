@@ -98,7 +98,7 @@ export class UsersService extends BaseCrudService {
   public async getUserById(id: string): Promise<UserResponseDto> {
     const userEntity = await this.usersRepository.findOne({
       where: { id },
-      relations: ['permissions', 'roles'],
+      relations: ['permissions', 'roles', 'warehouses'],
     });
     if (!userEntity) {
       throw new NotFoundException();
@@ -156,6 +156,7 @@ export class UsersService extends BaseCrudService {
       userEntity = await this.usersRepository.save(userEntity);
       return UserMapper.toDto(userEntity);
     } catch (error) {
+      console.log(error)
       if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
         throw new UserExistsException(userDto.username);
       }

@@ -5,6 +5,8 @@ import { RoleMapper } from '../roles/role.mapper';
 import { CreateUserRequestDto, UserResponseDto, UpdateUserRequestDto } from './dtos';
 import { UserExcelDto } from './dtos/user-excel.dto';
 import { UserEntity } from './user.entity';
+import { WarehouseEntity } from '../warehouse/warehouse.entity';
+import { WarehouseMapper } from '../warehouse/warehouse.mapper';
 
 export class UserMapper {
   public static async toDto(entity: UserEntity): Promise<UserResponseDto> {
@@ -25,6 +27,7 @@ export class UserMapper {
     if (entity.roles) {
       dto.roles = await Promise.all((await entity.roles).map(RoleMapper.toDto));
     }
+
     return dto;
   }
 
@@ -52,7 +55,9 @@ export class UserMapper {
     dto.createdBy = entity.createdBy?.name;
     dto.permissions = await Promise.all((await entity.permissions).map(PermissionMapper.toDto));
     /** @Todo when warehouse ready */
-    // dto.warehouse = await Promise.all((await entity.warehousee).map(WarehouseMapper.toDto));
+    if (entity.warehouses) {
+      dto.warehouses = await Promise.all((await entity.warehouses).map(WarehouseMapper.toDto));
+    } 
     dto.roles = await Promise.all((await entity.roles).map(RoleMapper.toDtoWithRelations));
     dto.isSuperUser = entity.isSuperUser;
     dto.status = entity.status;
@@ -72,6 +77,7 @@ export class UserMapper {
     // entity.warehouse = dto.warehouse
 
     entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
+    entity.warehouses = Promise.resolve(dto.warehouse.map((id) => new WarehouseEntity({ id })));
     entity.isSuperUser = false;
     return entity;
   }
@@ -86,6 +92,7 @@ export class UserMapper {
     entity.expiredAt = dto.expiredAt
 
     entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
+    entity.warehouses = Promise.resolve(dto.warehouse.map((id) => new WarehouseEntity({ id })));
     return entity;
   }
 }

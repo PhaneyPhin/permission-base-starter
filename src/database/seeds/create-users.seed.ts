@@ -105,7 +105,7 @@ async function seedDatabase(dataSource: DataSource) {
     name: faker.person.fullName(),
     username: 'admin',
     email: faker.internet.email(),
-    status: getRandomStatus(),
+    status: UserStatus.Active,
   };
   const firstHashedPassword = await HashHelper.encrypt(firstUserData.password);
   const firstUserEntity = dataSource.manager.create(UserEntity, {
@@ -117,7 +117,7 @@ async function seedDatabase(dataSource: DataSource) {
   await dataSource.manager.save(firstUserEntity);
 
   // Create 200 additional users with Faker data
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 2; i++) {
     const fakeName = faker.person.fullName();
     const fakeUsername = 'admin' + i;
     const fakeEmail = faker.internet.email();
@@ -127,7 +127,7 @@ async function seedDatabase(dataSource: DataSource) {
       name: fakeName,
       username: fakeUsername,
       email: fakeEmail,
-      status: getRandomStatus(),
+      status: UserStatus.Active,
     };
 
     const hashedPassword = await HashHelper.encrypt(userData.password);
@@ -141,44 +141,44 @@ async function seedDatabase(dataSource: DataSource) {
   }
 
   const user = await dataSource.manager.findOneByOrFail(UserEntity, { username: 'admin1'})
-  const branch = await dataSource.manager.save(BranchEntity, {
-    nameEn: faker.person.fullName(),
-    nameKh: faker.person.fullName(),
-    active: true,
-    code: '00001',
-    createdBy: user.id,
-    contactPerson: faker.person.fullName(),
-    phoneNumber: faker.phone.number(),
-    addressEn: faker.person.jobArea(),
-    addressKh: faker.person.jobArea(),
-    description: faker.person.jobDescriptor()
-  })
-  console.log('branch==>', branch)
-  for (var index = 0; index< 200; index ++) {
+  // const branch = await dataSource.manager.save(BranchEntity, {
+  //   nameEn: faker.person.fullName(),
+  //   nameKh: faker.person.fullName(),
+  //   active: true,
+  //   code: '00001',
+  //   createdBy: user.id,
+  //   contactPerson: faker.person.fullName(),
+  //   phoneNumber: faker.phone.number(),
+  //   addressEn: faker.person.jobArea(),
+  //   addressKh: faker.person.jobArea(),
+  //   description: faker.person.jobDescriptor()
+  // })
+  // console.log('branch==>', branch)
+  // for (var index = 0; index< 200; index ++) {
 
-      const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
-        active: true,
-        code: '00000' + (index + 1),
-        branch_id: branch.id,
-        createdBy: user.id,
-        description: faker.person.jobDescriptor(),
-        nameEn: faker.person.fullName(),
-        nameKh: faker.person.fullName()
-      })
+  //     const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
+  //       active: true,
+  //       code: '00000' + (index + 1),
+  //       branch_id: branch.id,
+  //       createdBy: user.id,
+  //       description: faker.person.jobDescriptor(),
+  //       nameEn: faker.person.fullName(),
+  //       nameKh: faker.person.fullName()
+  //     })
 
 
-      const department = dataSource.manager.create(DepartmentEntity, {
-        active: true,
-        code: (index+1).toString().padStart(7, '0'),
-        createdBy: user.id,
-        nameEn: faker.person.fullName(),
-        nameKh: faker.person.fullName(),
-        description: faker.book.title()
-      })
+  //     const department = dataSource.manager.create(DepartmentEntity, {
+  //       active: true,
+  //       code: (index+1).toString().padStart(7, '0'),
+  //       createdBy: user.id,
+  //       nameEn: faker.person.fullName(),
+  //       nameKh: faker.person.fullName(),
+  //       description: faker.book.title()
+  //     })
 
-      await dataSource.manager.save(warehouseEntity)
-      await dataSource.manager.save(department)
-  }
+  //     await dataSource.manager.save(warehouseEntity)
+  //     await dataSource.manager.save(department)
+  // }
 
   console.log('Database seeded successfully!');
 }
