@@ -26,6 +26,7 @@ export class AnalysisCodeMigration1735886960104 implements MigrationInterface {
           {
             name: 'code',
             type: 'varchar',
+            isUnique: true,
             length: '160',
             isNullable: true,
           },
@@ -34,12 +35,14 @@ export class AnalysisCodeMigration1735886960104 implements MigrationInterface {
             name: 'name_en',
             type: 'varchar',
             length: '160',
+            isUnique: true,
             isNullable: true,
           },
           
           {
             name: 'name_kh',
             type: 'varchar',
+            isUnique: true,
             length: '160',
             isNullable: true,
           },

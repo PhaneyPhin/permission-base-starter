@@ -172,7 +172,6 @@ async function seedDatabase(dataSource: DataSource) {
     addressKh: faker.person.jobArea(),
     description: faker.person.jobDescriptor()
   })
-  console.log('branch==>', branch)
   for (var index = 0; index< 5; index ++) {
 
       const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
@@ -206,37 +205,37 @@ async function seedDatabase(dataSource: DataSource) {
   const dimensions = dataSource.manager.create(DimensionEntity, [
     {
       ...defaultDimension,
-      code: '000001',
+      code: '01',
       nameEn: 'Project',
       nameKh: 'គម្រោង'
     },
     {
       ...defaultDimension,
-      code: '000002',
+      code: '02',
       nameEn: 'Block',
       nameKh: 'ប្លុក'
     },
     {
       ...defaultDimension,
-      code: '000003',
+      code: '03',
       nameEn: 'Building',
       nameKh: 'អាគារ'
     },
     {
       ...defaultDimension,
-      code: '000004',
+      code: '04',
       nameEn: 'Street',
       nameKh: 'ផ្លូវ'
     },
     {
       ...defaultDimension,
-      code: '000005',
+      code: '05',
       nameEn: 'Division',
       nameKh: 'ផ្នែក'
     },
     {
       ...defaultDimension,
-      code: '000006',
+      code: '06',
       nameEn: 'Unit Type',
       nameKh: 'ប្រភេទផ្ទះ'
     }

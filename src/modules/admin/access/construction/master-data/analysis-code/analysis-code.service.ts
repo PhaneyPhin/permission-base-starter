@@ -44,6 +44,11 @@ export class AnalysisCodeService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<AnalysisCodeEntity> } = {
+      dimension: (query, value) => {
+        return query.where('d.name_en ILIKE :search', {
+          search: `%${value}%`
+        })
+      },
       createdAt: (query, value) => {
         const [start, end] = value.split(',');
         return query.andWhere('analysisCode.created_at BETWEEN :start AND :end', { start, end });
