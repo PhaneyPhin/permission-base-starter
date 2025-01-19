@@ -1,27 +1,27 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    ParseIntPipe,
-    Post,
-    Put,
-    UseGuards,
-    ValidationPipe,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiConflictResponse,
-    ApiOperation,
-    ApiQuery,
-    ApiTags,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import {
-    CreateEmployeePositionRequestDto,
-    EmployeePositionResponseDto,
-    UpdateEmployeePositionRequestDto,
+  CreateEmployeePositionRequestDto,
+  EmployeePositionResponseDto,
+  UpdateEmployeePositionRequestDto,
 } from './dtos';
 import { EMPLOYEE_POSITION_FILTER_FIELDS, EmployeePositionService } from './employee-position.service';
 
@@ -35,7 +35,7 @@ import { EmployeePositionEntity } from './employee-position.entity';
 @ApiTags('EmployeePosition')
 @ApiBearerAuth(TOKEN_NAME)
 @Controller({
-  path: 'access/employee-position',
+  path: 'access/human-resource/employee-position',
   version: '1',
 })
 export class EmployeePositionController {
