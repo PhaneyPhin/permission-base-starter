@@ -32,6 +32,8 @@ const permissions = [
   { slug: 'admin.access.users.update', description: 'Update users' },
   { slug: 'admin.access.users.import', description: 'Import users' },
   { slug: 'admin.access.users.export', description: 'Export users' },
+  { slug: 'admin.access.users.delete', description: 'Delete users' },
+
   { slug: 'admin.access.roles.read', description: 'Read Roles' },
   { slug: 'admin.access.roles.create', description: 'Create Roles' },
   { slug: 'admin.access.roles.update', description: 'Update Roles' },
@@ -59,15 +61,15 @@ const permissions = [
   { slug: 'admin.access.dimension.update', description: 'Update branch' },
   { slug: 'admin.access.dimension.delete', description: 'Delete branch' },
 
-  { slug: 'admin.access.analysis-code.read', description: 'Read branch' },
-  { slug: 'admin.access.analysis-code.create', description: 'Create branch' },
-  { slug: 'admin.access.analysis-code.update', description: 'Update branch' },
-  { slug: 'admin.access.analysis-code.delete', description: 'Delete branch' },
+  { slug: 'admin.access.analysis-code.read', description: 'Read analysis code' },
+  { slug: 'admin.access.analysis-code.create', description: 'Create analysis code' },
+  { slug: 'admin.access.analysis-code.update', description: 'Update analysis code' },
+  { slug: 'admin.access.analysis-code.delete', description: 'Delete analysis code' },
 
-  { slug: 'admin.access.master-plan.read', description: 'Read branch' },
-  { slug: 'admin.access.master-plan.create', description: 'Create branch' },
-  { slug: 'admin.access.master-plan.update', description: 'Update branch' },
-  { slug: 'admin.access.master-plan.delete', description: 'Delete branch' },
+  { slug: 'admin.access.master-plan.read', description: 'Read master plan' },
+  { slug: 'admin.access.master-plan.create', description: 'Create master plan' },
+  { slug: 'admin.access.master-plan.update', description: 'Update master plan' },
+  { slug: 'admin.access.master-plan.delete', description: 'Delete master plan' },
 ];
 
 const rolePermissions = {

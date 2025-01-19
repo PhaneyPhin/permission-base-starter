@@ -1,10 +1,10 @@
-import { Entity, Column, ManyToMany, JoinTable, PrimaryColumn, UpdateDateColumn, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '@database/entities';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { PermissionEntity } from '../permissions/permission.entity';
 import { RoleEntity } from '../roles/role.entity';
-import { UserStatus } from './user-status.enum';
-import { UserApproval } from './user-approval';
 import { WarehouseEntity } from '../warehouse/warehouse.entity';
+import { UserApproval } from './user-approval';
+import { UserStatus } from './user-status.enum';
 
 @Entity({ schema: 'admin', name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -138,6 +138,9 @@ export class UserEntity extends BaseEntity {
     },
   })
   permissions: Promise<PermissionEntity[]>;
+
+  @DeleteDateColumn({ name: 'deleted_at' }) // Automatically managed by TypeORM for soft deletes
+  deletedAt?: Date; // Optional, null if not deleted
   
 
   constructor(user?: Partial<UserEntity>) {

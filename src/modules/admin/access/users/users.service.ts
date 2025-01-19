@@ -1,22 +1,22 @@
-import * as XLSX from 'xlsx';
-import { InternalServerErrorException, RequestTimeoutException, NotFoundException, Injectable, BadRequestException, UnprocessableEntityException, HttpException } from '@nestjs/common';
-import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
+import { DBErrorCode } from '@common/enums';
 import {
-  InvalidCurrentPasswordException,
   ForeignKeyConflictException,
+  InvalidCurrentPasswordException,
   UserExistsException,
 } from '@common/http/exceptions';
-import { UsersRepository } from './users.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { UserMapper } from './users.mapper';
-import { HashHelper } from '@helpers';
-import { TimeoutError } from 'rxjs';
-import { validate } from 'class-validator';
-import { UserEntity } from './user.entity';
-import { Filter, SelectQueryBuilder } from 'typeorm';
 import { BaseCrudService } from '@common/services/base-crud.service';
+import { HashHelper } from '@helpers';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, RequestTimeoutException, UnprocessableEntityException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import { TimeoutError } from 'rxjs';
+import { Filter, SelectQueryBuilder } from 'typeorm';
+import * as XLSX from 'xlsx';
+import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
 import { ImportUserDto } from './dtos/import-user.dto';
+import { UserEntity } from './user.entity';
+import { UserMapper } from './users.mapper';
+import { UsersRepository } from './users.repository';
 export const USER_FILTER_FIELD = ['username', 'name', 'email']
 @Injectable()
 export class UsersService extends BaseCrudService {
@@ -277,5 +277,9 @@ export class UsersService extends BaseCrudService {
 
       throw new BadRequestException('Failed to import users from Excel');
     }
+  }
+
+  public async deleteById(id: string) {
+    await this.usersRepository.softDelete(id)
   }
 }

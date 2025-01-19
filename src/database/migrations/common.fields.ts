@@ -13,4 +13,10 @@ export const commonFields: TableColumnOptions[] = [
     isNullable: false,
     default: 'now()',
   },
+  {
+    name: 'deleted_at',
+    type: 'timestamp with time zone',
+    isNullable: true, // Allows null since the record may not be deleted
+    default: null, // Default to null when not deleted
+  },
 ];

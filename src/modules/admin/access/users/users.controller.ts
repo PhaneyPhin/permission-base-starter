@@ -1,15 +1,15 @@
-import { ValidationPipe, ParseUUIDPipe, Controller, UseGuards, Param, Post, Body, Get, Put, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
-import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
-import { ApiConflictResponse, ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { CurrentUser, Permissions, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
-import { USER_FILTER_FIELD, UsersService } from './users.service';
-import { UserEntity } from './user.entity';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
+import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Res, UploadedFile, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Multer } from 'multer';
+import { ApiBearerAuth, ApiBody, ApiConflictResponse, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { Multer } from 'multer';
+import { ChangePasswordRequestDto, CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto } from './dtos';
+import { UserEntity } from './user.entity';
+import { USER_FILTER_FIELD, UsersService } from './users.service';
 
 @ApiTags('Users')
 @ApiBearerAuth(TOKEN_NAME)
@@ -127,5 +127,22 @@ export class UsersController {
   @Get('/:id')
   public getUserById(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponseDto> {
     return this.usersService.getUserById(id);
+  }
+
+  @ApiOperation({ description: 'Get user by id' })
+  @ApiGlobalResponse(UserResponseDto)
+  @Permissions('admin.access.users.delete')
+  @Delete('/:id')
+  public async deleteUserById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: UserEntity
+  ): Promise<Boolean> {
+    if (user.id === id) {
+      throw new HttpException('You can\'t delete yourself', HttpStatus.BAD_REQUEST)
+    }
+    
+    await this.usersService.deleteById(id);
+
+    return true
   }
 }
