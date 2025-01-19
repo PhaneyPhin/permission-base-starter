@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { RolesModule } from './roles/roles.module';
+import { BranchModule } from './branch/branch.module';
+import { CompanyModule } from './company/company.module';
+import { MasterDataModule } from './construction/master-data/master-data.module';
+import { DepartmentModule } from './department/department.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
-import { CompanyModule } from './company/company.module';
-import { BranchModule } from './branch/branch.module';
-import { DepartmentModule } from './department/department.module';
-import { MasterDataModule } from './construction/master-data/master-data.module';
+import { HumanResourceModule } from './human-resource/human-resource.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { MasterDataModule } from './construction/master-data/master-data.module'
     CompanyModule,
     BranchModule,
     DepartmentModule,
-    MasterDataModule
+    MasterDataModule,
+    HumanResourceModule,
   ],
 })
 export class AccessModule {}
