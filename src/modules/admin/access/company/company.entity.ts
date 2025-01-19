@@ -1,14 +1,20 @@
-import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, AfterLoad } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
+import { BaseEntity } from '@database/entities';
 import minioClient from '@libs/pagination/minio';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ schema: 'admin', name: 'company' })
 export class CompanyEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
-  
+  @Column({
+    name: 'code',
+    type: 'varchar',
+    nullable: false,
+  })
+  code: string;
+
   @Column({
     name: 'name_en',
     type: 'varchar',

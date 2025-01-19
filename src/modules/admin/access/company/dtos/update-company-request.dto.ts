@@ -1,8 +1,13 @@
-import { CreateCompanyRequestDto } from './create-company-request.dto';
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { CreateCompanyRequestDto } from './create-company-request.dto';
 
 export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  code: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)

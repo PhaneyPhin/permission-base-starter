@@ -16,7 +16,12 @@ export class CompanyMigration1735737419962 implements MigrationInterface {
             isPrimary: true,
             isNullable: false,
           },
-          
+          {
+            name: 'code',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
           {
             name: 'name_en',
             type: 'varchar',

@@ -1,9 +1,9 @@
 import { UserMapper } from '@admin/access/users/users.mapper';
 import { CompanyEntity } from './company.entity';
 import {
+  CompanyResponseDto,
   CreateCompanyRequestDto,
   UpdateCompanyRequestDto,
-  CompanyResponseDto,
 } from './dtos';
 
 export class CompanyMapper {
@@ -18,6 +18,7 @@ export class CompanyMapper {
     dto.addressEn = entity.addressEn;
     dto.addressKh = entity.addressKh;
     dto.logo = entity.logo;
+    dto.code = entity.code
     dto.logoUrl = await entity.getLogoUrl()
 
     if (entity.createdByUser) {
@@ -31,6 +32,7 @@ export class CompanyMapper {
     const entity = new CompanyEntity();
     // default fields?
     entity.active = true;
+    entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.email = dto.email;
@@ -47,6 +49,7 @@ export class CompanyMapper {
     entity: CompanyEntity,
     dto: UpdateCompanyRequestDto,
   ): CompanyEntity {
+    entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.email = dto.email;
