@@ -70,6 +70,11 @@ const permissions = [
   { slug: 'admin.access.master-plan.create', description: 'Create master plan' },
   { slug: 'admin.access.master-plan.update', description: 'Update master plan' },
   { slug: 'admin.access.master-plan.delete', description: 'Delete master plan' },
+
+  { slug: 'admin.access.employee-position.read', description: 'Read master plan' },
+  { slug: 'admin.access.employee-position.create', description: 'Create master plan' },
+  { slug: 'admin.access.employee-position.update', description: 'Update master plan' },
+  { slug: 'admin.access.employee-position.delete', description: 'Delete master plan' },
 ];
 
 const rolePermissions = {
@@ -167,7 +172,7 @@ async function seedDatabase(dataSource: DataSource) {
     code: '00001',
     createdBy: user.id,
     contactPerson: faker.person.fullName(),
-    phoneNumber: faker.phone.number(),
+    phoneNumber: '098674565',
     addressEn: faker.person.jobArea(),
     addressKh: faker.person.jobArea(),
     description: faker.person.jobDescriptor()
