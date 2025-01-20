@@ -65,8 +65,12 @@ export class AnalysisCodeService extends BaseCrudService {
       .leftJoinAndSelect('analysisCode.createdByUser', 'uc')
   }
 
-  getAllAnalysisCode() {
-    return this.analysisCodeRepository.createQueryBuilder('analysisCode').select(['id', 'name']).getRawMany()
+  async getAllAnalysisCode() {
+    const analysisCodes = await this.analysisCodeRepository.createQueryBuilder('analysisCode')
+    .leftJoinAndSelect('analysisCode.dimension', 'd')
+    .getMany()
+
+    return await Promise.all(analysisCodes.map(AnalysisCodeMapper.toDto))
   }
 
   /**

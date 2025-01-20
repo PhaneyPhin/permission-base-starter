@@ -1,6 +1,7 @@
-import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
+import { BaseEntity } from '@database/entities';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { MasterPlanStatus } from './enums/master-plan-status.enum';
 
 @Entity({ schema: 'admin', name: 'master-plan' })
 export class MasterPlanEntity extends BaseEntity {
@@ -14,6 +15,9 @@ export class MasterPlanEntity extends BaseEntity {
     nullable: true,
   })
   unitCode: string;
+
+  @Column({ name: 'status' })
+  status: MasterPlanStatus
   
   @Column({
     name: 'project',

@@ -1,36 +1,37 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Put,
   Body,
+  Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
-  ValidationPipe,
+  Post,
+  Put,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
   ApiOperation,
-  ApiTags,
   ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 
-import { MASTER_PLAN_FILTER_FIELDS, MasterPlanService } from './master-plan.service';
 import {
   CreateMasterPlanRequestDto,
-  UpdateMasterPlanRequestDto,
   MasterPlanResponseDto,
+  UpdateMasterPlanRequestDto,
 } from './dtos';
+import { MASTER_PLAN_FILTER_FIELDS, MasterPlanService } from './master-plan.service';
 
+import { UserEntity } from '@admin/access/users/user.entity';
 import { CurrentUser, Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
-import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
+import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
+import { MasterPlanStatus } from './enums/master-plan-status.enum';
 import { MasterPlanEntity } from './master-plan.entity';
-import { UserEntity } from '@admin/access/users/user.entity';
 
 @ApiTags('MasterPlan')
 @ApiBearerAuth(TOKEN_NAME)
@@ -54,6 +55,13 @@ export class MasterPlanController {
   public getMasterPlans(@PaginationParams() pagination: PaginationRequest): Promise<PaginationResponseDto<MasterPlanResponseDto>> {
     return this.masterPlanService.list<MasterPlanEntity, MasterPlanResponseDto>(pagination);
   }
+
+  @ApiOperation({ description: 'Get a paginated master-plan list' })
+  @Get('/status-list')
+  public getMasterPlanStatus(@PaginationParams() pagination: PaginationRequest): string[] {
+    return Object.values(MasterPlanStatus)
+  }
+
 
   @ApiOperation({ description: 'Get all master-plan list form select form' })  
   @Permissions(

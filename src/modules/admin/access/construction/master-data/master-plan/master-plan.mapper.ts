@@ -1,10 +1,10 @@
-import { MasterPlanEntity } from './master-plan.entity';
 import { UserMapper } from '@admin/access/users/users.mapper';
 import {
   CreateMasterPlanRequestDto,
-  UpdateMasterPlanRequestDto,
   MasterPlanResponseDto,
+  UpdateMasterPlanRequestDto,
 } from './dtos';
+import { MasterPlanEntity } from './master-plan.entity';
 
 export class MasterPlanMapper {
   public static async toDto(entity: MasterPlanEntity): Promise<MasterPlanResponseDto> {
@@ -35,7 +35,7 @@ export class MasterPlanMapper {
     dto.isHandover = entity.isHandover;
     dto.createdBy = entity.createdBy;
     dto.updatedBy = entity.updatedBy;
-    
+    dto.status = entity.status
 
      if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
@@ -72,7 +72,7 @@ export class MasterPlanMapper {
     entity.isHandover = dto.isHandover;
     entity.createdBy = dto.createdBy;
     entity.updatedBy = dto.updatedBy;
-    
+    entity.status = dto.status
 
     return entity;
   }

@@ -1,12 +1,19 @@
-import { CreateMasterPlanRequestDto } from './create-master-plan-request.dto';
-import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { MasterPlanStatus } from '../enums/master-plan-status.enum';
+import { CreateMasterPlanRequestDto } from './create-master-plan-request.dto';
 
 export class UpdateMasterPlanRequestDto extends CreateMasterPlanRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
   unitCode: string;
+
+  @IsEnum(MasterPlanStatus, { message: 'Status must be one of the defined enum values' })
+  @IsOptional() // Makes the field optional
+  @Transform(({ value }) => value || MasterPlanStatus.OPEN) // Default to `OPEN` if no value is provided
+  status: MasterPlanStatus;
 
   @ApiProperty()
   @IsNotEmpty()

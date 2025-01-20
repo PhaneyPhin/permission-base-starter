@@ -23,7 +23,12 @@ export class MasterPlanMigration1735886960105 implements MigrationInterface {
             length: '160',
             isNullable: false,
           },
-          
+          {
+            name: 'status',
+            type: 'varchar',
+            length: '50',
+            isNullable: false,
+          },
           {
             name: 'project',
             type: 'varchar',

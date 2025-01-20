@@ -68,7 +68,7 @@ export class EmployeePositionService extends BaseCrudService {
    */
   public async getEmployeePositionById(id: number): Promise<EmployeePositionResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where('employeePosition.id = :id', { id })
       .getOne();
 
     if (!entity) {

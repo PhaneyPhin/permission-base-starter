@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
+import { ApiProperty } from '@nestjs/swagger';
+import { MasterPlanStatus } from '../enums/master-plan-status.enum';
 
 export class MasterPlanResponseDto {
   @ApiProperty()
@@ -7,6 +8,9 @@ export class MasterPlanResponseDto {
 
   @ApiProperty()
   unitCode: string;
+
+  @ApiProperty()
+  status: MasterPlanStatus;
 
   @ApiProperty()
   project: string;

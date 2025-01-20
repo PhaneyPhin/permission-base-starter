@@ -1,36 +1,36 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Put,
   Body,
+  Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
-  ValidationPipe,
+  Post,
+  Put,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
   ApiOperation,
-  ApiTags,
   ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import { ANALYSIS_CODE_FILTER_FIELDS, AnalysisCodeService } from './analysis-code.service';
 import {
+  AnalysisCodeResponseDto,
   CreateAnalysisCodeRequestDto,
   UpdateAnalysisCodeRequestDto,
-  AnalysisCodeResponseDto,
 } from './dtos';
 
+import { UserEntity } from '@admin/access/users/user.entity';
 import { CurrentUser, Permissions, SuperUserGuard, TOKEN_NAME } from '@auth';
 import { ApiGlobalResponse } from '@common/decorators';
-import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { ApiFields } from '@common/decorators/api-fields.decorator';
+import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationResponseDto } from '@libs/pagination';
 import { AnalysisCodeEntity } from './analysis-code.entity';
-import { UserEntity } from '@admin/access/users/user.entity';
 
 @ApiTags('AnalysisCode')
 @ApiBearerAuth(TOKEN_NAME)
@@ -62,7 +62,7 @@ export class AnalysisCodeController {
     'admin.access.analysis-code.update',
   )
   @Get('/select-options')
-  public getAllAnalysisCodeForSelect(): Promise<{ id: string, name: string }[]> {
+  public getAllAnalysisCodeForSelect(): Promise<AnalysisCodeResponseDto[]> {
     return this.analysisCodeService.getAllAnalysisCode();
   }
 
