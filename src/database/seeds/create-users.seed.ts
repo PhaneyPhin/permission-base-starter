@@ -80,6 +80,11 @@ const permissions = [
   { slug: 'admin.access.employee.create', description: 'Create Employee' },
   { slug: 'admin.access.employee.update', description: 'Update Employee' },
   { slug: 'admin.access.employee.delete', description: 'Delete Employee' },
+
+  { slug: 'admin.access.category.read', description: 'Read Category' },
+  { slug: 'admin.access.category.create', description: 'Create Category' },
+  { slug: 'admin.access.category.update', description: 'Update Category' },
+  { slug: 'admin.access.category.delete', description: 'Delete Category' },
 ];
 
 const rolePermissions = {
