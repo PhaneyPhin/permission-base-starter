@@ -14,7 +14,7 @@ export class CategoryMapper {
     dto.code = entity.code;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
-    dto.parentId = entity.parentId;
+    entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     dto.description = entity.description;
     
     if (entity.parent) {
@@ -41,7 +41,7 @@ export class CategoryMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
-    entity.parentId = dto.parentId;
+    entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     entity.description = dto.description;
     
 
@@ -55,7 +55,7 @@ export class CategoryMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
-    entity.parentId = dto.parentId;
+    entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     entity.description = dto.description;
     
 

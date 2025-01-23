@@ -35,7 +35,7 @@ export class CategoryEntity extends BaseEntity {
     type: 'integer',
     nullable: true,
   })
-  parentId: number;
+  parentId: number | null;
 
   @ManyToOne(() => CategoryEntity, (category) => category.children, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'parent_id' })

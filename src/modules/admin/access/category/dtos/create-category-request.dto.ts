@@ -17,9 +17,9 @@ export class CreateCategoryRequestDto {
   @MaxLength(160)
   nameKh: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, nullable: true })
   @IsOptional()
-  parentId: number;
+  parentId?: number | null;
 
   @ApiProperty()
   @IsOptional()
