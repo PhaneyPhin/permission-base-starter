@@ -7,7 +7,7 @@ export class MasterPlanResponseDto {
   id: number;
 
   @ApiProperty()
-  unitCode: string;
+  unitNumber: string;
 
   @ApiProperty()
   status: MasterPlanStatus;
@@ -25,7 +25,7 @@ export class MasterPlanResponseDto {
   street: string;
 
   @ApiProperty()
-  unitNumber: string;
+  unitCode: string;
 
   @ApiProperty()
   division: string;
@@ -92,4 +92,7 @@ export class MasterPlanResponseDto {
 
   @ApiProperty()
   createdByUser: UserResponseDto
+
+  @ApiProperty()
+  attachments: string[]
 }

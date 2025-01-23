@@ -31,30 +31,22 @@ export class MasterPlanMigration1735886960105 implements MigrationInterface {
           },
           {
             name: 'project',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
+            type: 'integer'
           },
           
           {
             name: 'block',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
+            type: 'integer'
           },
           
           {
             name: 'building',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
+            type: 'integer',
           },
           
           {
             name: 'street',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
+            type: 'integer',
           },
           
           {
@@ -66,16 +58,12 @@ export class MasterPlanMigration1735886960105 implements MigrationInterface {
           
           {
             name: 'division',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
+            type: 'integer'
           },
           
           {
             name: 'unit_type',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
+            type: 'integer'
           },
           
           {
@@ -191,6 +179,11 @@ export class MasterPlanMigration1735886960105 implements MigrationInterface {
             type: 'boolean',
             isNullable: true,
             default: true,
+          },
+          {
+            name: 'attachments',
+            type: 'jsonb',
+            isNullable: true
           },
           ...commonFields,
         ],

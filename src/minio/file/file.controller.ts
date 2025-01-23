@@ -1,12 +1,15 @@
+import { TOKEN_NAME } from '@modules/auth';
 import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { Multer } from 'multer';
 import { MinioService } from '../minio.service';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { TOKEN_NAME } from '@modules/auth';
 
 @ApiBearerAuth(TOKEN_NAME)
-@Controller('upload')
+@Controller({
+    path: 'upload',
+  version: '1',
+})
 export class FileController {
     constructor(private minioService: MinioService) {}
 

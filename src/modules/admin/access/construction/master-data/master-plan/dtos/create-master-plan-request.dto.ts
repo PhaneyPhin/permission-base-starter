@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsOptional, MaxLength } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
 import { MasterPlanStatus } from '../enums/master-plan-status.enum';
 
 export class CreateMasterPlanRequestDto {
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(160)
   unitCode: string;
 
@@ -16,39 +16,38 @@ export class CreateMasterPlanRequestDto {
   status: MasterPlanStatus;
   
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  project: string;
+  @IsNotEmpty()
+  @IsNumber()
+  project: number;
 
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  block: string;
+  @IsNotEmpty()
+  @IsNumber()
+  block: number;
 
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  building: string;
+  @IsNotEmpty()
+  @IsNumber()
+  building: number;
 
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  street: string;
+  @IsNotEmpty()
+  @IsNumber()
+  street: number;
 
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
+  @IsNotEmpty()
   unitNumber: string;
 
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  division: string;
+  @IsNotEmpty()
+  @IsNumber()
+  division: number;
 
   @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  unitType: string;
+  @IsNotEmpty()
+  @IsNumber()
+  unitType: number;
 
   @ApiProperty()
   @IsOptional()
@@ -66,7 +65,7 @@ export class CreateMasterPlanRequestDto {
   description: string;
 
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(160)
   boq: string;
 
@@ -100,7 +99,7 @@ export class CreateMasterPlanRequestDto {
   @MaxLength(160)
   standardCost: string;
 
-  @ApiProperty()
+  @ApiProperty() 
   @IsOptional()
   @MaxLength(160)
   actualCost: string;
@@ -134,6 +133,11 @@ export class CreateMasterPlanRequestDto {
   @IsOptional()
   @MaxLength(160)
   updatedBy: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  attachments: string[];
 
   createdBy: string;
 }
