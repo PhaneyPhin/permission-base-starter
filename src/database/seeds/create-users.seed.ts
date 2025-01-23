@@ -85,6 +85,16 @@ const permissions = [
   { slug: 'admin.access.category.create', description: 'Create Category' },
   { slug: 'admin.access.category.update', description: 'Update Category' },
   { slug: 'admin.access.category.delete', description: 'Delete Category' },
+
+  { slug: 'admin.access.position.read', description: 'Read Position' },
+  { slug: 'admin.access.position.create', description: 'Create Position' },
+  { slug: 'admin.access.position.update', description: 'Update Position' },
+  { slug: 'admin.access.position.delete', description: 'Delete Position' },
+
+  { slug: 'admin.access.nationality.read', description: 'Read Nationality' },
+  { slug: 'admin.access.nationality.create', description: 'Create Nationality' },
+  { slug: 'admin.access.nationality.update', description: 'Update Nationality' },
+  { slug: 'admin.access.nationality.delete', description: 'Delete Nationality' },
 ];
 
 const rolePermissions = {
