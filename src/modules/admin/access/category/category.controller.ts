@@ -62,11 +62,9 @@ export class CategoryController {
     'admin.access.category.update',
   )
   @Get('/select-options')
-  public getAllCategoryForSelect(): Promise<{ id: string, nameEn: string }[]> {
-    return this.categoryService.getAllCategory();
+  public async  getAllCategoryForSelect() {
+    return await this.categoryService.getAllCategory();
   }
-  
-
   @ApiOperation({ description: 'Get category by id' })
   @ApiGlobalResponse(CategoryResponseDto)
   @Permissions(

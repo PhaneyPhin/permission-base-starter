@@ -61,4 +61,12 @@ export class CategoryMapper {
 
     return entity;
   }
+
+  public static toSelectDto(category: CategoryEntity) {
+    return {
+      nameEn: category.nameEn,
+      nameKh: category.nameKh,
+      id: category.id
+    }
+  }
 }
