@@ -95,6 +95,11 @@ const permissions = [
   { slug: 'admin.access.nationality.create', description: 'Create Nationality' },
   { slug: 'admin.access.nationality.update', description: 'Update Nationality' },
   { slug: 'admin.access.nationality.delete', description: 'Delete Nationality' },
+
+  { slug: 'admin.access.staff-profile.read', description: 'Read Staff Profile' },
+  { slug: 'admin.access.staff-profile.create', description: 'Create Staff Profile' },
+  { slug: 'admin.access.staff-profile.update', description: 'Update Staff Profile' },
+  { slug: 'admin.access.staff-profile.delete', description: 'Delete Staff Profile' },
 ];
 
 const rolePermissions = {

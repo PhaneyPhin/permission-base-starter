@@ -1,24 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
 
-
-class ParentCategoryDto {
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty()
-  code: string;
-
-  @ApiProperty()
-  nameEn: string;
-
-  @ApiProperty()
-  nameKh: string;
-
-  @ApiProperty()
-  description: string;
-}
-
 export class CategoryResponseDto {
   @ApiProperty()
   id: number;
@@ -35,8 +17,8 @@ export class CategoryResponseDto {
   @ApiProperty()
   parentId: number;
 
-  @ApiProperty({ type: ParentCategoryDto, nullable: true })
-  parent?: ParentCategoryDto;
+  @ApiProperty()
+  parent: CategoryResponseDto;
 
   @ApiProperty()
   description: string;

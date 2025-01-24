@@ -16,18 +16,12 @@ export class CategoryMapper {
     dto.nameKh = entity.nameKh;
     entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     dto.description = entity.description;
-    
+
     if (entity.parent) {
-      dto.parent = {
-        id: entity.parent.id,
-        code: entity.parent.code,
-        nameEn: entity.parent.nameEn,
-        nameKh: entity.parent.nameKh,
-        description: entity.parent.description,
-      };
+      dto.parent = await CategoryMapper.toDto(entity.parent);
     }
 
-     if (entity.createdByUser) {
+    if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
 
