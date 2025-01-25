@@ -19,11 +19,11 @@ import { WarehouseExistsException } from './warehouse-exist.exception'; // e.g.,
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
 
-export const WAREHOUSE_FILTER_FIELDS = ['branch', 'nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone', ];
+export const WAREHOUSE_FILTER_FIELDS = ['nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone'];
 @Injectable()
 export class WarehouseService extends BaseCrudService {
   protected queryName: string = 'warehouse';
-  protected SEARCH_FIELDS = ['branch', 'nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone', ];
+  protected SEARCH_FIELDS = ['nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone', ];
   protected FILTER_FIELDS = WAREHOUSE_FILTER_FIELDS
 
   constructor(

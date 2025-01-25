@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.employee';
+const tableName = 'admin.staff-profile';
 
-export class EmployeeMigration1737346663275 implements MigrationInterface {
+export class StaffProfileMigration1737647556021 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -18,74 +18,161 @@ export class EmployeeMigration1737346663275 implements MigrationInterface {
           },
           
           {
-            name: 'employee_code',
+            name: 'staff_code',
             type: 'varchar',
             length: '160',
+            isNullable: false,
             isUnique: true,
-            isNullable: false,
           },
           
           {
-            name: 'first_name',
+            name: 'name_en',
             type: 'varchar',
             length: '160',
             isNullable: false,
           },
           
           {
-            name: 'last_name',
+            name: 'name_kh',
             type: 'varchar',
             length: '160',
             isNullable: false,
           },
           
           {
-            name: 'gender',
+            name: 'sex',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
+          },
+          
+          {
+            name: 'title',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
           },
           
           {
             name: 'date_of_birth',
             type: 'timestamp with time zone',
+            isNullable: true,
+          },
+          
+          {
+            name: 'marital_status',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'nationality_id',
+            type: 'integer',
             isNullable: false,
           },
           
           {
-            name: 'contact_number',
+            name: 'religion',
             type: 'varchar',
             length: '160',
             isNullable: true,
           },
           
           {
-            name: 'email_address',
+            name: 'company_card_no',
             type: 'varchar',
             length: '160',
             isNullable: true,
+          },
+          
+          {
+            name: 'identity_id',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'phone1',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'phone2',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'working_email',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'personal_email',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'place_of_birth',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'branch_id',
+            type: 'integer',
+            isNullable: false,
           },
           
           {
             name: 'department_id',
             type: 'integer',
-            isNullable: true,
+            isNullable: false,
           },
           
           {
             name: 'position_id',
             type: 'integer',
+            isNullable: false,
+          },
+          
+          {
+            name: 'hired_date',
+            type: 'timestamp with time zone',
             isNullable: true,
           },
           
           {
-            name: 'hire_date',
-            type: 'timestamp with time zone',
-            isNullable: true
+            name: 'permanent_address',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
           },
           
           {
-            name: 'remark',
+            name: 'curren_address',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          {
+            name: 'profile_image',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          {
+            name: 'signature_image',
             type: 'varchar',
             length: '160',
             isNullable: true,

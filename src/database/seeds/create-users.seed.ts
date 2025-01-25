@@ -76,11 +76,6 @@ const permissions = [
   { slug: 'admin.access.employee-position.update', description: 'Update master plan' },
   { slug: 'admin.access.employee-position.delete', description: 'Delete master plan' },
 
-  { slug: 'admin.access.employee.read', description: 'Read Employee' },
-  { slug: 'admin.access.employee.create', description: 'Create Employee' },
-  { slug: 'admin.access.employee.update', description: 'Update Employee' },
-  { slug: 'admin.access.employee.delete', description: 'Delete Employee' },
-
   { slug: 'admin.access.category.read', description: 'Read Category' },
   { slug: 'admin.access.category.create', description: 'Create Category' },
   { slug: 'admin.access.category.update', description: 'Update Category' },
@@ -95,6 +90,11 @@ const permissions = [
   { slug: 'admin.access.nationality.create', description: 'Create Nationality' },
   { slug: 'admin.access.nationality.update', description: 'Update Nationality' },
   { slug: 'admin.access.nationality.delete', description: 'Delete Nationality' },
+
+  { slug: 'admin.access.staff-profile.read', description: 'Read Staff Profile' },
+  { slug: 'admin.access.staff-profile.create', description: 'Create Staff Profile' },
+  { slug: 'admin.access.staff-profile.update', description: 'Update Staff Profile' },
+  { slug: 'admin.access.staff-profile.delete', description: 'Delete Staff Profile' },
 ];
 
 const rolePermissions = {

@@ -60,18 +60,7 @@ export class CategoryService extends BaseCrudService {
       .leftJoinAndSelect('category.parent', 'parent')
       .leftJoinAndSelect('category.createdByUser', 'uc')
   }
-  // getAllCategory(): Promise<{ id: string; nameEn: string }[]> {
-  //   return this.categoryRepository
-  //     .createQueryBuilder('category')
-  //     .select(['category.id', 'category.nameEn'])
-  //     .getMany()
-  //     .then((categories) =>
-  //       categories.map((category) => ({
-  //         id: category.id.toString(),
-  //         nameEn: category.nameEn,
-  //       }))
-  //     );
-  // }
+  
   async getAllCategory() {
     return (await this.getListQuery()
       .getMany()).map(CategoryMapper.toSelectDto)
