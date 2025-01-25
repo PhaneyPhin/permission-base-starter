@@ -1,10 +1,9 @@
 import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
-import { ItemGroupEntity } from '../procument/master-data/item-group/item-group.entity';
 
-@Entity({ schema: 'admin', name: 'category' })
-export class CategoryEntity extends BaseEntity {
+@Entity({ schema: 'admin', name: 'uom' })
+export class UomEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
@@ -12,7 +11,6 @@ export class CategoryEntity extends BaseEntity {
   @Column({
     name: 'code',
     type: 'varchar',
-    unique: true,
     nullable: false,
   })
   code: string;
@@ -30,31 +28,6 @@ export class CategoryEntity extends BaseEntity {
     nullable: false,
   })
   nameKh: string;
-  
-  @Column({
-    name: 'parent_id',
-    type: 'integer',
-    nullable: true,
-  })
-  parentId: number | null;
-
-  @ManyToOne(() => CategoryEntity, (category) => category.children, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'parent_id' })
-  parent: CategoryEntity;
-
-  @OneToMany(() => CategoryEntity, (category) => category.parent)
-  children: CategoryEntity[];
-
-  @Column({
-    name: 'item_group_id',
-    type: 'integer',
-    nullable: false,
-  })
-  itemGroupId: number;
-  
-  @ManyToOne(() => ItemGroupEntity, { nullable: true, eager: true })
-  @JoinColumn({ name: 'item_group_id' })
-  itemGroup: ItemGroupEntity;
   
   @Column({
     name: 'description',
@@ -88,7 +61,7 @@ export class CategoryEntity extends BaseEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
-  constructor(partial?: Partial<CategoryEntity>) {
+  constructor(partial?: Partial<UomEntity>) {
     super();
     Object.assign(this, partial);
   }

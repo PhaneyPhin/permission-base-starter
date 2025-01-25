@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
-import { ItemGroupResponseDto } from '../../procument/master-data/item-group/dtos';
 
-export class CategoryResponseDto {
+export class UomResponseDto {
   @ApiProperty()
   id: number;
 
@@ -14,15 +13,6 @@ export class CategoryResponseDto {
 
   @ApiProperty()
   nameKh: string;
-
-  @ApiProperty()
-  parentId: number;
-
-  @ApiProperty()
-  parent: CategoryResponseDto;
-
-  @ApiProperty()
-  itemGroup: ItemGroupResponseDto;
 
   @ApiProperty()
   description: string;

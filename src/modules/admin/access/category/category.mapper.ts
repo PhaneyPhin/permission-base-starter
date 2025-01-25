@@ -5,6 +5,7 @@ import {
   UpdateCategoryRequestDto,
   CategoryResponseDto,
 } from './dtos';
+import { ItemGroupMapper } from '../procument/master-data/item-group/item-group.mapper';
 
 export class CategoryMapper {
   public static async toDto(entity: CategoryEntity): Promise<CategoryResponseDto> {
@@ -19,6 +20,10 @@ export class CategoryMapper {
 
     if (entity.parent) {
       dto.parent = await CategoryMapper.toDto(entity.parent);
+    }
+
+    if (entity.itemGroup) {
+      dto.itemGroup = await ItemGroupMapper.toDto(entity.itemGroup);
     }
 
     if (entity.createdByUser) {
@@ -36,6 +41,7 @@ export class CategoryMapper {
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.parentId = dto.parentId === 0 ? null : dto.parentId;
+    entity.itemGroupId = dto.itemGroupId;
     entity.description = dto.description;
     
 
@@ -50,6 +56,7 @@ export class CategoryMapper {
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.parentId = dto.parentId === 0 ? null : dto.parentId;
+    entity.itemGroupId = dto.itemGroupId;
     entity.description = dto.description;
     
 

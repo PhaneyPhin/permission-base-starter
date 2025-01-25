@@ -95,6 +95,16 @@ const permissions = [
   { slug: 'admin.access.staff-profile.create', description: 'Create Staff Profile' },
   { slug: 'admin.access.staff-profile.update', description: 'Update Staff Profile' },
   { slug: 'admin.access.staff-profile.delete', description: 'Delete Staff Profile' },
+
+  { slug: 'admin.access.item-group.read', description: 'Read Item Group' },
+  { slug: 'admin.access.item-group.create', description: 'Create Item Group' },
+  { slug: 'admin.access.item-group.update', description: 'Update Item Group' },
+  { slug: 'admin.access.item-group.delete', description: 'Delete Item Group' },
+
+  { slug: 'admin.access.uom.read', description: 'Read Unit of Measure' },
+  { slug: 'admin.access.uom.create', description: 'Create Unit of Measure' },
+  { slug: 'admin.access.uom.update', description: 'Update Unit of Measure' },
+  { slug: 'admin.access.uom.delete', description: 'Delete Unit of Measure' },
 ];
 
 const rolePermissions = {

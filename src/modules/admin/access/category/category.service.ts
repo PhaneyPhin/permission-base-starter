@@ -19,11 +19,11 @@ import { CategoryExistsException } from './category-exist.exception'; // e.g., c
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
 
-export const CATEGORY_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'parentId', 'description', ];
+export const CATEGORY_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
 @Injectable()
 export class CategoryService extends BaseCrudService {
   protected queryName: string = 'category';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'parentId', 'description', ];
+  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
   protected FILTER_FIELDS = CATEGORY_FILTER_FIELDS
 
   constructor(
@@ -45,6 +45,12 @@ export class CategoryService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<CategoryEntity> } = {
+      parent: (query, value) => {
+        return query.andWhere('parent.name_en ILIKE %parent% or parent.name_kh ILIKE %parent%', { parent: value })
+      },
+      itemGroup: (query, value) => {
+        return query.andWhere('itemGroup.name_en ILIKE %itemGroup% or itemGroup.name_kh ILIKE %itemGroup%', { itemGroup: value })
+      },
       createdAt: (query, value) => {
         const [start, end] = value.split(',');
         return query.andWhere('category.created_at BETWEEN :start AND :end', { start, end });
@@ -58,6 +64,7 @@ export class CategoryService extends BaseCrudService {
   protected getListQuery() {
     return this.categoryRepository.createQueryBuilder('category')
       .leftJoinAndSelect('category.parent', 'parent')
+      .leftJoinAndSelect('category.itemGroup', 'itemGroup')
       .leftJoinAndSelect('category.createdByUser', 'uc')
   }
   

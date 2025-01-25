@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.category';
+const tableName = 'admin.item-group';
 
-export class CategoryMigration1737558836224 implements MigrationInterface {
+export class ItemGroupMigration1737799956228 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -21,7 +21,6 @@ export class CategoryMigration1737558836224 implements MigrationInterface {
             name: 'code',
             type: 'varchar',
             length: '160',
-            isUnique: true,
             isNullable: false,
           },
           
@@ -36,18 +35,6 @@ export class CategoryMigration1737558836224 implements MigrationInterface {
             name: 'name_kh',
             type: 'varchar',
             length: '160',
-            isNullable: false,
-          },
-          
-          {
-            name: 'parent_id',
-            type: 'integer',
-            isNullable: true,
-          },
-
-          {
-            name: 'item_group_id',
-            type: 'integer',
             isNullable: false,
           },
           
