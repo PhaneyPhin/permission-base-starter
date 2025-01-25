@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ItemGroupController } from './item-group.controller';
+import { ItemGroupService } from './item-group.service';
+import { ItemGroupEntity } from './item-group.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([ItemGroupEntity])],
+  controllers: [ItemGroupController],
+  providers: [ItemGroupService],
+})
+export class ItemGroupModule {}

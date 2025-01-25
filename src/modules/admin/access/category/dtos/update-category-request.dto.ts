@@ -3,6 +3,7 @@ import { IsBoolean, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateCategoryRequestDto extends CreateCategoryRequestDto {
+
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -21,6 +22,10 @@ export class UpdateCategoryRequestDto extends CreateCategoryRequestDto {
   @ApiProperty({ required: false, nullable: true })
   @IsOptional()
   parentId?: number | null;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  itemGroupId: number;
 
   @ApiProperty()
   @IsOptional()

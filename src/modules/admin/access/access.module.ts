@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { HumanResourceModule } from './human-resource/human-resource.module';
 import { CategoryModule } from './category/category.module';
+import { ProcumentModule } from './procument/procument.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { CategoryModule } from './category/category.module';
     DepartmentModule,
     MasterDataModule,
     HumanResourceModule,
-    CategoryModule
+    CategoryModule,
+    ProcumentModule,
   ],
 })
 export class AccessModule {}
