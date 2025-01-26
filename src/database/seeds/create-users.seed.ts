@@ -1,25 +1,25 @@
-import { PermissionEntity } from '@admin/access/permissions/permission.entity';
-import { RoleEntity } from '@admin/access/roles/role.entity';
-import { UserStatus } from '@admin/access/users/user-status.enum';
-import { UserEntity } from '@admin/access/users/user.entity';
-import { faker } from '@faker-js/faker';
-import { HashHelper } from '@helpers';
-import minioClient from '@libs/pagination/minio';
-import { BranchEntity } from '@modules/admin/access/branch/branch.entity';
-import { AnalysisCodeEntity } from '@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity';
-import { DimensionEntity } from '@modules/admin/access/construction/master-data/dimension/dimension.entity';
-import { DepartmentEntity } from '@modules/admin/access/department/department.entity';
-import { UserApproval } from '@modules/admin/access/users/user-approval';
-import { WarehouseEntity } from '@modules/admin/access/warehouse/warehouse.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
+import { PermissionEntity } from "@admin/access/permissions/permission.entity";
+import { RoleEntity } from "@admin/access/roles/role.entity";
+import { UserStatus } from "@admin/access/users/user-status.enum";
+import { UserEntity } from "@admin/access/users/user.entity";
+import { faker } from "@faker-js/faker";
+import { HashHelper } from "@helpers";
+import minioClient from "@libs/pagination/minio";
+import { BranchEntity } from "@modules/admin/access/branch/branch.entity";
+import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
+import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
+import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
+import { UserApproval } from "@modules/admin/access/users/user-approval";
+import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { DataSource } from "typeorm";
 
 // Define seed data
 const baseUsers: any[] = [
   {
-    name: 'Admin',
-    password: 'Hello123',
-    username: 'Admin',
+    name: "Admin",
+    password: "Hello123",
+    username: "Admin",
     isSuperUser: true,
     userApproval: UserApproval.Approved,
     status: UserStatus.Active, // Default status which will be overridden by Faker and random assignment.
@@ -27,90 +27,161 @@ const baseUsers: any[] = [
 ];
 
 const permissions = [
-  { slug: 'admin.access.users.read', description: 'Read users' },
-  { slug: 'admin.access.users.create', description: 'Create users' },
-  { slug: 'admin.access.users.update', description: 'Update users' },
-  { slug: 'admin.access.users.import', description: 'Import users' },
-  { slug: 'admin.access.users.export', description: 'Export users' },
-  { slug: 'admin.access.users.delete', description: 'Delete users' },
+  { slug: "admin.access.users.read", description: "Read users" },
+  { slug: "admin.access.users.create", description: "Create users" },
+  { slug: "admin.access.users.update", description: "Update users" },
+  { slug: "admin.access.users.import", description: "Import users" },
+  { slug: "admin.access.users.export", description: "Export users" },
+  { slug: "admin.access.users.delete", description: "Delete users" },
 
-  { slug: 'admin.access.roles.read', description: 'Read Roles' },
-  { slug: 'admin.access.roles.create', description: 'Create Roles' },
-  { slug: 'admin.access.roles.update', description: 'Update Roles' },
-  { slug: 'admin.access.warehouse.read', description: 'Read warehouse' },
-  { slug: 'admin.access.warehouse.create', description: 'Create warehouse' },
-  { slug: 'admin.access.warehouse.update', description: 'Update warehouse' },
-  { slug: 'admin.access.warehouse.delete', description: 'Delete warehouse' },
+  { slug: "admin.access.roles.read", description: "Read Roles" },
+  { slug: "admin.access.roles.create", description: "Create Roles" },
+  { slug: "admin.access.roles.update", description: "Update Roles" },
+  { slug: "admin.access.warehouse.read", description: "Read warehouse" },
+  { slug: "admin.access.warehouse.create", description: "Create warehouse" },
+  { slug: "admin.access.warehouse.update", description: "Update warehouse" },
+  { slug: "admin.access.warehouse.delete", description: "Delete warehouse" },
 
-  { slug: 'admin.access.company.read', description: 'Read company' },
-  { slug: 'admin.access.company.create', description: 'Create company' },
-  { slug: 'admin.access.company.update', description: 'Update company' },
-  { slug: 'admin.access.company.delete', description: 'Delete company' },
+  { slug: "admin.access.company.read", description: "Read company" },
+  { slug: "admin.access.company.create", description: "Create company" },
+  { slug: "admin.access.company.update", description: "Update company" },
+  { slug: "admin.access.company.delete", description: "Delete company" },
 
-  { slug: 'admin.access.branch.read', description: 'Read branch' },
-  { slug: 'admin.access.branch.create', description: 'Create branch' },
-  { slug: 'admin.access.branch.update', description: 'Update branch' },
-  { slug: 'admin.access.branch.delete', description: 'Delete branch' },
+  { slug: "admin.access.branch.read", description: "Read branch" },
+  { slug: "admin.access.branch.create", description: "Create branch" },
+  { slug: "admin.access.branch.update", description: "Update branch" },
+  { slug: "admin.access.branch.delete", description: "Delete branch" },
 
-  { slug: 'admin.access.department.create', description: 'Create department' },
-  { slug: 'admin.access.department.update', description: 'Update department' },
-  { slug: 'admin.access.department.delete', description: 'Delete department' },
+  { slug: "admin.access.department.create", description: "Create department" },
+  { slug: "admin.access.department.update", description: "Update department" },
+  { slug: "admin.access.department.delete", description: "Delete department" },
 
-  { slug: 'admin.access.dimension.read', description: 'Read branch' },
-  { slug: 'admin.access.dimension.create', description: 'Create branch' },
-  { slug: 'admin.access.dimension.update', description: 'Update branch' },
-  { slug: 'admin.access.dimension.delete', description: 'Delete branch' },
+  { slug: "admin.access.dimension.read", description: "Read branch" },
+  { slug: "admin.access.dimension.create", description: "Create branch" },
+  { slug: "admin.access.dimension.update", description: "Update branch" },
+  { slug: "admin.access.dimension.delete", description: "Delete branch" },
 
-  { slug: 'admin.access.analysis-code.read', description: 'Read analysis code' },
-  { slug: 'admin.access.analysis-code.create', description: 'Create analysis code' },
-  { slug: 'admin.access.analysis-code.update', description: 'Update analysis code' },
-  { slug: 'admin.access.analysis-code.delete', description: 'Delete analysis code' },
+  {
+    slug: "admin.access.analysis-code.read",
+    description: "Read analysis code",
+  },
+  {
+    slug: "admin.access.analysis-code.create",
+    description: "Create analysis code",
+  },
+  {
+    slug: "admin.access.analysis-code.update",
+    description: "Update analysis code",
+  },
+  {
+    slug: "admin.access.analysis-code.delete",
+    description: "Delete analysis code",
+  },
 
-  { slug: 'admin.access.master-plan.read', description: 'Read master plan' },
-  { slug: 'admin.access.master-plan.create', description: 'Create master plan' },
-  { slug: 'admin.access.master-plan.update', description: 'Update master plan' },
-  { slug: 'admin.access.master-plan.delete', description: 'Delete master plan' },
+  { slug: "admin.access.master-plan.read", description: "Read master plan" },
+  {
+    slug: "admin.access.master-plan.create",
+    description: "Create master plan",
+  },
+  {
+    slug: "admin.access.master-plan.update",
+    description: "Update master plan",
+  },
+  {
+    slug: "admin.access.master-plan.delete",
+    description: "Delete master plan",
+  },
 
-  { slug: 'admin.access.employee-position.read', description: 'Read master plan' },
-  { slug: 'admin.access.employee-position.create', description: 'Create master plan' },
-  { slug: 'admin.access.employee-position.update', description: 'Update master plan' },
-  { slug: 'admin.access.employee-position.delete', description: 'Delete master plan' },
+  {
+    slug: "admin.access.employee-position.read",
+    description: "Read master plan",
+  },
+  {
+    slug: "admin.access.employee-position.create",
+    description: "Create master plan",
+  },
+  {
+    slug: "admin.access.employee-position.update",
+    description: "Update master plan",
+  },
+  {
+    slug: "admin.access.employee-position.delete",
+    description: "Delete master plan",
+  },
 
-  { slug: 'admin.access.category.read', description: 'Read Category' },
-  { slug: 'admin.access.category.create', description: 'Create Category' },
-  { slug: 'admin.access.category.update', description: 'Update Category' },
-  { slug: 'admin.access.category.delete', description: 'Delete Category' },
+  { slug: "admin.access.category.read", description: "Read Category" },
+  { slug: "admin.access.category.create", description: "Create Category" },
+  { slug: "admin.access.category.update", description: "Update Category" },
+  { slug: "admin.access.category.delete", description: "Delete Category" },
 
-  { slug: 'admin.access.position.read', description: 'Read Position' },
-  { slug: 'admin.access.position.create', description: 'Create Position' },
-  { slug: 'admin.access.position.update', description: 'Update Position' },
-  { slug: 'admin.access.position.delete', description: 'Delete Position' },
+  { slug: "admin.access.position.read", description: "Read Position" },
+  { slug: "admin.access.position.create", description: "Create Position" },
+  { slug: "admin.access.position.update", description: "Update Position" },
+  { slug: "admin.access.position.delete", description: "Delete Position" },
 
-  { slug: 'admin.access.nationality.read', description: 'Read Nationality' },
-  { slug: 'admin.access.nationality.create', description: 'Create Nationality' },
-  { slug: 'admin.access.nationality.update', description: 'Update Nationality' },
-  { slug: 'admin.access.nationality.delete', description: 'Delete Nationality' },
+  { slug: "admin.access.nationality.read", description: "Read Nationality" },
+  {
+    slug: "admin.access.nationality.create",
+    description: "Create Nationality",
+  },
+  {
+    slug: "admin.access.nationality.update",
+    description: "Update Nationality",
+  },
+  {
+    slug: "admin.access.nationality.delete",
+    description: "Delete Nationality",
+  },
 
-  { slug: 'admin.access.staff-profile.read', description: 'Read Staff Profile' },
-  { slug: 'admin.access.staff-profile.create', description: 'Create Staff Profile' },
-  { slug: 'admin.access.staff-profile.update', description: 'Update Staff Profile' },
-  { slug: 'admin.access.staff-profile.delete', description: 'Delete Staff Profile' },
-  { slug: 'admin.access.staff-profile.update-status', description: 'Update status of Staff Profile' },
+  {
+    slug: "admin.access.staff-profile.read",
+    description: "Read Staff Profile",
+  },
+  {
+    slug: "admin.access.staff-profile.create",
+    description: "Create Staff Profile",
+  },
+  {
+    slug: "admin.access.staff-profile.update",
+    description: "Update Staff Profile",
+  },
+  {
+    slug: "admin.access.staff-profile.delete",
+    description: "Delete Staff Profile",
+  },
+  {
+    slug: "admin.access.staff-profile.update-status",
+    description: "Update status of Staff Profile",
+  },
 
-  { slug: 'admin.access.item-group.read', description: 'Read Item Group' },
-  { slug: 'admin.access.item-group.create', description: 'Create Item Group' },
-  { slug: 'admin.access.item-group.update', description: 'Update Item Group' },
-  { slug: 'admin.access.item-group.delete', description: 'Delete Item Group' },
+  { slug: "admin.access.item-group.read", description: "Read Item Group" },
+  { slug: "admin.access.item-group.create", description: "Create Item Group" },
+  { slug: "admin.access.item-group.update", description: "Update Item Group" },
+  { slug: "admin.access.item-group.delete", description: "Delete Item Group" },
 
-  { slug: 'admin.access.uom.read', description: 'Read Unit of Measure' },
-  { slug: 'admin.access.uom.create', description: 'Create Unit of Measure' },
-  { slug: 'admin.access.uom.update', description: 'Update Unit of Measure' },
-  { slug: 'admin.access.uom.delete', description: 'Delete Unit of Measure' },
+  { slug: "admin.access.uom.read", description: "Read Unit of Measure" },
+  { slug: "admin.access.uom.create", description: "Create Unit of Measure" },
+  { slug: "admin.access.uom.update", description: "Update Unit of Measure" },
+  { slug: "admin.access.uom.delete", description: "Delete Unit of Measure" },
 
-  { slug: 'admin.access.item.read', description: 'Read Item' },
-  { slug: 'admin.access.item.create', description: 'Create Item' },
-  { slug: 'admin.access.item.update', description: 'Update Item' },
-  { slug: 'admin.access.item.delete', description: 'Delete Item' },
+  { slug: "admin.access.item.read", description: "Read Item" },
+  { slug: "admin.access.item.create", description: "Create Item" },
+  { slug: "admin.access.item.update", description: "Update Item" },
+  { slug: "admin.access.item.delete", description: "Delete Item" },
+
+  { slug: "admin.access.vendor-type.read", description: "Read vendor-type" },
+  {
+    slug: "admin.access.vendor-type.create",
+    description: "Create vendor-type",
+  },
+  {
+    slug: "admin.access.vendor-type.update",
+    description: "Update vendor-type",
+  },
+  {
+    slug: "admin.access.vendor-type.delete",
+    description: "Delete vendor-type",
+  },
 ];
 
 const rolePermissions = {
@@ -119,7 +190,7 @@ const rolePermissions = {
   Admin: permissions,
 };
 
-const seedBuckets = ['images', 'files'];
+const seedBuckets = ["images", "files"];
 
 // // Utility function for random status selection
 // function getRandomStatus(): UserStatus {
@@ -129,7 +200,7 @@ const seedBuckets = ['images', 'files'];
 async function createBucket(bucketName: string) {
   const exists = await minioClient.bucketExists(bucketName);
   if (!exists) {
-    await minioClient.makeBucket(bucketName, 'us-east-1');
+    await minioClient.makeBucket(bucketName, "us-east-1");
   }
 }
 
@@ -139,13 +210,13 @@ async function seedDatabase(dataSource: DataSource) {
   // Create permissions
   const allPermissions = permissions;
   const permissionEntities = allPermissions.map((permission) =>
-    dataSource.manager.create(PermissionEntity, permission),
+    dataSource.manager.create(PermissionEntity, permission)
   );
   const savedPermissions = await dataSource.manager.save(permissionEntities);
 
   // Map saved permissions to their slugs
   const permissionMap = Object.fromEntries(
-    savedPermissions.map((p) => [p.slug, p]),
+    savedPermissions.map((p) => [p.slug, p])
   );
 
   // Create roles
@@ -153,7 +224,7 @@ async function seedDatabase(dataSource: DataSource) {
     dataSource.manager.create(RoleEntity, {
       name: roleName,
       permissions: rolePermissions[roleName].map((p) => permissionMap[p.slug]),
-    }),
+    })
   );
   const savedRoles = await dataSource.manager.save(roleEntities);
 
@@ -163,7 +234,7 @@ async function seedDatabase(dataSource: DataSource) {
   const firstUserData = {
     ...baseUser,
     name: faker.person.fullName(),
-    username: 'admin',
+    username: "admin",
     email: faker.internet.email(),
     status: UserStatus.Active,
   };
@@ -173,13 +244,13 @@ async function seedDatabase(dataSource: DataSource) {
     password: firstHashedPassword,
     roles: savedRoles,
   } as any);
-  console.log("firstEntity",firstUserEntity);
+  console.log("firstEntity", firstUserEntity);
   await dataSource.manager.save(firstUserEntity);
 
   // Create 200 additional users with Faker data
   for (let i = 0; i < 2; i++) {
     const fakeName = faker.person.fullName();
-    const fakeUsername = 'admin' + i;
+    const fakeUsername = "admin" + i;
     const fakeEmail = faker.internet.email();
 
     const userData = {
@@ -200,122 +271,124 @@ async function seedDatabase(dataSource: DataSource) {
     await dataSource.manager.save(userEntity);
   }
 
-  const user = await dataSource.manager.findOneByOrFail(UserEntity, { username: 'admin1'})
+  const user = await dataSource.manager.findOneByOrFail(UserEntity, {
+    username: "admin1",
+  });
   const branch = await dataSource.manager.save(BranchEntity, {
     nameEn: faker.person.fullName(),
     nameKh: faker.person.fullName(),
     active: true,
-    code: '00001',
+    code: "00001",
     createdBy: user.id,
     contactPerson: faker.person.fullName(),
-    phoneNumber: '098674565',
+    phoneNumber: "098674565",
     addressEn: faker.person.jobArea(),
     addressKh: faker.person.jobArea(),
-    description: faker.person.jobDescriptor()
-  })
-  for (var index = 0; index< 5; index ++) {
+    description: faker.person.jobDescriptor(),
+  });
+  for (var index = 0; index < 5; index++) {
+    const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
+      active: true,
+      code: "00000" + (index + 1),
+      branch_id: branch.id,
+      createdBy: user.id,
+      description: faker.person.jobDescriptor(),
+      nameEn: faker.person.fullName(),
+      nameKh: faker.person.fullName(),
+    });
 
-      const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
-        active: true,
-        code: '00000' + (index + 1),
-        branch_id: branch.id,
-        createdBy: user.id,
-        description: faker.person.jobDescriptor(),
-        nameEn: faker.person.fullName(),
-        nameKh: faker.person.fullName()
-      })
+    const department = dataSource.manager.create(DepartmentEntity, {
+      active: true,
+      code: (index + 1).toString().padStart(7, "0"),
+      createdBy: user.id,
+      nameEn: faker.person.fullName(),
+      nameKh: faker.person.fullName(),
+      description: faker.book.title(),
+    });
 
-
-      const department = dataSource.manager.create(DepartmentEntity, {
-        active: true,
-        code: (index+1).toString().padStart(7, '0'),
-        createdBy: user.id,
-        nameEn: faker.person.fullName(),
-        nameKh: faker.person.fullName(),
-        description: faker.book.title()
-      })
-
-      await dataSource.manager.save(warehouseEntity)
-      await dataSource.manager.save(department)
+    await dataSource.manager.save(warehouseEntity);
+    await dataSource.manager.save(department);
   }
 
   const defaultDimension = {
     createdBy: user.id,
     updatedBy: user.id,
-  }
+  };
   const dimensions = dataSource.manager.create(DimensionEntity, [
     {
       ...defaultDimension,
-      code: '01',
-      nameEn: 'Project',
-      nameKh: 'គម្រោង'
+      code: "01",
+      nameEn: "Project",
+      nameKh: "គម្រោង",
     },
     {
       ...defaultDimension,
-      code: '02',
-      nameEn: 'Block',
-      nameKh: 'ប្លុក'
+      code: "02",
+      nameEn: "Block",
+      nameKh: "ប្លុក",
     },
     {
       ...defaultDimension,
-      code: '03',
-      nameEn: 'Building',
-      nameKh: 'អាគារ'
+      code: "03",
+      nameEn: "Building",
+      nameKh: "អាគារ",
     },
     {
       ...defaultDimension,
-      code: '04',
-      nameEn: 'Street',
-      nameKh: 'ផ្លូវ'
+      code: "04",
+      nameEn: "Street",
+      nameKh: "ផ្លូវ",
     },
     {
       ...defaultDimension,
-      code: '05',
-      nameEn: 'Division',
-      nameKh: 'ផ្នែក'
+      code: "05",
+      nameEn: "Division",
+      nameKh: "ផ្នែក",
     },
     {
       ...defaultDimension,
-      code: '06',
-      nameEn: 'Unit Type',
-      nameKh: 'ប្រភេទផ្ទះ'
-    }
-  ])
+      code: "06",
+      nameEn: "Unit Type",
+      nameKh: "ប្រភេទផ្ទះ",
+    },
+  ]);
 
-  const dimensionEntities = await dataSource.manager.save(dimensions)
+  const dimensionEntities = await dataSource.manager.save(dimensions);
 
   const analysisCodes = dimensionEntities.map((dimension) => {
     return dataSource.manager.create(AnalysisCodeEntity, {
       dimensionId: dimension.id,
       nameEn: faker.person.firstName(),
       nameKh: faker.person.firstName(),
-      code: dimension.code
-    })
-  })
+      code: dimension.code,
+    });
+  });
 
-  await dataSource.manager.save(analysisCodes)
-  console.log('Database seeded successfully!');
+  await dataSource.manager.save(analysisCodes);
+  console.log("Database seeded successfully!");
 }
 
 // Bootstrap the seeding process
 async function bootstrap() {
   // Initialize ConfigModule
   ConfigModule.forRoot({
-    envFilePath: '.env',
+    envFilePath: ".env",
   });
 
   const configService = new ConfigService();
 
   const dataSource = new DataSource({
-    type: 'postgres',
-    host: configService.get<string>('TYPEORM_HOST', 'localhost'),
-    port: configService.get<number>('TYPEORM_PORT', 5432),
-    username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
-    password: configService.get<string>('TYPEORM_PASSWORD', 'password'),
-    database: configService.get<string>('TYPEORM_DATABASE', 'nestjs_sample'),
-    entities: [require('path').join(__dirname, '../../modules/**/*.entity.{ts,js}')],
+    type: "postgres",
+    host: configService.get<string>("TYPEORM_HOST", "localhost"),
+    port: configService.get<number>("TYPEORM_PORT", 5432),
+    username: configService.get<string>("TYPEORM_USERNAME", "postgres"),
+    password: configService.get<string>("TYPEORM_PASSWORD", "password"),
+    database: configService.get<string>("TYPEORM_DATABASE", "nestjs_sample"),
+    entities: [
+      require("path").join(__dirname, "../../modules/**/*.entity.{ts,js}"),
+    ],
     synchronize: false,
-    logging: configService.get<boolean>('TYPEORM_LOGGING', false),
+    logging: configService.get<boolean>("TYPEORM_LOGGING", false),
   });
 
   await Promise.all(seedBuckets.map(createBucket));
@@ -325,6 +398,6 @@ async function bootstrap() {
 }
 
 bootstrap().catch((error) => {
-  console.error('Error during database seeding:', error);
+  console.error("Error during database seeding:", error);
   process.exit(1);
 });
