@@ -196,6 +196,79 @@ const permissions = [
     slug: "admin.access.vendor-class.delete",
     description: "Delete vendor-class",
   },
+
+  { slug: "admin.access.bank.read", description: "Read bank" },
+  {
+    slug: "admin.access.bank.create",
+    description: "Create bank",
+  },
+  {
+    slug: "admin.access.bank.update",
+    description: "Update bank",
+  },
+  {
+    slug: "admin.access.bank.delete",
+    description: "Delete bank",
+  },
+
+  {
+    slug: "admin.access.payment-method.read",
+    description: "Read payment-method",
+  },
+  {
+    slug: "admin.access.payment-method.create",
+    description: "Create payment-method",
+  },
+  {
+    slug: "admin.access.payment-method.update",
+    description: "Update payment-method",
+  },
+  {
+    slug: "admin.access.payment-method.delete",
+    description: "Delete payment-method",
+  },
+
+  { slug: "admin.access.payment-term.read", description: "Read payment-term" },
+  {
+    slug: "admin.access.payment-term.create",
+    description: "Create payment-term",
+  },
+  {
+    slug: "admin.access.payment-term.update",
+    description: "Update payment-term",
+  },
+  {
+    slug: "admin.access.payment-term.delete",
+    description: "Delete payment-term",
+  },
+
+  { slug: "admin.access.vendor.read", description: "Read vendor" },
+  {
+    slug: "admin.access.vendor.create",
+    description: "Create vendor",
+  },
+  {
+    slug: "admin.access.vendor.update",
+    description: "Update vendor",
+  },
+  {
+    slug: "admin.access.vendor.delete",
+    description: "Delete vendor",
+  },
+
+  { slug: "admin.access.vendor-bank.read", description: "Read vendor-bank" },
+  {
+    slug: "admin.access.vendor-bank.create",
+    description: "Create vendor-bank",
+  },
+  {
+    slug: "admin.access.vendor-bank.update",
+    description: "Update vendor-bank",
+  },
+  {
+    slug: "admin.access.vendor-bank.delete",
+    description: "Delete vendor-bank",
+  },
 ];
 
 const rolePermissions = {

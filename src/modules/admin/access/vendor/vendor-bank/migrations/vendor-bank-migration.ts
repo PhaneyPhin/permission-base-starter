@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.<%= dasherize(name) %>';
+const tableName = 'admin.vendor-bank';
 
-export class <%= classify(name) %>Migration<%= timestamp %> implements MigrationInterface {
+export class VendorBankMigration1737908491845 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -16,14 +16,42 @@ export class <%= classify(name) %>Migration<%= timestamp %> implements Migration
             isPrimary: true,
             isNullable: false,
           },
-          <% fields.forEach(field => { %>
+          
           {
-            name: '<%= field %>',
+            name: 'vendor_id',
             type: 'varchar',
             length: '160',
             isNullable: false,
           },
-          <% }) %>
+          
+          {
+            name: 'bank_id',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'account_number',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'account_holder_name',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
+          {
+            name: 'currency',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
           {
             name: 'created_by',
             type: 'uuid',
