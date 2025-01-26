@@ -1,7 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
-import { MasterPlanStatus } from '../enums/master-plan-status.enum';
+import { ApiProperty } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  MaxLength,
+} from "class-validator";
+import { MasterPlanStatus } from "../enums/master-plan-status.enum";
 
 export class CreateMasterPlanRequestDto {
   @ApiProperty()
@@ -10,11 +17,13 @@ export class CreateMasterPlanRequestDto {
   unitCode: string;
 
   @ApiProperty()
-  @IsEnum(MasterPlanStatus, { message: 'Status must be one of the defined enum values' })
+  @IsEnum(MasterPlanStatus, {
+    message: "Status must be one of the defined enum values",
+  })
   @IsOptional() // Makes the field optional
   @Transform(({ value }) => value || MasterPlanStatus.OPEN) // Default to `OPEN` if no value is provided
   status: MasterPlanStatus;
-  
+
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
@@ -82,7 +91,7 @@ export class CreateMasterPlanRequestDto {
   @ApiProperty()
   @IsOptional()
   @MaxLength(160)
-  actualFinishDate: string;
+  actualFinishDate: Date;
 
   @ApiProperty()
   @IsOptional()
@@ -99,7 +108,7 @@ export class CreateMasterPlanRequestDto {
   @MaxLength(160)
   standardCost: string;
 
-  @ApiProperty() 
+  @ApiProperty()
   @IsOptional()
   @MaxLength(160)
   actualCost: string;

@@ -52,7 +52,7 @@ export class MasterPlanResponseDto {
   endBuildDate: string;
 
   @ApiProperty()
-  actualFinishDate: string;
+  actualFinishDate: Date;
 
   @ApiProperty()
   completedPercentage: string;

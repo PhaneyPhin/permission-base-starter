@@ -105,7 +105,7 @@ export class MasterPlanEntity extends BaseEntity {
     type: "varchar",
     nullable: true,
   })
-  actualFinishDate: string;
+  actualFinishDate: Date;
 
   @Column({
     name: "completed_percentage",
