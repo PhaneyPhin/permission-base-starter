@@ -1,13 +1,13 @@
-import { UserResponseDto } from '@admin/access/users/dtos';
-import { ApiProperty } from '@nestjs/swagger';
-import { MasterPlanStatus } from '../enums/master-plan-status.enum';
+import { UserResponseDto } from "@admin/access/users/dtos";
+import { ApiProperty } from "@nestjs/swagger";
+import { MasterPlanStatus } from "../enums/master-plan-status.enum";
 
 export class MasterPlanResponseDto {
   @ApiProperty()
   id: number;
 
   @ApiProperty()
-  unitCode: string;
+  unitNumber: string;
 
   @ApiProperty()
   status: MasterPlanStatus;
@@ -25,7 +25,7 @@ export class MasterPlanResponseDto {
   street: string;
 
   @ApiProperty()
-  unitNumber: string;
+  unitCode: string;
 
   @ApiProperty()
   division: string;
@@ -76,13 +76,13 @@ export class MasterPlanResponseDto {
   isHandover: string;
 
   @ApiProperty()
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty()
   createdBy: string;
 
   @ApiProperty()
-  updatedAt: string;
+  updatedAt: Date;
 
   @ApiProperty()
   updatedBy: string;
@@ -91,5 +91,11 @@ export class MasterPlanResponseDto {
   active: boolean;
 
   @ApiProperty()
-  createdByUser: UserResponseDto
+  createdByUser: UserResponseDto;
+
+  @ApiProperty()
+  updatedByUser: UserResponseDto;
+
+  @ApiProperty()
+  attachments: string[];
 }

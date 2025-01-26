@@ -1,31 +1,50 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Multer } from 'multer';
-import { MinioService } from '../minio.service';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { TOKEN_NAME } from '@modules/auth';
+import { TOKEN_NAME } from "@modules/auth";
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiBearerAuth, ApiBody, ApiConsumes } from "@nestjs/swagger";
+import { Multer } from "multer";
+import { MinioService } from "../minio.service";
 
 @ApiBearerAuth(TOKEN_NAME)
-@Controller('upload')
+@Controller({
+  path: "upload",
+  version: "1",
+})
 export class FileController {
-    constructor(private minioService: MinioService) {}
+  constructor(private minioService: MinioService) {}
 
-    @Post('image')
-    @ApiConsumes('multipart/form-data')
-    @ApiBody({
-        description: 'image file',
-        schema: {
-        type: 'object',
-        properties: {
-            file: {
-            type: 'string',
-            format: 'binary',
-            },
+  @Get("/:path")
+  async viewFile(@Param("path") path: string) {
+    console.log(path);
+    return await this.minioService.getPreviewUrl(path);
+  }
+
+  @Post("image")
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    description: "image file",
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
         },
-        },
-    })
-    @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file: Multer.File) {
-        return await this.minioService.uploadImage(new Date().getTime() + '-' + file.originalname, file.buffer);
-    }
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadFile(@UploadedFile() file: Multer.File) {
+    return await this.minioService.uploadImage(
+      new Date().getTime() + "-" + file.originalname,
+      file.buffer
+    );
+  }
 }
