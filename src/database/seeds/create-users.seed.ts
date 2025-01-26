@@ -182,6 +182,20 @@ const permissions = [
     slug: "admin.access.vendor-type.delete",
     description: "Delete vendor-type",
   },
+
+  { slug: "admin.access.vendor-class.read", description: "Read vendor-class" },
+  {
+    slug: "admin.access.vendor-class.create",
+    description: "Create vendor-class",
+  },
+  {
+    slug: "admin.access.vendor-class.update",
+    description: "Update vendor-class",
+  },
+  {
+    slug: "admin.access.vendor-class.delete",
+    description: "Delete vendor-class",
+  },
 ];
 
 const rolePermissions = {
