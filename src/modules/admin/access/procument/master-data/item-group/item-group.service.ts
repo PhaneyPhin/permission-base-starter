@@ -1,43 +1,47 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateItemGroupRequestDto,
-  UpdateItemGroupRequestDto,
   ItemGroupResponseDto,
-} from './dtos';
-import { ItemGroupMapper } from './item-group.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { ItemGroupEntity } from './item-group.entity';
-import { Repository } from 'typeorm';
-import { ItemGroupExistsException } from './item-group-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdateItemGroupRequestDto,
+} from "./dtos";
+import { ItemGroupExistsException } from "./item-group-exist.exception"; // e.g., custom exception
+import { ItemGroupEntity } from "./item-group.entity";
+import { ItemGroupMapper } from "./item-group.mapper";
 
-export const ITEM_GROUP_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
+export const ITEM_GROUP_FILTER_FIELDS = [
+  "code",
+  "nameEn",
+  "nameKh",
+  "description",
+];
 @Injectable()
 export class ItemGroupService extends BaseCrudService {
-  protected queryName: string = 'itemGroup';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
-  protected FILTER_FIELDS = ITEM_GROUP_FILTER_FIELDS
+  protected queryName: string = "itemGroup";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh", "description"];
+  protected FILTER_FIELDS = ITEM_GROUP_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(ItemGroupEntity)
-    private itemGroupRepository: Repository<ItemGroupEntity>,
+    private itemGroupRepository: Repository<ItemGroupEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return ItemGroupMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return ItemGroupMapper.toDto;
   }
 
   /**
@@ -46,22 +50,27 @@ export class ItemGroupService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<ItemGroupEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('itemGroup.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("itemGroup.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.itemGroupRepository.createQueryBuilder('itemGroup')
-      .leftJoinAndSelect('itemGroup.createdByUser', 'uc')
+    return this.itemGroupRepository
+      .createQueryBuilder("itemGroup")
+      .leftJoinAndSelect("itemGroup.createdByUser", "uc");
   }
   async getAllItemGroup() {
-    return (await this.getListQuery()
-      .getMany()).map(ItemGroupMapper.toSelectDto)
+    return (await this.getListQuery().getMany()).map(
+      ItemGroupMapper.toSelectDto
+    );
   }
 
   /**
@@ -69,7 +78,7 @@ export class ItemGroupService extends BaseCrudService {
    */
   public async getItemGroupById(id: number): Promise<ItemGroupResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("itemGroup.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,7 +91,7 @@ export class ItemGroupService extends BaseCrudService {
    * Create new item-group
    */
   public async createItemGroup(
-    dto: CreateItemGroupRequestDto,
+    dto: CreateItemGroupRequestDto
   ): Promise<ItemGroupResponseDto> {
     try {
       let entity = ItemGroupMapper.toCreateEntity(dto);
@@ -104,7 +113,7 @@ export class ItemGroupService extends BaseCrudService {
    */
   public async updateItemGroup(
     id: number,
-    dto: UpdateItemGroupRequestDto,
+    dto: UpdateItemGroupRequestDto
   ): Promise<ItemGroupResponseDto> {
     let entity = await this.itemGroupRepository.findOneBy({ id });
     if (!entity) {
@@ -128,9 +137,7 @@ export class ItemGroupService extends BaseCrudService {
   /**
    * Update item-group by id
    */
-  public async deleteItemGroup(
-    id: number
-  ): Promise<ItemGroupResponseDto> {
+  public async deleteItemGroup(id: number): Promise<ItemGroupResponseDto> {
     let entity = await this.itemGroupRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();
