@@ -17,7 +17,7 @@ import { StaffProfileEntity } from './staff-profile.entity';
 import { Repository } from 'typeorm';
 import { StaffProfileExistsException } from './staff-profile-exist.exception'; // e.g., custom exception
 import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+import { Filter, In } from 'typeorm';
 
 export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
 @Injectable()
@@ -161,4 +161,40 @@ export class StaffProfileService extends BaseCrudService {
       throw new InternalServerErrorException();
     }
   }
+
+  public async activateStaffProfiles(ids: number[]): Promise<number[]> {
+    return this.updateStaffProfilesActiveStatus(ids, true);
+  }
+  
+  public async deactivateStaffProfiles(ids: number[]): Promise<number[]> {
+    return this.updateStaffProfilesActiveStatus(ids, false);
+  }
+  
+  private async updateStaffProfilesActiveStatus(
+    ids: number[],
+    active: boolean,
+  ): Promise<number[]> {
+    const profiles = await this.staffProfileRepository.findBy({
+      id: In(ids),
+    });
+  
+    const foundIds = profiles.map((profile) => profile.id);
+    const missingIds = ids.filter((id) => !foundIds.includes(id));
+  
+    if (missingIds.length > 0) {
+      throw new NotFoundException(
+        `Staff profiles with IDs ${missingIds.join(', ')} not found.`,
+      );
+    }
+  
+    await this.staffProfileRepository
+      .createQueryBuilder()
+      .update()
+      .set({ active })
+      .whereInIds(ids)
+      .execute();
+  
+    return foundIds;
+  }  
+  
 }

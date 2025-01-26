@@ -1,7 +1,7 @@
 import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
-import { ItemGroupEntity } from '../procument/master-data/item-group/item-group.entity';
+import { ItemGroupEntity } from '../item-group/item-group.entity';
 
 @Entity({ schema: 'admin', name: 'category' })
 export class CategoryEntity extends BaseEntity {

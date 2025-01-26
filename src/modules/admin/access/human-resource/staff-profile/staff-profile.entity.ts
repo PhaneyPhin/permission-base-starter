@@ -16,6 +16,7 @@ export class StaffProfileEntity extends BaseEntity {
     name: 'staff_code',
     type: 'varchar',
     nullable: true,
+    unique: true,
   })
   staffCode: string;
   

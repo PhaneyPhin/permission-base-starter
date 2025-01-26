@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   ValidationPipe,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -16,6 +17,8 @@ import {
   ApiOperation,
   ApiTags,
   ApiQuery,
+  ApiNotFoundResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 
 import { STAFF_PROFILE_FILTER_FIELDS, StaffProfileService } from './staff-profile.service';
@@ -31,6 +34,8 @@ import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationRe
 import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { StaffProfileEntity } from './staff-profile.entity';
 import { UserEntity } from '@admin/access/users/user.entity';
+import { StaffProfileMapper } from './staff-profile.mapper';
+import { UpdateActiveStatusIdsDto } from './dtos/update-active-status-request-dto';
 
 @ApiTags('StaffProfile')
 @ApiBearerAuth(TOKEN_NAME)
@@ -113,5 +118,29 @@ export class StaffProfileController {
     @Param('id', ParseIntPipe) id: number
   ): Promise<StaffProfileResponseDto> {
     return this.staffProfileService.deleteStaffProfile(id);
+  }
+
+  @ApiOperation({ description: 'Activate multiple staff profiles' })
+  @ApiGlobalResponse(StaffProfileResponseDto)
+  @UseGuards(SuperUserGuard)
+  @Permissions('admin.access.staff-profile.update-status')
+  @Patch('/active')
+  public async activateStaffProfiles(
+    @Body(ValidationPipe) dto: UpdateActiveStatusIdsDto,
+  ): Promise<{ message: string; updatedIds: number[] }> {
+    const updatedIds = await this.staffProfileService.activateStaffProfiles(dto.ids);
+    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, true);
+  }
+
+  @ApiOperation({ description: 'Activate multiple staff profiles' })
+  @ApiGlobalResponse(StaffProfileResponseDto)
+  @UseGuards(SuperUserGuard)
+  @Permissions('admin.access.staff-profile.update-status')
+  @Patch('/deactivate')
+  public async deactivateStaffProfiles(
+    @Body(ValidationPipe) dto: UpdateActiveStatusIdsDto,
+  ): Promise<{ message: string; updatedIds: number[] }> {
+    const updatedIds = await this.staffProfileService.deactivateStaffProfiles(dto.ids);
+    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, false);
   }
 }

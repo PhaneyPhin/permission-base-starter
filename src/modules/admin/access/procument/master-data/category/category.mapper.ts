@@ -5,7 +5,7 @@ import {
   UpdateCategoryRequestDto,
   CategoryResponseDto,
 } from './dtos';
-import { ItemGroupMapper } from '../procument/master-data/item-group/item-group.mapper';
+import { ItemGroupMapper } from '../item-group/item-group.mapper';
 
 export class CategoryMapper {
   public static async toDto(entity: CategoryEntity): Promise<CategoryResponseDto> {
