@@ -129,4 +129,14 @@ export class StaffProfileMapper {
       id: staffProfile.id
     }
   }
+  public static toBulkUpdateResponse(
+    updatedIds: number[],
+    active: boolean,
+  ): { message: string; updatedIds: number[]; active: boolean } {
+    return {
+      message: `Successfully updated the active status for ${updatedIds.length} staff profiles.`,
+      updatedIds,
+      active,
+    };
+  }
 }
