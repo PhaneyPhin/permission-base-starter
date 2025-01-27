@@ -35,7 +35,7 @@ import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { StaffProfileEntity } from './staff-profile.entity';
 import { UserEntity } from '@admin/access/users/user.entity';
 import { StaffProfileMapper } from './staff-profile.mapper';
-import { StaffStatus } from './enams/staff-status-enum';
+import { StaffStatus } from './enams/staff-status.enum';
 import { UpdateStatusDto } from './dtos/update-active-status-request-dto';
 
 @ApiTags('StaffProfile')

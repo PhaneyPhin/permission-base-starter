@@ -18,13 +18,13 @@ import { Repository } from 'typeorm';
 import { StaffProfileExistsException } from './staff-profile-exist.exception'; // e.g., custom exception
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter, In } from 'typeorm';
-import { StaffStatus } from './enams/staff-status-enum';
+import { StaffStatus } from './enams/staff-status.enum';
 
-export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
+export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus','nationality', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
 @Injectable()
 export class StaffProfileService extends BaseCrudService {
   protected queryName: string = 'staffProfile';
-  protected SEARCH_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
+  protected SEARCH_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus','nationality','religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
   protected FILTER_FIELDS = STAFF_PROFILE_FILTER_FIELDS
 
   constructor(
@@ -56,9 +56,6 @@ export class StaffProfileService extends BaseCrudService {
       position: (query, value) => {
         return query.andWhere('position.name_en ILIKE %position% or position.name_kh ILIKE %position%', { position: value })
       },
-      nationality: (query, value) => {
-        return query.andWhere('nationality.name_en ILIKE %nationality% or nationality.name_kh ILIKE %nationality%', { nationality: value })
-      },
       department: (query, value) => {
         return query.andWhere('department.name_en ILIKE %department% or department.name_kh ILIKE %department%', { department: value })
       }
@@ -72,7 +69,6 @@ export class StaffProfileService extends BaseCrudService {
       .leftJoinAndSelect('staffProfile.createdByUser', 'uc')
       .leftJoinAndSelect('staffProfile.branch', 'branch')
       .leftJoinAndSelect('staffProfile.position', 'position')
-      .leftJoinAndSelect('staffProfile.nationality', 'nationality')
       .leftJoinAndSelect('staffProfile.department', 'department')
   }
   async getAllStaffProfile() {

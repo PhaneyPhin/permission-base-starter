@@ -9,7 +9,7 @@ import { NationalityMapper } from '../master-data/nationality/nationality.mapper
 import { BranchMapper } from '../../branch/branch.mapper';
 import { PositionMapper } from '../master-data/position/position.mapper';
 import { DepartmentMapper } from '../../department/department.mapper';
-import { StaffStatus } from './enams/staff-status-enum';
+import { StaffStatus } from './enams/staff-status.enum';
 
 export class StaffProfileMapper {
   public static async toDto(entity: StaffProfileEntity): Promise<StaffProfileResponseDto> {
@@ -23,6 +23,7 @@ export class StaffProfileMapper {
     dto.title = entity.title;
     dto.dateOfBirth = entity.dateOfBirth;
     dto.maritalStatus = entity.maritalStatus;
+    dto.nationality = entity.nationality;
     dto.religion = entity.religion;
     dto.companyCardNo = entity.companyCardNo;
     dto.identityId = entity.identityId;
@@ -37,9 +38,6 @@ export class StaffProfileMapper {
     dto.profileImage = entity.profileImage;
     dto.signatureImage = entity.signatureImage;
     
-    if (entity.nationality) {
-      dto.nationality = await NationalityMapper.toDto(entity.nationality);
-    }
     if (entity.branch) {
       dto.branch = await BranchMapper.toDto(entity.branch);
     }
@@ -68,7 +66,7 @@ export class StaffProfileMapper {
     entity.dateOfBirth = dto.dateOfBirth;
     entity.maritalStatus = dto.maritalStatus;
     entity.status = dto.status;
-    entity.nationalityId = dto.nationalityId;
+    entity.nationality = dto.nationality;
     entity.religion = dto.religion;
     entity.companyCardNo = dto.companyCardNo;
     entity.identityId = dto.identityId;
@@ -102,7 +100,7 @@ export class StaffProfileMapper {
     entity.dateOfBirth = dto.dateOfBirth;
     entity.maritalStatus = dto.maritalStatus;
     entity.status = dto.status;
-    entity.nationalityId = dto.nationalityId;
+    entity.nationality = dto.nationality;
     entity.religion = dto.religion;
     entity.companyCardNo = dto.companyCardNo;
     entity.identityId = dto.identityId;

@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MaritalStatus } from '../enams/maritalStatus.enum';
 import { Gender } from '../enams/gender.enum';
 import { Title } from '../enams/title.enum';
-import { StaffStatus } from '../enams/staff-status-enum';
+import { StaffStatus } from '../enams/staff-status.enum';
 
 export class UpdateStaffProfileRequestDto extends CreateStaffProfileRequestDto {
   @ApiProperty()
@@ -48,8 +48,8 @@ export class UpdateStaffProfileRequestDto extends CreateStaffProfileRequestDto {
   maritalStatus: MaritalStatus
 
   @ApiProperty()
-  @IsNotEmpty()
-  nationalityId: number;
+  @MaxLength(160)
+  nationality: string;
 
   @ApiProperty()
   @MaxLength(160)
