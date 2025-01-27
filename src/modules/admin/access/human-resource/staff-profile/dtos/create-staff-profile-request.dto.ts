@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Gender } from '../enams/gender.enum';
 import { Title } from '../enams/title.enum';
 import { MaritalStatus } from '../enams/maritalStatus.enum';
+import { StaffStatus } from '../enams/staff-status-enum';
 
 export class CreateStaffProfileRequestDto {
   @ApiProperty()
@@ -20,21 +21,30 @@ export class CreateStaffProfileRequestDto {
   @MaxLength(160)
   nameKh: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: Gender
+  })
+  @IsNotEmpty()
   @IsEnum(Gender)
-  sex: Gender;
+  sex: Gender
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: Title
+  })
+  @IsNotEmpty()
   @IsEnum(Title)
-  title: Title;
+  title: Title
 
   @ApiProperty()
   @MaxLength(160)
   dateOfBirth: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: MaritalStatus
+  })
+  @IsNotEmpty()
   @IsEnum(MaritalStatus)
-  maritalStatus: MaritalStatus;
+  maritalStatus: MaritalStatus
 
   @ApiProperty()
   @IsNotEmpty()
@@ -104,7 +114,12 @@ export class CreateStaffProfileRequestDto {
   @MaxLength(160)
   signatureImage: string;
 
-  
+  @ApiProperty({
+    enum: StaffStatus
+  })
+  @IsNotEmpty()
+  @IsEnum(StaffStatus)
+  status: StaffStatus
   
   createdBy: string;
 }

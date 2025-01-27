@@ -184,10 +184,10 @@ export class StaffProfileMigration1737647556021 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'active',
-            type: 'boolean',
+            name: 'status',
+            type: 'varchar',
+            length: '160',
             isNullable: false,
-            default: true,
           },
           ...commonFields,
         ],

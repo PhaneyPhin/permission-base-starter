@@ -5,6 +5,10 @@ import { BranchEntity } from '../../branch/branch.entity';
 import { NationalityEntity } from '../master-data/nationality/nationality.entity';
 import { PositionEntity } from '../master-data/position/position.entity';
 import { DepartmentEntity } from '../../department/department.entity';
+import { StaffStatus } from './enams/staff-status-enum';
+import { Gender } from './enams/gender.enum';
+import { Title } from './enams/title.enum';
+import { MaritalStatus } from './enams/maritalStatus.enum';
 
 @Entity({ schema: 'admin', name: 'staff-profile' })
 export class StaffProfileEntity extends BaseEntity {
@@ -36,17 +40,19 @@ export class StaffProfileEntity extends BaseEntity {
   
   @Column({
     name: 'sex',
-    type: 'varchar',
+    type: 'enum',
+    enum: Gender,
     nullable: true,
   })
-  sex: string;
-  
+  sex: Gender;
+
   @Column({
     name: 'title',
-    type: 'varchar',
+    type: 'enum',
+    enum: Title,
     nullable: true,
   })
-  title: string;
+  title: Title;
   
   @Column({
     name: 'date_of_birth',
@@ -54,13 +60,14 @@ export class StaffProfileEntity extends BaseEntity {
     nullable: true,
   })
   dateOfBirth: Date;
-  
+
   @Column({
     name: 'marital_status',
-    type: 'varchar',
+    type: 'enum',
+    enum: MaritalStatus,
     nullable: true,
   })
-  maritalStatus: string;
+  maritalStatus: MaritalStatus;
   
   @Column({
     name: 'nationality_id',
@@ -196,15 +203,14 @@ export class StaffProfileEntity extends BaseEntity {
     nullable: true,
   })
   signatureImage: string;
-  
 
   @Column({
-    name: 'active',
-    type: 'boolean',
+    name: 'status',
+    type: 'enum',
+    enum: StaffStatus,
     nullable: false,
-    default: true,
   })
-  active: boolean;
+  status: StaffStatus;
 
   @Column({
     name: 'created_by',
