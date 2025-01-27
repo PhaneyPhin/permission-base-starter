@@ -9,7 +9,6 @@ import { StaffStatus } from './enams/staff-status.enum';
 import { Gender } from './enams/gender.enum';
 import { Title } from './enams/title.enum';
 import { MaritalStatus } from './enams/maritalStatus.enum';
-import { Nationality } from './enams/nationality.enum';
 
 @Entity({ schema: 'admin', name: 'staff-profile' })
 export class StaffProfileEntity extends BaseEntity {
