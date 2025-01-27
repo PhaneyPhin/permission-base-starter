@@ -35,7 +35,8 @@ import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { StaffProfileEntity } from './staff-profile.entity';
 import { UserEntity } from '@admin/access/users/user.entity';
 import { StaffProfileMapper } from './staff-profile.mapper';
-import { UpdateActiveStatusIdsDto } from './dtos/update-active-status-request-dto';
+import { StaffStatus } from './enams/staff-status-enum';
+import { UpdateStatusDto } from './dtos/update-active-status-request-dto';
 
 @ApiTags('StaffProfile')
 @ApiBearerAuth(TOKEN_NAME)
@@ -126,21 +127,21 @@ export class StaffProfileController {
   @Permissions('admin.access.staff-profile.update-status')
   @Patch('/active')
   public async activateStaffProfiles(
-    @Body(ValidationPipe) dto: UpdateActiveStatusIdsDto,
-  ): Promise<{ message: string; updatedIds: number[] }> {
+    @Body(ValidationPipe) dto: UpdateStatusDto,
+  ): Promise<{ message: string; updatedIds: number[]; status: StaffStatus }> {
     const updatedIds = await this.staffProfileService.activateStaffProfiles(dto.ids);
-    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, true);
+    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, StaffStatus.ACTIVE);
   }
-
-  @ApiOperation({ description: 'Activate multiple staff profiles' })
+  
+  @ApiOperation({ description: 'Deactivate multiple staff profiles' })
   @ApiGlobalResponse(StaffProfileResponseDto)
   @UseGuards(SuperUserGuard)
   @Permissions('admin.access.staff-profile.update-status')
   @Patch('/deactivate')
   public async deactivateStaffProfiles(
-    @Body(ValidationPipe) dto: UpdateActiveStatusIdsDto,
-  ): Promise<{ message: string; updatedIds: number[] }> {
+    @Body(ValidationPipe) dto: UpdateStatusDto,
+  ): Promise<{ message: string; updatedIds: number[]; status: StaffStatus }> {
     const updatedIds = await this.staffProfileService.deactivateStaffProfiles(dto.ids);
-    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, false);
-  }
+    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, StaffStatus.INACTIVE);
+  }  
 }

@@ -4,6 +4,7 @@ import { NationalityResponseDto } from '../../master-data/nationality/dtos';
 import { BranchResponseDto } from '@modules/admin/access/branch/dtos';
 import { DepartmentResponseDto } from '@modules/admin/access/department/dtos';
 import { PositionResponseDto } from '../../master-data/position/dtos';
+import { StaffStatus } from '../enams/staff-status-enum';
 
 export class StaffProfileResponseDto {
   @ApiProperty()
@@ -84,7 +85,7 @@ export class StaffProfileResponseDto {
   signatureImage: string;
 
   @ApiProperty()
-  active: boolean;
+  status: StaffStatus;
 
   @ApiProperty()
   createdByUser: UserResponseDto

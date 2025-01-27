@@ -18,6 +18,7 @@ import { Repository } from 'typeorm';
 import { StaffProfileExistsException } from './staff-profile-exist.exception'; // e.g., custom exception
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter, In } from 'typeorm';
+import { StaffStatus } from './enams/staff-status-enum';
 
 export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
 @Injectable()
@@ -163,16 +164,16 @@ export class StaffProfileService extends BaseCrudService {
   }
 
   public async activateStaffProfiles(ids: number[]): Promise<number[]> {
-    return this.updateStaffProfilesActiveStatus(ids, true);
+    return this.updateStaffProfilesStatus(ids, StaffStatus.ACTIVE);
   }
   
   public async deactivateStaffProfiles(ids: number[]): Promise<number[]> {
-    return this.updateStaffProfilesActiveStatus(ids, false);
+    return this.updateStaffProfilesStatus(ids, StaffStatus.INACTIVE);
   }
   
-  private async updateStaffProfilesActiveStatus(
+  private async updateStaffProfilesStatus(
     ids: number[],
-    active: boolean,
+    status: StaffStatus,
   ): Promise<number[]> {
     const profiles = await this.staffProfileRepository.findBy({
       id: In(ids),
@@ -190,11 +191,11 @@ export class StaffProfileService extends BaseCrudService {
     await this.staffProfileRepository
       .createQueryBuilder()
       .update()
-      .set({ active })
+      .set({ status })
       .whereInIds(ids)
       .execute();
   
     return foundIds;
-  }  
+  }   
   
 }

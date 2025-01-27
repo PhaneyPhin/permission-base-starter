@@ -9,12 +9,13 @@ import { NationalityMapper } from '../master-data/nationality/nationality.mapper
 import { BranchMapper } from '../../branch/branch.mapper';
 import { PositionMapper } from '../master-data/position/position.mapper';
 import { DepartmentMapper } from '../../department/department.mapper';
+import { StaffStatus } from './enams/staff-status-enum';
 
 export class StaffProfileMapper {
   public static async toDto(entity: StaffProfileEntity): Promise<StaffProfileResponseDto> {
     const dto = new StaffProfileResponseDto();
     dto.id = entity.id;
-    dto.active = (entity as any).active; // or your default fields
+    dto.status = entity.status;
     dto.staffCode = entity.staffCode;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
@@ -59,7 +60,6 @@ export class StaffProfileMapper {
   public static toCreateEntity(dto: CreateStaffProfileRequestDto): StaffProfileEntity {
     const entity = new StaffProfileEntity();
     // default fields?
-    entity.active = true;
     entity.staffCode = dto.staffCode;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
@@ -67,6 +67,7 @@ export class StaffProfileMapper {
     entity.title = dto.title;
     entity.dateOfBirth = dto.dateOfBirth;
     entity.maritalStatus = dto.maritalStatus;
+    entity.status = dto.status;
     entity.nationalityId = dto.nationalityId;
     entity.religion = dto.religion;
     entity.companyCardNo = dto.companyCardNo;
@@ -100,6 +101,7 @@ export class StaffProfileMapper {
     entity.title = dto.title;
     entity.dateOfBirth = dto.dateOfBirth;
     entity.maritalStatus = dto.maritalStatus;
+    entity.status = dto.status;
     entity.nationalityId = dto.nationalityId;
     entity.religion = dto.religion;
     entity.companyCardNo = dto.companyCardNo;
@@ -129,14 +131,16 @@ export class StaffProfileMapper {
       id: staffProfile.id
     }
   }
+
   public static toBulkUpdateResponse(
     updatedIds: number[],
-    active: boolean,
-  ): { message: string; updatedIds: number[]; active: boolean } {
+    status: StaffStatus,
+  ): { message: string; updatedIds: number[]; status: StaffStatus } {
     return {
-      message: `Successfully updated the active status for ${updatedIds.length} staff profiles.`,
+      message: `Successfully updated the status for ${updatedIds.length} staff profiles to '${status}'.`,
       updatedIds,
-      active,
+      status,
     };
   }
+  
 }
