@@ -5,10 +5,11 @@ import { BranchEntity } from '../../branch/branch.entity';
 import { NationalityEntity } from '../master-data/nationality/nationality.entity';
 import { PositionEntity } from '../master-data/position/position.entity';
 import { DepartmentEntity } from '../../department/department.entity';
-import { StaffStatus } from './enams/staff-status-enum';
+import { StaffStatus } from './enams/staff-status.enum';
 import { Gender } from './enams/gender.enum';
 import { Title } from './enams/title.enum';
 import { MaritalStatus } from './enams/maritalStatus.enum';
+import { Nationality } from './enams/nationality.enum';
 
 @Entity({ schema: 'admin', name: 'staff-profile' })
 export class StaffProfileEntity extends BaseEntity {
@@ -68,17 +69,13 @@ export class StaffProfileEntity extends BaseEntity {
     nullable: true,
   })
   maritalStatus: MaritalStatus;
-  
+
   @Column({
-    name: 'nationality_id',
+    name: 'nationality',
     type: 'varchar',
     nullable: true,
   })
-  nationalityId: number;
-
-  @ManyToOne(() => NationalityEntity, { nullable: true, eager: true })
-  @JoinColumn({ name: 'nationality_id' })
-  nationality: NationalityEntity;
+  nationality: string;
   
   @Column({
     name: 'religion',
