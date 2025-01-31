@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   ValidationPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -65,6 +66,20 @@ export class CategoryController {
   public async  getAllCategoryForSelect() {
     return await this.categoryService.getAllCategory();
   }
+  @ApiOperation({ description: 'Get all category by item group for select form' })  
+  @Permissions(
+    'admin.access.category.read',
+    'admin.access.category.create',
+    'admin.access.category.update',
+  )
+  @Get('/select-by-item-group')
+  public async getCategoryByItemGroupForSelect(
+    @Query('itemGroupId') itemGroupId?: number,
+  ): Promise<{ id: number; nameEn: string; nameKh: string; parentId: number | null }[]> {
+    return this.categoryService.getCategoryByItemGroup(itemGroupId);
+  }
+
+
   @ApiOperation({ description: 'Get category by id' })
   @ApiGlobalResponse(CategoryResponseDto)
   @Permissions(

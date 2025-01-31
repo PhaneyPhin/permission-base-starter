@@ -72,6 +72,18 @@ export class CategoryService extends BaseCrudService {
     return (await this.getListQuery()
       .getMany()).map(CategoryMapper.toSelectDto)
   }
+  async getCategoryByItemGroup(itemGroupId?: number): Promise<{ id: number; nameEn: string; nameKh: string; parentId: number | null }[]> {
+    const query = this.categoryRepository.createQueryBuilder('category')
+      .select(['category.id', 'category.nameEn', 'category.nameKh', 'category.parentId'])
+  
+    if (itemGroupId) {
+      query.andWhere('category.itemGroupId = :itemGroupId', { itemGroupId });
+    }
+    const categories = await query.getMany();
+    return categories.map(CategoryMapper.toSelectDto);
+  }  
+  
+  
 
   /**
    * Get category by id

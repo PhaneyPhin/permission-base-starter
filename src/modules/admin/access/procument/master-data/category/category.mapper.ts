@@ -15,6 +15,8 @@ export class CategoryMapper {
     dto.code = entity.code;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
+    dto.parentId = entity.parentId;
+    dto.itemGroupId = entity.itemGroupId;
     entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     dto.description = entity.description;
 
@@ -63,11 +65,20 @@ export class CategoryMapper {
     return entity;
   }
 
+  // public static toSelectDto(category: CategoryEntity) {
+  //   return {
+  //     nameEn: category.nameEn,
+  //     nameKh: category.nameKh,
+  //     id: category.id
+  //   }
+  // }
   public static toSelectDto(category: CategoryEntity) {
     return {
+      id: category.id,
       nameEn: category.nameEn,
       nameKh: category.nameKh,
-      id: category.id
-    }
+      parentId: category.parentId,
+    };
   }
+  
 }

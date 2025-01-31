@@ -22,6 +22,9 @@ export class CategoryResponseDto {
   parent: CategoryResponseDto;
 
   @ApiProperty()
+  itemGroupId: number;
+
+  @ApiProperty()
   itemGroup: ItemGroupResponseDto;
 
   @ApiProperty()
