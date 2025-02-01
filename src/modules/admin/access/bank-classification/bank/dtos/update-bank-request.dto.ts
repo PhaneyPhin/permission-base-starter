@@ -1,13 +1,7 @@
-import { CreateBankRequestDto } from './create-bank-request.dto';
-import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, MaxLength } from "class-validator";
 
-export class UpdateBankRequestDto extends CreateBankRequestDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  code: string;
-
+export class UpdateBankRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -17,9 +11,4 @@ export class UpdateBankRequestDto extends CreateBankRequestDto {
   @IsNotEmpty()
   @MaxLength(160)
   address: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsBoolean()
-  active: boolean;
 }

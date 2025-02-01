@@ -1,10 +1,10 @@
-import { BankEntity } from './bank.entity';
-import { UserMapper } from '@admin/access/users/users.mapper';
+import { UserMapper } from "@admin/access/users/users.mapper";
+import { BankEntity } from "./bank.entity";
 import {
+  BankResponseDto,
   CreateBankRequestDto,
   UpdateBankRequestDto,
-  BankResponseDto,
-} from './dtos';
+} from "./dtos";
 
 export class BankMapper {
   public static async toDto(entity: BankEntity): Promise<BankResponseDto> {
@@ -14,9 +14,9 @@ export class BankMapper {
     dto.code = entity.code;
     dto.name = entity.name;
     dto.address = entity.address;
-    
+    dto.countryCode = entity.countryCode;
 
-     if (entity.createdByUser) {
+    if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
 
@@ -30,19 +30,17 @@ export class BankMapper {
     entity.code = dto.code;
     entity.name = dto.name;
     entity.address = dto.address;
-    
+    entity.countryCode = dto.countryCode;
 
     return entity;
   }
 
   public static toUpdateEntity(
     entity: BankEntity,
-    dto: UpdateBankRequestDto,
+    dto: UpdateBankRequestDto
   ): BankEntity {
-    entity.code = dto.code;
     entity.name = dto.name;
     entity.address = dto.address;
-    
 
     return entity;
   }

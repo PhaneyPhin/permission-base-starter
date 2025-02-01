@@ -120,7 +120,7 @@ export class BankService extends BaseCrudService {
       return BankMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new BankExistsException(dto.code);
+        throw new BankExistsException("");
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -138,7 +138,7 @@ export class BankService extends BaseCrudService {
       throw new NotFoundException();
     }
     try {
-      await this.bankRepository.delete({ id: id });
+      await this.bankRepository.softDelete({ id: id });
       return BankMapper.toDto(entity);
     } catch (error) {
       if (error instanceof TimeoutError) {

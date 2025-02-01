@@ -1,58 +1,75 @@
-import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { UserEntity } from '@admin/access/users/user.entity';
+import { UserEntity } from "@admin/access/users/user.entity";
+import { BaseEntity } from "@database/entities";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
-@Entity({ schema: 'admin', name: 'bank' })
+@Entity({ schema: "admin", name: "bank" })
 export class BankEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
+  @PrimaryGeneratedColumn({ name: "id", type: "integer" })
   id: number;
 
-  
   @Column({
-    name: 'code',
-    type: 'varchar',
+    name: "code",
+    type: "varchar",
     nullable: true,
   })
   code: string;
-  
+
   @Column({
-    name: 'name',
-    type: 'varchar',
+    name: "country_code",
+    type: "varchar",
+    nullable: true,
+  })
+  countryCode: string;
+
+  @Column({
+    name: "name",
+    type: "varchar",
     nullable: true,
   })
   name: string;
-  
+
   @Column({
-    name: 'address',
-    type: 'varchar',
+    name: "address",
+    type: "varchar",
     nullable: true,
   })
   address: string;
-  
 
   @Column({
-    name: 'active',
-    type: 'boolean',
+    name: "active",
+    type: "boolean",
     nullable: false,
     default: true,
   })
   active: boolean;
 
   @Column({
-    name: 'created_by',
-    type: 'uuid',
+    name: "created_by",
+    type: "uuid",
     nullable: true,
   })
   createdBy: string;
-  
+
   @ManyToOne(() => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'created_by' })
+  @JoinColumn({ name: "created_by" })
   createdByUser: UserEntity;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @DeleteDateColumn({ name: "deleted_at" }) // Automatically managed by TypeORM for soft deletes
+  deletedAt?: Date; // Optional, null if not deleted
+
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
   constructor(partial?: Partial<BankEntity>) {
     super();

@@ -29,6 +29,12 @@ export class BankMigration1737906926699 implements MigrationInterface {
             isUnique: true,
             isNullable: false,
           },
+          {
+            name: "country_code",
+            type: "varchar",
+            length: "160",
+            isNullable: false,
+          },
 
           {
             name: "name",
