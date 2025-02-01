@@ -37,13 +37,6 @@ export class PaymentTermEntity extends BaseEntity {
   daysDue: string;
 
   @Column({
-    name: "description",
-    type: "varchar",
-    nullable: true,
-  })
-  description: string;
-
-  @Column({
     name: "active",
     type: "boolean",
     nullable: false,

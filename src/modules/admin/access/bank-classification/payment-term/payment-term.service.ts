@@ -95,6 +95,7 @@ export class PaymentTermService extends BaseCrudService {
       entity = await this.paymentTermRepository.save(entity);
       return PaymentTermMapper.toDto(entity);
     } catch (error) {
+      console.log(error);
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new PaymentTermExistsException(dto.name);
       }

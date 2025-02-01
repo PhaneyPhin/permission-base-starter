@@ -41,14 +41,6 @@ export class PaymentTermMigration1737907658724 implements MigrationInterface {
             length: "160",
             isNullable: false,
           },
-
-          {
-            name: "description",
-            type: "varchar",
-            length: "160",
-            isNullable: false,
-          },
-
           {
             name: "created_by",
             type: "uuid",

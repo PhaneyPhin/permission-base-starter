@@ -11,6 +11,7 @@ import { RolesModule } from "./roles/roles.module";
 import { UsersModule } from "./users/users.module";
 import { VendorModule } from "./vendor/vendor.module";
 import { WarehouseModule } from "./warehouse/warehouse.module";
+import { BankClassificationModule } from './bank-classification/bank-classification.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { WarehouseModule } from "./warehouse/warehouse.module";
     CategoryModule,
     ProcumentModule,
     VendorModule,
+    BankClassificationModule,
   ],
 })
 export class AccessModule {}

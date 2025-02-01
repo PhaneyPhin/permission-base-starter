@@ -17,10 +17,5 @@ export class CreatePaymentTermRequestDto {
   @MaxLength(160)
   daysDue: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  description: string;
-
   createdBy: string;
 }

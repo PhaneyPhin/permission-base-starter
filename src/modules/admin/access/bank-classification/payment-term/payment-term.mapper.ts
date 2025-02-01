@@ -16,7 +16,6 @@ export class PaymentTermMapper {
     dto.name = entity.name;
     dto.daysDue = entity.daysDue;
     dto.code = entity.code;
-    dto.description = entity.description;
 
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
@@ -33,7 +32,6 @@ export class PaymentTermMapper {
     entity.active = true;
     entity.name = dto.name;
     entity.daysDue = dto.daysDue;
-    entity.description = dto.description;
     entity.code = dto.code;
 
     return entity;
@@ -45,7 +43,6 @@ export class PaymentTermMapper {
   ): PaymentTermEntity {
     entity.name = dto.name;
     entity.daysDue = dto.daysDue;
-    entity.description = dto.description;
     entity.code = dto.code;
 
     return entity;
