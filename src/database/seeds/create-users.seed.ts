@@ -6,6 +6,7 @@ import { faker } from "@faker-js/faker";
 import { HashHelper } from "@helpers";
 import minioClient from "@libs/pagination/minio";
 import { BranchEntity } from "@modules/admin/access/branch/branch.entity";
+import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
@@ -13,6 +14,7 @@ import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import { companies } from "./company.seed";
 import { departments } from "./create-department.seed";
 
 // Define seed data
@@ -389,6 +391,7 @@ async function seedDatabase(dataSource: DataSource) {
   }
 
   await dataSource.manager.save(DepartmentEntity, departments);
+  await dataSource.manager.save(CompanyEntity, companies);
 
   const defaultDimension = {
     createdBy: user.id,
