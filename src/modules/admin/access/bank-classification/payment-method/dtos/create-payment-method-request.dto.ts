@@ -12,10 +12,5 @@ export class CreatePaymentMethodRequestDto {
   @MaxLength(160)
   name: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  description: string;
-
   createdBy: string;
 }

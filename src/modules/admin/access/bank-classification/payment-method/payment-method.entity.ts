@@ -30,13 +30,6 @@ export class PaymentMethodEntity extends BaseEntity {
   name: string;
 
   @Column({
-    name: "description",
-    type: "varchar",
-    nullable: true,
-  })
-  description: string;
-
-  @Column({
     name: "active",
     type: "boolean",
     nullable: false,

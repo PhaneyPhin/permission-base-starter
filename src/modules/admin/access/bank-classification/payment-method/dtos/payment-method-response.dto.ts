@@ -9,9 +9,6 @@ export class PaymentMethodResponseDto {
   name: string;
 
   @ApiProperty()
-  description: string;
-
-  @ApiProperty()
   active: boolean;
 
   @ApiProperty()

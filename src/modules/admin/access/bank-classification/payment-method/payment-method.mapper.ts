@@ -14,7 +14,6 @@ export class PaymentMethodMapper {
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
     dto.name = entity.name;
-    dto.description = entity.description;
     dto.code = entity.code;
 
     if (entity.createdByUser) {
@@ -31,7 +30,6 @@ export class PaymentMethodMapper {
     // default fields?
     entity.active = true;
     entity.name = dto.name;
-    entity.description = dto.description;
     entity.code = dto.code;
 
     return entity;
@@ -42,7 +40,6 @@ export class PaymentMethodMapper {
     dto: UpdatePaymentMethodRequestDto
   ): PaymentMethodEntity {
     entity.name = dto.name;
-    entity.description = dto.description;
     entity.code = dto.code;
 
     return entity;

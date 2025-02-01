@@ -35,12 +35,6 @@ export class PaymentMethodMigration1737907612175 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: "description",
-            type: "varchar",
-            length: "160",
-            isNullable: false,
-          },
-          {
             name: "created_by",
             type: "uuid",
             isNullable: true,

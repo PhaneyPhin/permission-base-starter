@@ -1,22 +1,34 @@
-import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsDate, IsEmail, isEnum, IsEnum, IsInt, IsNotEmpty, IsString, Length, Matches, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../user.entity';
-import { UserApproval } from '../user-approval';
-import { UserStatus } from '../user-status.enum';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  ArrayNotEmpty,
+  IsAlphanumeric,
+  IsArray,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Length,
+  Matches,
+  MaxLength,
+} from "class-validator";
+import { UserApproval } from "../user-approval";
+import { UserStatus } from "../user-status.enum";
+import { UserEntity } from "../user.entity";
 
 const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
 export class CreateUserRequestDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty({
-    example: 'jdoe',
+    example: "jdoe",
   })
   username: string;
 
   @IsNotEmpty()
   @MaxLength(100)
   @ApiProperty({
-    example: 'John',
+    example: "John",
   })
   name: string;
 
@@ -24,16 +36,16 @@ export class CreateUserRequestDto {
   @MaxLength(100)
   @IsEmail()
   @ApiProperty({
-    example: 'admin@gmail.com',
+    example: "admin@gmail.com",
   })
   email: string;
 
-  @Matches(passwordRegex, { message: 'Password too weak' })
+  @Matches(passwordRegex, { message: "Password too weak" })
   @IsNotEmpty()
   // @IsAlphanumeric()
   @Length(6, 20)
   @ApiProperty({
-    example: 'Hello123',
+    example: "Hello123",
   })
   password: string;
 
@@ -49,25 +61,23 @@ export class CreateUserRequestDto {
   @IsInt({ each: true })
   warehouse: number[];
 
-  createdBy: UserEntity
-
+  createdBy: UserEntity;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
-  expiredAt: Date
+  expiredAt: Date;
 
   @ApiProperty({
-    enum: UserApproval
+    enum: UserApproval,
   })
   @IsNotEmpty()
   @IsEnum(UserApproval)
-  userApproval: UserApproval
+  userApproval: UserApproval;
 
   @ApiProperty({
-    enum: UserStatus
+    enum: UserStatus,
   })
   @IsNotEmpty()
   @IsEnum(UserStatus)
-  status: UserStatus
+  status: UserStatus;
 }

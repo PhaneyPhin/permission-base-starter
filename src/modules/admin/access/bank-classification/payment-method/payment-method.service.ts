@@ -97,6 +97,7 @@ export class PaymentMethodService extends BaseCrudService {
       entity = await this.paymentMethodRepository.save(entity);
       return PaymentMethodMapper.toDto(entity);
     } catch (error) {
+      console.log(error);
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new PaymentMethodExistsException(dto.name);
       }
