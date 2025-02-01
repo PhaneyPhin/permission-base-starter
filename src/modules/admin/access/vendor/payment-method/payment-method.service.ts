@@ -1,43 +1,42 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreatePaymentMethodRequestDto,
-  UpdatePaymentMethodRequestDto,
   PaymentMethodResponseDto,
-} from './dtos';
-import { PaymentMethodMapper } from './payment-method.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { PaymentMethodEntity } from './payment-method.entity';
-import { Repository } from 'typeorm';
-import { PaymentMethodExistsException } from './payment-method-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdatePaymentMethodRequestDto,
+} from "./dtos";
+import { PaymentMethodExistsException } from "./payment-method-exist.exception"; // e.g., custom exception
+import { PaymentMethodEntity } from "./payment-method.entity";
+import { PaymentMethodMapper } from "./payment-method.mapper";
 
-export const PAYMENT-METHOD_FILTER_FIELDS = ['name', 'description', ];
+export const PAYMENT_METHOD_FILTER_FIELDS = ["name", "description"];
 @Injectable()
 export class PaymentMethodService extends BaseCrudService {
-  protected queryName: string = 'paymentMethod';
-  protected SEARCH_FIELDS = ['name', 'description', ];
-  protected FILTER_FIELDS = PAYMENT-METHOD_FILTER_FIELDS
+  protected queryName: string = "paymentMethod";
+  protected SEARCH_FIELDS = ["name", "description"];
+  protected FILTER_FIELDS = PAYMENT_METHOD_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(PaymentMethodEntity)
-    private paymentMethodRepository: Repository<PaymentMethodEntity>,
+    private paymentMethodRepository: Repository<PaymentMethodEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return PaymentMethodMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return PaymentMethodMapper.toDto;
   }
 
   /**
@@ -46,30 +45,39 @@ export class PaymentMethodService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<PaymentMethodEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('paymentMethod.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "paymentMethod.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.paymentMethodRepository.createQueryBuilder('paymentMethod')
-      .leftJoinAndSelect('paymentMethod.createdByUser', 'uc')
+    return this.paymentMethodRepository
+      .createQueryBuilder("paymentMethod")
+      .leftJoinAndSelect("paymentMethod.createdByUser", "uc");
   }
 
   getAllPaymentMethod() {
-    return this.paymentMethodRepository.createQueryBuilder('paymentMethod').select(['id', 'name']).getRawMany()
+    return this.paymentMethodRepository
+      .createQueryBuilder("paymentMethod")
+      .select(["id", "name"])
+      .getRawMany();
   }
 
   /**
    * Get payment-method by id
    */
-  public async getPaymentMethodById(id: number): Promise<PaymentMethodResponseDto> {
+  public async getPaymentMethodById(
+    id: number
+  ): Promise<PaymentMethodResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("warehouse.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,7 +90,7 @@ export class PaymentMethodService extends BaseCrudService {
    * Create new payment-method
    */
   public async createPaymentMethod(
-    dto: CreatePaymentMethodRequestDto,
+    dto: CreatePaymentMethodRequestDto
   ): Promise<PaymentMethodResponseDto> {
     try {
       let entity = PaymentMethodMapper.toCreateEntity(dto);
@@ -104,7 +112,7 @@ export class PaymentMethodService extends BaseCrudService {
    */
   public async updatePaymentMethod(
     id: number,
-    dto: UpdatePaymentMethodRequestDto,
+    dto: UpdatePaymentMethodRequestDto
   ): Promise<PaymentMethodResponseDto> {
     let entity = await this.paymentMethodRepository.findOneBy({ id });
     if (!entity) {

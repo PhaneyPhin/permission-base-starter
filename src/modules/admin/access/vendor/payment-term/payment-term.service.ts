@@ -1,43 +1,42 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreatePaymentTermRequestDto,
-  UpdatePaymentTermRequestDto,
   PaymentTermResponseDto,
-} from './dtos';
-import { PaymentTermMapper } from './payment-term.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { PaymentTermEntity } from './payment-term.entity';
-import { Repository } from 'typeorm';
-import { PaymentTermExistsException } from './payment-term-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdatePaymentTermRequestDto,
+} from "./dtos";
+import { PaymentTermExistsException } from "./payment-term-exist.exception"; // e.g., custom exception
+import { PaymentTermEntity } from "./payment-term.entity";
+import { PaymentTermMapper } from "./payment-term.mapper";
 
-export const PAYMENT-TERM_FILTER_FIELDS = ['name', 'daysDue', 'description', ];
+export const PAYMENT_TERM_FILTER_FIELDS = ["name", "daysDue", "description"];
 @Injectable()
 export class PaymentTermService extends BaseCrudService {
-  protected queryName: string = 'paymentTerm';
-  protected SEARCH_FIELDS = ['name', 'daysDue', 'description', ];
-  protected FILTER_FIELDS = PAYMENT-TERM_FILTER_FIELDS
+  protected queryName: string = "paymentTerm";
+  protected SEARCH_FIELDS = ["name", "daysDue", "description"];
+  protected FILTER_FIELDS = PAYMENT_TERM_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(PaymentTermEntity)
-    private paymentTermRepository: Repository<PaymentTermEntity>,
+    private paymentTermRepository: Repository<PaymentTermEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return PaymentTermMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return PaymentTermMapper.toDto;
   }
 
   /**
@@ -46,22 +45,29 @@ export class PaymentTermService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<PaymentTermEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('paymentTerm.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "paymentTerm.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.paymentTermRepository.createQueryBuilder('paymentTerm')
-      .leftJoinAndSelect('paymentTerm.createdByUser', 'uc')
+    return this.paymentTermRepository
+      .createQueryBuilder("paymentTerm")
+      .leftJoinAndSelect("paymentTerm.createdByUser", "uc");
   }
 
   getAllPaymentTerm() {
-    return this.paymentTermRepository.createQueryBuilder('paymentTerm').select(['id', 'name']).getRawMany()
+    return this.paymentTermRepository
+      .createQueryBuilder("paymentTerm")
+      .select(["id", "name"])
+      .getRawMany();
   }
 
   /**
@@ -69,7 +75,7 @@ export class PaymentTermService extends BaseCrudService {
    */
   public async getPaymentTermById(id: number): Promise<PaymentTermResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("paymentTerm.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,7 +88,7 @@ export class PaymentTermService extends BaseCrudService {
    * Create new payment-term
    */
   public async createPaymentTerm(
-    dto: CreatePaymentTermRequestDto,
+    dto: CreatePaymentTermRequestDto
   ): Promise<PaymentTermResponseDto> {
     try {
       let entity = PaymentTermMapper.toCreateEntity(dto);
@@ -104,7 +110,7 @@ export class PaymentTermService extends BaseCrudService {
    */
   public async updatePaymentTerm(
     id: number,
-    dto: UpdatePaymentTermRequestDto,
+    dto: UpdatePaymentTermRequestDto
   ): Promise<PaymentTermResponseDto> {
     let entity = await this.paymentTermRepository.findOneBy({ id });
     if (!entity) {
@@ -128,9 +134,7 @@ export class PaymentTermService extends BaseCrudService {
   /**
    * Update payment-term by id
    */
-  public async deletePaymentTerm(
-    id: number
-  ): Promise<PaymentTermResponseDto> {
+  public async deletePaymentTerm(id: number): Promise<PaymentTermResponseDto> {
     let entity = await this.paymentTermRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

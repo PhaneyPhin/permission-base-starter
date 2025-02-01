@@ -1,43 +1,42 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
+import { BankExistsException } from "./bank-exist.exception"; // e.g., custom exception
+import { BankEntity } from "./bank.entity";
+import { BankMapper } from "./bank.mapper";
 import {
+  BankResponseDto,
   CreateBankRequestDto,
   UpdateBankRequestDto,
-  BankResponseDto,
-} from './dtos';
-import { BankMapper } from './bank.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { BankEntity } from './bank.entity';
-import { Repository } from 'typeorm';
-import { BankExistsException } from './bank-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+} from "./dtos";
 
-export const BANK_FILTER_FIELDS = ['code', 'name', 'address', ];
+export const BANK_FILTER_FIELDS = ["code", "name", "address"];
 @Injectable()
 export class BankService extends BaseCrudService {
-  protected queryName: string = 'bank';
-  protected SEARCH_FIELDS = ['code', 'name', 'address', ];
-  protected FILTER_FIELDS = BANK_FILTER_FIELDS
+  protected queryName: string = "bank";
+  protected SEARCH_FIELDS = ["code", "name", "address"];
+  protected FILTER_FIELDS = BANK_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(BankEntity)
-    private bankRepository: Repository<BankEntity>,
+    private bankRepository: Repository<BankEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return BankMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return BankMapper.toDto;
   }
 
   /**
@@ -46,22 +45,29 @@ export class BankService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<BankEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('bank.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("bank.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.bankRepository.createQueryBuilder('bank')
-      .leftJoinAndSelect('bank.createdByUser', 'uc')
+    return this.bankRepository
+      .createQueryBuilder("bank")
+      .leftJoinAndSelect("bank.createdByUser", "uc");
   }
 
   getAllBank() {
-    return this.bankRepository.createQueryBuilder('bank').select(['id', 'name']).getRawMany()
+    return this.bankRepository
+      .createQueryBuilder("bank")
+      .select(["id", "name"])
+      .getRawMany();
   }
 
   /**
@@ -69,7 +75,7 @@ export class BankService extends BaseCrudService {
    */
   public async getBankById(id: number): Promise<BankResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("bank.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -81,9 +87,7 @@ export class BankService extends BaseCrudService {
   /**
    * Create new bank
    */
-  public async createBank(
-    dto: CreateBankRequestDto,
-  ): Promise<BankResponseDto> {
+  public async createBank(dto: CreateBankRequestDto): Promise<BankResponseDto> {
     try {
       let entity = BankMapper.toCreateEntity(dto);
       entity = await this.bankRepository.save(entity);
@@ -104,7 +108,7 @@ export class BankService extends BaseCrudService {
    */
   public async updateBank(
     id: number,
-    dto: UpdateBankRequestDto,
+    dto: UpdateBankRequestDto
   ): Promise<BankResponseDto> {
     let entity = await this.bankRepository.findOneBy({ id });
     if (!entity) {
@@ -128,9 +132,7 @@ export class BankService extends BaseCrudService {
   /**
    * Update bank by id
    */
-  public async deleteBank(
-    id: number
-  ): Promise<BankResponseDto> {
+  public async deleteBank(id: number): Promise<BankResponseDto> {
     let entity = await this.bankRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

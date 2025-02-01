@@ -13,6 +13,7 @@ import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import { departments } from "./create-department.seed";
 
 // Define seed data
 const baseUsers: any[] = [
@@ -384,18 +385,10 @@ async function seedDatabase(dataSource: DataSource) {
       nameKh: faker.person.fullName(),
     });
 
-    const department = dataSource.manager.create(DepartmentEntity, {
-      active: true,
-      code: (index + 1).toString().padStart(7, "0"),
-      createdBy: user.id,
-      nameEn: faker.person.fullName(),
-      nameKh: faker.person.fullName(),
-      description: faker.book.title(),
-    });
-
     await dataSource.manager.save(warehouseEntity);
-    await dataSource.manager.save(department);
   }
+
+  await dataSource.manager.save(DepartmentEntity, departments);
 
   const defaultDimension = {
     createdBy: user.id,

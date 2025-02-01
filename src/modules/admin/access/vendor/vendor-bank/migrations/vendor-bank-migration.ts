@@ -1,7 +1,12 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { commonFields } from '../common.fields';
+import { commonFields } from "@database/migrations/common.fields";
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from "typeorm";
 
-const tableName = 'admin.vendor-bank';
+const tableName = "admin.vendor-bank";
 
 export class VendorBankMigration1737908491845 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -10,74 +15,74 @@ export class VendorBankMigration1737908491845 implements MigrationInterface {
         name: tableName,
         columns: [
           {
-            name: 'id',
-            type: 'integer',
+            name: "id",
+            type: "integer",
             isGenerated: true,
             isPrimary: true,
             isNullable: false,
           },
-          
+
           {
-            name: 'vendor_id',
-            type: 'varchar',
-            length: '160',
+            name: "vendor_id",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'bank_id',
-            type: 'varchar',
-            length: '160',
+            name: "bank_id",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'account_number',
-            type: 'varchar',
-            length: '160',
+            name: "account_number",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'account_holder_name',
-            type: 'varchar',
-            length: '160',
+            name: "account_holder_name",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'currency',
-            type: 'varchar',
-            length: '160',
+            name: "currency",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'created_by',
-            type: 'uuid',
+            name: "created_by",
+            type: "uuid",
             isNullable: true,
           },
           {
-            name: 'active',
-            type: 'boolean',
+            name: "active",
+            type: "boolean",
             isNullable: false,
             default: true,
           },
           ...commonFields,
         ],
       }),
-      true,
+      true
     );
 
     // Add the foreign key constraint
     await queryRunner.createForeignKey(
-        tableName,
-        new TableForeignKey({
-            columnNames: ['created_by'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'admin.users',
-            onDelete: 'SET NULL',
-        }),
+      tableName,
+      new TableForeignKey({
+        columnNames: ["created_by"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "admin.users",
+        onDelete: "SET NULL",
+      })
     );
   }
 
@@ -85,7 +90,7 @@ export class VendorBankMigration1737908491845 implements MigrationInterface {
     const table = await queryRunner.getTable(tableName);
 
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('created_by') !== -1,
+      (fk) => fk.columnNames.indexOf("created_by") !== -1
     );
     await queryRunner.dropForeignKey(tableName, foreignKey);
     await queryRunner.dropTable(tableName, true);

@@ -1,43 +1,54 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateVendorBankRequestDto,
   UpdateVendorBankRequestDto,
   VendorBankResponseDto,
-} from './dtos';
-import { VendorBankMapper } from './vendor-bank.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { VendorBankEntity } from './vendor-bank.entity';
-import { Repository } from 'typeorm';
-import { VendorBankExistsException } from './vendor-bank-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+} from "./dtos";
+import { VendorBankExistsException } from "./vendor-bank-exist.exception"; // e.g., custom exception
+import { VendorBankEntity } from "./vendor-bank.entity";
+import { VendorBankMapper } from "./vendor-bank.mapper";
 
-export const VENDOR-BANK_FILTER_FIELDS = ['vendorId', 'bankId', 'accountNumber', 'accountHolderName', 'currency', ];
+export const VENDOR_BANK_FILTER_FIELDS = [
+  "vendorId",
+  "bankId",
+  "accountNumber",
+  "accountHolderName",
+  "currency",
+];
 @Injectable()
 export class VendorBankService extends BaseCrudService {
-  protected queryName: string = 'vendorBank';
-  protected SEARCH_FIELDS = ['vendorId', 'bankId', 'accountNumber', 'accountHolderName', 'currency', ];
-  protected FILTER_FIELDS = VENDOR-BANK_FILTER_FIELDS
+  protected queryName: string = "vendorBank";
+  protected SEARCH_FIELDS = [
+    "vendorId",
+    "bankId",
+    "accountNumber",
+    "accountHolderName",
+    "currency",
+  ];
+  protected FILTER_FIELDS = VENDOR_BANK_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(VendorBankEntity)
-    private vendorBankRepository: Repository<VendorBankEntity>,
+    private vendorBankRepository: Repository<VendorBankEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return VendorBankMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return VendorBankMapper.toDto;
   }
 
   /**
@@ -46,22 +57,29 @@ export class VendorBankService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<VendorBankEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('vendorBank.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("vendorBank.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.vendorBankRepository.createQueryBuilder('vendorBank')
-      .leftJoinAndSelect('vendorBank.createdByUser', 'uc')
+    return this.vendorBankRepository
+      .createQueryBuilder("vendorBank")
+      .leftJoinAndSelect("vendorBank.createdByUser", "uc");
   }
 
   getAllVendorBank() {
-    return this.vendorBankRepository.createQueryBuilder('vendorBank').select(['id', 'name']).getRawMany()
+    return this.vendorBankRepository
+      .createQueryBuilder("vendorBank")
+      .select(["id", "name"])
+      .getRawMany();
   }
 
   /**
@@ -69,7 +87,7 @@ export class VendorBankService extends BaseCrudService {
    */
   public async getVendorBankById(id: number): Promise<VendorBankResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("vendorBank.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,7 +100,7 @@ export class VendorBankService extends BaseCrudService {
    * Create new vendor-bank
    */
   public async createVendorBank(
-    dto: CreateVendorBankRequestDto,
+    dto: CreateVendorBankRequestDto
   ): Promise<VendorBankResponseDto> {
     try {
       let entity = VendorBankMapper.toCreateEntity(dto);
@@ -104,7 +122,7 @@ export class VendorBankService extends BaseCrudService {
    */
   public async updateVendorBank(
     id: number,
-    dto: UpdateVendorBankRequestDto,
+    dto: UpdateVendorBankRequestDto
   ): Promise<VendorBankResponseDto> {
     let entity = await this.vendorBankRepository.findOneBy({ id });
     if (!entity) {
@@ -128,9 +146,7 @@ export class VendorBankService extends BaseCrudService {
   /**
    * Update vendor-bank by id
    */
-  public async deleteVendorBank(
-    id: number
-  ): Promise<VendorBankResponseDto> {
+  public async deleteVendorBank(id: number): Promise<VendorBankResponseDto> {
     let entity = await this.vendorBankRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

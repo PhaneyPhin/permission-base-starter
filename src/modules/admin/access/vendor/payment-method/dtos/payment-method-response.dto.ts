@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from '@admin/access/users/dtos';
+import { UserResponseDto } from "@admin/access/users/dtos";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class PaymentMethodResponseDto {
   @ApiProperty()
@@ -15,5 +15,8 @@ export class PaymentMethodResponseDto {
   active: boolean;
 
   @ApiProperty()
-  createdByUser: UserResponseDto
+  createdByUser: UserResponseDto;
+
+  @ApiProperty()
+  code: string;
 }

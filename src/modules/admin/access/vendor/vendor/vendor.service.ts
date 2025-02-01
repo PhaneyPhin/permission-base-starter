@@ -1,43 +1,60 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateVendorRequestDto,
   UpdateVendorRequestDto,
   VendorResponseDto,
-} from './dtos';
-import { VendorMapper } from './vendor.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { VendorEntity } from './vendor.entity';
-import { Repository } from 'typeorm';
-import { VendorExistsException } from './vendor-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+} from "./dtos";
+import { VendorExistsException } from "./vendor-exist.exception"; // e.g., custom exception
+import { VendorEntity } from "./vendor.entity";
+import { VendorMapper } from "./vendor.mapper";
 
-export const VENDOR_FILTER_FIELDS = ['nameEn', 'nameKh', 'contactPerson', 'phoneNumber', 'email', 'address', 'paymentTermId', 'paymentMethodId', ];
+export const VENDOR_FILTER_FIELDS = [
+  "nameEn",
+  "nameKh",
+  "contactPerson",
+  "phoneNumber",
+  "email",
+  "address",
+  "paymentTermId",
+  "paymentMethodId",
+];
 @Injectable()
 export class VendorService extends BaseCrudService {
-  protected queryName: string = 'vendor';
-  protected SEARCH_FIELDS = ['nameEn', 'nameKh', 'contactPerson', 'phoneNumber', 'email', 'address', 'paymentTermId', 'paymentMethodId', ];
-  protected FILTER_FIELDS = VENDOR_FILTER_FIELDS
+  protected queryName: string = "vendor";
+  protected SEARCH_FIELDS = [
+    "nameEn",
+    "nameKh",
+    "contactPerson",
+    "phoneNumber",
+    "email",
+    "address",
+    "paymentTermId",
+    "paymentMethodId",
+  ];
+  protected FILTER_FIELDS = VENDOR_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(VendorEntity)
-    private vendorRepository: Repository<VendorEntity>,
+    private vendorRepository: Repository<VendorEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return VendorMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return VendorMapper.toDto;
   }
 
   /**
@@ -46,22 +63,29 @@ export class VendorService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<VendorEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('vendor.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("vendor.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.vendorRepository.createQueryBuilder('vendor')
-      .leftJoinAndSelect('vendor.createdByUser', 'uc')
+    return this.vendorRepository
+      .createQueryBuilder("vendor")
+      .leftJoinAndSelect("vendor.createdByUser", "uc");
   }
 
   getAllVendor() {
-    return this.vendorRepository.createQueryBuilder('vendor').select(['id', 'name']).getRawMany()
+    return this.vendorRepository
+      .createQueryBuilder("vendor")
+      .select(["id", "name"])
+      .getRawMany();
   }
 
   /**
@@ -69,7 +93,7 @@ export class VendorService extends BaseCrudService {
    */
   public async getVendorById(id: number): Promise<VendorResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("vendor.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,7 +106,7 @@ export class VendorService extends BaseCrudService {
    * Create new vendor
    */
   public async createVendor(
-    dto: CreateVendorRequestDto,
+    dto: CreateVendorRequestDto
   ): Promise<VendorResponseDto> {
     try {
       let entity = VendorMapper.toCreateEntity(dto);
@@ -104,7 +128,7 @@ export class VendorService extends BaseCrudService {
    */
   public async updateVendor(
     id: number,
-    dto: UpdateVendorRequestDto,
+    dto: UpdateVendorRequestDto
   ): Promise<VendorResponseDto> {
     let entity = await this.vendorRepository.findOneBy({ id });
     if (!entity) {
@@ -128,9 +152,7 @@ export class VendorService extends BaseCrudService {
   /**
    * Update vendor by id
    */
-  public async deleteVendor(
-    id: number
-  ): Promise<VendorResponseDto> {
+  public async deleteVendor(id: number): Promise<VendorResponseDto> {
     let entity = await this.vendorRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

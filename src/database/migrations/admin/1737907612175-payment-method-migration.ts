@@ -22,6 +22,13 @@ export class PaymentMethodMigration1737907612175 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: "code",
+            type: "varchar",
+            length: "160",
+            isUnique: true,
+            isNullable: false,
+          },
+          {
             name: "name",
             type: "varchar",
             length: "160",

@@ -65,13 +65,6 @@ export class VendorEntity extends BaseEntity {
   paymentTermId: string;
 
   @Column({
-    name: "payment_term_id",
-    type: "varchar",
-    nullable: true,
-  })
-  paymentTermId: string;
-
-  @Column({
     name: "payment_method_id",
     type: "varchar",
     nullable: true,

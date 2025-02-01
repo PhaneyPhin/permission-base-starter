@@ -1,7 +1,12 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { commonFields } from '../common.fields';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from "typeorm";
+import { commonFields } from "../common.fields";
 
-const tableName = 'admin.payment-term';
+const tableName = "admin.payment-term";
 
 export class PaymentTermMigration1737907658724 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -10,60 +15,66 @@ export class PaymentTermMigration1737907658724 implements MigrationInterface {
         name: tableName,
         columns: [
           {
-            name: 'id',
-            type: 'integer',
+            name: "id",
+            type: "integer",
             isGenerated: true,
             isPrimary: true,
             isNullable: false,
           },
-          
           {
-            name: 'name',
-            type: 'varchar',
-            length: '160',
+            name: "code",
+            type: "varchar",
+            length: "160",
+            isUnique: true,
             isNullable: false,
           },
-          
           {
-            name: 'days_due',
-            type: 'varchar',
-            length: '160',
+            name: "name",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'description',
-            type: 'varchar',
-            length: '160',
+            name: "days_due",
+            type: "varchar",
+            length: "160",
             isNullable: false,
           },
-          
+
           {
-            name: 'created_by',
-            type: 'uuid',
+            name: "description",
+            type: "varchar",
+            length: "160",
+            isNullable: false,
+          },
+
+          {
+            name: "created_by",
+            type: "uuid",
             isNullable: true,
           },
           {
-            name: 'active',
-            type: 'boolean',
+            name: "active",
+            type: "boolean",
             isNullable: false,
             default: true,
           },
           ...commonFields,
         ],
       }),
-      true,
+      true
     );
 
     // Add the foreign key constraint
     await queryRunner.createForeignKey(
-        tableName,
-        new TableForeignKey({
-            columnNames: ['created_by'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'admin.users',
-            onDelete: 'SET NULL',
-        }),
+      tableName,
+      new TableForeignKey({
+        columnNames: ["created_by"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "admin.users",
+        onDelete: "SET NULL",
+      })
     );
   }
 
@@ -71,7 +82,7 @@ export class PaymentTermMigration1737907658724 implements MigrationInterface {
     const table = await queryRunner.getTable(tableName);
 
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('created_by') !== -1,
+      (fk) => fk.columnNames.indexOf("created_by") !== -1
     );
     await queryRunner.dropForeignKey(tableName, foreignKey);
     await queryRunner.dropTable(tableName, true);

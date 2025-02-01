@@ -69,7 +69,7 @@ export class <%= classify(name) %>Service extends BaseCrudService {
    */
   public async get<%= classify(name) %>ById(id: number): Promise<<%= classify(name) %>ResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where('<%= camelize(name) %>.id = :id', { id })
       .getOne();
 
     if (!entity) {

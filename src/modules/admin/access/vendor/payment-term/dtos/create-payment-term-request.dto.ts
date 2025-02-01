@@ -1,7 +1,12 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, MaxLength } from "class-validator";
 
 export class CreatePaymentTermRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  code: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -17,7 +22,5 @@ export class CreatePaymentTermRequestDto {
   @MaxLength(160)
   description: string;
 
-  
-  
   createdBy: string;
 }

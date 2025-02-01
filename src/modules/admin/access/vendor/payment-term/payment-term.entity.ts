@@ -1,58 +1,71 @@
-import { BaseEntity } from '@database/entities';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { UserEntity } from '@admin/access/users/user.entity';
+import { UserEntity } from "@admin/access/users/user.entity";
+import { BaseEntity } from "@database/entities";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
-@Entity({ schema: 'admin', name: 'payment-term' })
+@Entity({ schema: "admin", name: "payment-term" })
 export class PaymentTermEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
+  @PrimaryGeneratedColumn({ name: "id", type: "integer" })
   id: number;
 
-  
   @Column({
-    name: 'name',
-    type: 'varchar',
+    name: "code",
+    type: "varchar",
+    nullable: true,
+  })
+  code: string;
+
+  @Column({
+    name: "name",
+    type: "varchar",
     nullable: true,
   })
   name: string;
-  
+
   @Column({
-    name: 'days_due',
-    type: 'varchar',
+    name: "days_due",
+    type: "varchar",
     nullable: true,
   })
   daysDue: string;
-  
+
   @Column({
-    name: 'description',
-    type: 'varchar',
+    name: "description",
+    type: "varchar",
     nullable: true,
   })
   description: string;
-  
 
   @Column({
-    name: 'active',
-    type: 'boolean',
+    name: "active",
+    type: "boolean",
     nullable: false,
     default: true,
   })
   active: boolean;
 
   @Column({
-    name: 'created_by',
-    type: 'uuid',
+    name: "created_by",
+    type: "uuid",
     nullable: true,
   })
   createdBy: string;
-  
+
   @ManyToOne(() => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'created_by' })
+  @JoinColumn({ name: "created_by" })
   createdByUser: UserEntity;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
   constructor(partial?: Partial<PaymentTermEntity>) {
     super();
