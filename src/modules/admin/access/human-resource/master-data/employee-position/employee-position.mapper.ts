@@ -46,4 +46,12 @@ export class EmployeePositionMapper {
 
     return entity;
   }
+
+  public static toSelectDto(employeePosition: EmployeePositionEntity) {
+    return {
+      nameEn: employeePosition.nameEn,
+      nameKh: employeePosition.nameKh,
+      id: employeePosition.id
+    }
+  }
 }

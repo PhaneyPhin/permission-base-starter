@@ -62,8 +62,8 @@ export class EmployeePositionController {
     'admin.access.employee-position.update',
   )
   @Get('/select-options')
-  public getAllEmployeePositionForSelect(): Promise<{ id: string, name: string }[]> {
-    return this.employeePositionService.getAllEmployeePosition();
+  public async  getAllEmployeePositionForSelect() {
+    return await this.employeePositionService.getAllEmployeePosition();
   }
 
   @ApiOperation({ description: 'Get employee-position by id' })

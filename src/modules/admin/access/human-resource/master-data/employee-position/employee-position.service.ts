@@ -58,9 +58,9 @@ export class EmployeePositionService extends BaseCrudService {
     return this.employeePositionRepository.createQueryBuilder('employeePosition')
       .leftJoinAndSelect('employeePosition.createdByUser', 'uc')
   }
-
-  getAllEmployeePosition() {
-    return this.employeePositionRepository.createQueryBuilder('employeePosition').select(['id', 'name']).getRawMany()
+  async getAllEmployeePosition() {
+    return (await this.getListQuery()
+      .getMany()).map(EmployeePositionMapper.toSelectDto)
   }
 
   /**

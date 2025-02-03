@@ -49,4 +49,12 @@ export class DepartmentMapper {
 
     return entity;
   }
+
+  public static toSelectDto(department: DepartmentEntity) {
+    return {
+      nameEn: department.nameEn,
+      nameKh: department.nameKh,
+      id: department.id
+    }
+  }
 }

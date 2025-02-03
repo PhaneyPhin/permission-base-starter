@@ -59,9 +59,9 @@ export class DepartmentService extends BaseCrudService {
     return this.departmentRepository.createQueryBuilder('department')
       .leftJoinAndSelect('department.createdByUser', 'uc')
   }
-
-  getAllDepartment() {
-    return this.departmentRepository.createQueryBuilder('department').select(['id', 'name']).getRawMany()
+  async getAllDepartment() {
+    return (await this.getListQuery()
+      .getMany()).map(DepartmentMapper.toSelectDto)
   }
 
   /**
