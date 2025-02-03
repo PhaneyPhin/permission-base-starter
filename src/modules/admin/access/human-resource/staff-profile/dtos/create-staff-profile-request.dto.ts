@@ -1,8 +1,5 @@
 import { IsNotEmpty, MaxLength, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from '../enams/gender.enum';
-import { Title } from '../enams/title.enum';
-import { MaritalStatus } from '../enams/maritalStatus.enum';
 import { StaffStatus } from '../enams/staff-status.enum';
 
 export class CreateStaffProfileRequestDto {
@@ -19,42 +16,55 @@ export class CreateStaffProfileRequestDto {
   nameKh: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   sex: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   title: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   dateOfBirth: Date;
 
   @ApiProperty()
+  @IsNotEmpty()
   maritalStatus: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   nationality: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   religion: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   companyCardNo: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   identityId: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   phone1: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   phone2: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   workingEmail: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   personalEmail: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   placeOfBirth: string;
 
   @ApiProperty()
@@ -70,18 +80,23 @@ export class CreateStaffProfileRequestDto {
   positionId: number;
 
   @ApiProperty()
+  @IsNotEmpty()
   hiredDate: Date;
 
   @ApiProperty()
+  @IsNotEmpty()
   permanentAddress: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   currenAddress: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   profileImage: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   signatureImage: string;
 
   @ApiProperty({

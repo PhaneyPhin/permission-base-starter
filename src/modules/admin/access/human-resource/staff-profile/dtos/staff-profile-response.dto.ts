@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
-import { NationalityResponseDto } from '../../master-data/nationality/dtos';
 import { BranchResponseDto } from '@modules/admin/access/branch/dtos';
 import { DepartmentResponseDto } from '@modules/admin/access/department/dtos';
-import { PositionResponseDto } from '../../master-data/position/dtos';
 import { StaffStatus } from '../enams/staff-status.enum';
+import { EmployeePositionResponseDto } from '../../master-data/employee-position/dtos';
 
 export class StaffProfileResponseDto {
   @ApiProperty()
@@ -65,7 +64,7 @@ export class StaffProfileResponseDto {
   department: DepartmentResponseDto;
 
   @ApiProperty()
-  position: PositionResponseDto;
+  position: EmployeePositionResponseDto;
 
   @ApiProperty()
   hiredDate: Date;
