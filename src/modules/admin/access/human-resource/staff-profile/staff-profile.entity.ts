@@ -2,13 +2,10 @@ import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
 import { BranchEntity } from '../../branch/branch.entity';
-import { NationalityEntity } from '../master-data/nationality/nationality.entity';
 import { PositionEntity } from '../master-data/position/position.entity';
 import { DepartmentEntity } from '../../department/department.entity';
 import { StaffStatus } from './enams/staff-status.enum';
-import { Gender } from './enams/gender.enum';
-import { Title } from './enams/title.enum';
-import { MaritalStatus } from './enams/maritalStatus.enum';
+import { EmployeePositionEntity } from '../master-data/employee-position/employee-position.entity';
 
 @Entity({ schema: 'admin', name: 'staff-profile' })
 export class StaffProfileEntity extends BaseEntity {
@@ -61,7 +58,7 @@ export class StaffProfileEntity extends BaseEntity {
   dateOfBirth: Date;
 
   @Column({
-    name: 'nationality',
+    name: 'marital_status',
     type: 'varchar',
     nullable: true,
   })
@@ -159,9 +156,9 @@ export class StaffProfileEntity extends BaseEntity {
   })
   positionId: number;
 
-  @ManyToOne(() => PositionEntity, { nullable: true, eager: true })
+  @ManyToOne(() => EmployeePositionEntity, { nullable: true, eager: true })
   @JoinColumn({ name: 'position_id' })
-  position: PositionEntity;
+  position: EmployeePositionEntity;
   
   @Column({
     name: 'hired_date',
