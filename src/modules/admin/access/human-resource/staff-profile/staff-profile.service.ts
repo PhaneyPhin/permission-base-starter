@@ -20,11 +20,11 @@ import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter, In } from 'typeorm';
 import { StaffStatus } from './enams/staff-status.enum';
 
-export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus','nationality', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
+export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus','nationality', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
 @Injectable()
 export class StaffProfileService extends BaseCrudService {
   protected queryName: string = 'staffProfile';
-  protected SEARCH_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus','nationality','religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'hiredDate', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
+  protected SEARCH_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'maritalStatus','nationality','religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
   protected FILTER_FIELDS = STAFF_PROFILE_FILTER_FIELDS
 
   constructor(
@@ -46,6 +46,13 @@ export class StaffProfileService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<StaffProfileEntity> } = {
+      hiredDate: (query, value) => {
+        const [start, end] = value.split(' to ');
+        return query.andWhere(`${this.queryName}.hired_date BETWEEN :start AND :end`, { start, end });
+      },
+      dateOfBirth: (query, value) => {
+        return query.andWhere(`${this.queryName}.date_of_birth = :dateOfBirth`, { dateOfBirth: value });
+      },
       createdAt: (query, value) => {
         const [start, end] = value.split(',');
         return query.andWhere('staffProfile.created_at BETWEEN :start AND :end', { start, end });

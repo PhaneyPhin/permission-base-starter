@@ -6,6 +6,7 @@ import { PositionEntity } from '../master-data/position/position.entity';
 import { DepartmentEntity } from '../../department/department.entity';
 import { StaffStatus } from './enams/staff-status.enum';
 import { EmployeePositionEntity } from '../master-data/employee-position/employee-position.entity';
+import minioClient from '@libs/pagination/minio';
 
 @Entity({ schema: 'admin', name: 'staff-profile' })
 export class StaffProfileEntity extends BaseEntity {
@@ -188,12 +189,16 @@ export class StaffProfileEntity extends BaseEntity {
   })
   profileImage: string;
 
+  profileImageUrl: string;
+
   @Column({
     name: 'signature_image',
     type: 'varchar',
     nullable: true,
   })
   signatureImage: string;
+
+  signatureImageUrl: string;
 
   @Column({
     name: 'status',
@@ -222,5 +227,24 @@ export class StaffProfileEntity extends BaseEntity {
   constructor(partial?: Partial<StaffProfileEntity>) {
     super();
     Object.assign(this, partial);
+  }
+  // async getProfileImageUrl() {
+  //   return await minioClient.presignedGetObject('images', this.profileImage);
+  // }
+  // async getSignatureImageUrl() {
+  //   return await minioClient.presignedGetObject('images', this.signatureImage);
+  // }
+  async getProfileImageUrl(): Promise<string | null> {
+      if (!this.profileImage) {
+        return null;
+      }
+      return await minioClient.presignedGetObject('images', this.profileImage);
+  }
+
+  async getSignatureImageUrl(): Promise<string | null> {
+      if (!this.signatureImage) {
+        return null;
+      }
+      return await minioClient.presignedGetObject('images', this.signatureImage);
   }
 }

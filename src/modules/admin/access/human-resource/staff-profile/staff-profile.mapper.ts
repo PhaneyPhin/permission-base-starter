@@ -14,6 +14,7 @@ import { StaffStatus } from './enams/staff-status.enum';
 export class StaffProfileMapper {
   public static async toDto(entity: StaffProfileEntity): Promise<StaffProfileResponseDto> {
     const dto = new StaffProfileResponseDto();
+    console.log(entity.getProfileImageUrl());
     dto.id = entity.id;
     dto.status = entity.status;
     dto.staffCode = entity.staffCode;
@@ -37,6 +38,8 @@ export class StaffProfileMapper {
     dto.currenAddress = entity.currenAddress;
     dto.profileImage = entity.profileImage;
     dto.signatureImage = entity.signatureImage;
+    dto.profileImageUrl = entity.profileImage ? await entity.getProfileImageUrl() : null;
+    dto.signatureImageUrl = entity.signatureImage ? await entity.getSignatureImageUrl() : null;
     
     if (entity.branch) {
       dto.branch = await BranchMapper.toDto(entity.branch);
