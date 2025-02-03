@@ -79,7 +79,13 @@ export class StaffProfileResponseDto {
   profileImage: string;
 
   @ApiProperty()
+  profileImageUrl: string;
+
+  @ApiProperty()
   signatureImage: string;
+
+  @ApiProperty()
+  signatureImageUrl: string;
 
   @ApiProperty()
   status: StaffStatus;
