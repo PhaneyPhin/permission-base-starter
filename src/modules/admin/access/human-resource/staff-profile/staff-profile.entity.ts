@@ -40,19 +40,18 @@ export class StaffProfileEntity extends BaseEntity {
   
   @Column({
     name: 'sex',
-    type: 'enum',
-    enum: Gender,
+    type: 'varchar',
     nullable: true,
   })
-  sex: Gender;
+  sex: string;
 
+  
   @Column({
     name: 'title',
-    type: 'enum',
-    enum: Title,
+    type: 'varchar',
     nullable: true,
   })
-  title: Title;
+  title: string;
   
   @Column({
     name: 'date_of_birth',
@@ -62,12 +61,11 @@ export class StaffProfileEntity extends BaseEntity {
   dateOfBirth: Date;
 
   @Column({
-    name: 'marital_status',
-    type: 'enum',
-    enum: MaritalStatus,
+    name: 'nationality',
+    type: 'varchar',
     nullable: true,
   })
-  maritalStatus: MaritalStatus;
+  maritalStatus: string;
 
   @Column({
     name: 'nationality',

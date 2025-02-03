@@ -62,8 +62,8 @@ export class DepartmentController {
     'admin.access.department.update',
   )
   @Get('/select-options')
-  public getAllDepartmentForSelect(): Promise<{ id: string, name: string }[]> {
-    return this.departmentService.getAllDepartment();
+  public async  getAllDepartmentForSelect() {
+    return await this.departmentService.getAllDepartment();
   }
 
   @ApiOperation({ description: 'Get department by id' })

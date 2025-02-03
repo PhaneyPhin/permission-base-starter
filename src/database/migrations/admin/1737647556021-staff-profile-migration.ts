@@ -125,7 +125,7 @@ export class StaffProfileMigration1737647556021 implements MigrationInterface {
           {
             name: 'place_of_birth',
             type: 'varchar',
-            length: '160',
+            length: '500',
             isNullable: true,
           },
           
@@ -156,26 +156,26 @@ export class StaffProfileMigration1737647556021 implements MigrationInterface {
           {
             name: 'permanent_address',
             type: 'varchar',
-            length: '160',
+            length: '500',
             isNullable: true,
           },
           
           {
             name: 'curren_address',
             type: 'varchar',
-            length: '160',
+            length: '500',
             isNullable: true,
           },
           {
             name: 'profile_image',
             type: 'varchar',
-            length: '160',
+            length: '500',
             isNullable: true,
           },
           {
             name: 'signature_image',
             type: 'varchar',
-            length: '160',
+            length: '500',
             isNullable: true,
           },
           
