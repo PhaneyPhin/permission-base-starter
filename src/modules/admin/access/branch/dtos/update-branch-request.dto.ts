@@ -20,28 +20,23 @@ export class UpdateBranchRequestDto extends CreateBranchRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  @MaxLength(160)
   contactPerson: string;
 
   @ApiProperty()
   @IsOptional()
-  @MaxLength(160)
   @IsPhoneNumber('KH')
   phoneNumber: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
+  @IsOptional()
   addressEn: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
+  @IsOptional()
   addressKh: string;
 
   @ApiProperty()
   @IsOptional()
-  @MaxLength(160)
   description: string;
 
   @ApiProperty()

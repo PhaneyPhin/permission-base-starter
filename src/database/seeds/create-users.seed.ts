@@ -16,6 +16,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
 import { companies } from "./company.seed";
 import { departments } from "./create-department.seed";
+import { ValuationMethodEntity } from "@modules/admin/access/procument/master-data/valuation-method/valuation-method.entity";
+import { valuationMethods } from "./valuation-method.seed";
 
 // Define seed data
 const baseUsers: any[] = [
@@ -272,6 +274,11 @@ const permissions = [
     slug: "admin.access.vendor-bank.delete",
     description: "Delete vendor-bank",
   },
+
+  { slug: "admin.access.valuation-method.read", description: "Read Valuation Method" },
+  { slug: "admin.access.valuation-method.create", description: "Create Valuation Method" },
+  { slug: "admin.access.valuation-method.update", description: "Update vValuation Method" },
+  { slug: "admin.access.valuation-method.delete", description: "Delete Valuation Method" },
 ];
 
 const rolePermissions = {
@@ -392,6 +399,7 @@ async function seedDatabase(dataSource: DataSource) {
 
   await dataSource.manager.save(DepartmentEntity, departments);
   await dataSource.manager.save(CompanyEntity, companies);
+  await dataSource.manager.save(ValuationMethodEntity, valuationMethods);
 
   const defaultDimension = {
     createdBy: user.id,

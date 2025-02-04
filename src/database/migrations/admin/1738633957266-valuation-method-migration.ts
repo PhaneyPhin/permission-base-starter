@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.branch';
+const tableName = 'admin.valuation-method';
 
-export class BranchMigration1735788878288 implements MigrationInterface {
+export class ValuationMethodMigration1738633957266 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -16,7 +16,7 @@ export class BranchMigration1735788878288 implements MigrationInterface {
             isPrimary: true,
             isNullable: false,
           },
-
+          
           {
             name: 'code',
             type: 'varchar',
@@ -36,38 +36,6 @@ export class BranchMigration1735788878288 implements MigrationInterface {
             type: 'varchar',
             length: '160',
             isNullable: false,
-          },
-          
-          {
-            name: 'contact_person',
-            type: 'varchar',
-            length: '160',
-            isNullable: true,
-          },
-          
-          {
-            name: 'phone_number',
-            type: 'varchar',
-            length: '20',
-            isNullable: true,
-          },
-          
-          {
-            name: 'address_en',
-            type: 'text',
-            isNullable: true,
-          },
-          
-          {
-            name: 'address_kh',
-            type: 'text',
-            isNullable: true,
-          },
-          
-          {
-            name: 'description',
-            type: 'text',
-            isNullable: true,
           },
           
           {

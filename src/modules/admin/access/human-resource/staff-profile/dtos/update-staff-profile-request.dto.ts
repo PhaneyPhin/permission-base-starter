@@ -1,5 +1,5 @@
 import { CreateStaffProfileRequestDto } from './create-staff-profile-request.dto';
-import { IsBoolean, IsNotEmpty, MaxLength, IsEnum } from 'class-validator';
+import { IsBoolean, IsNotEmpty, MaxLength, IsEnum, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { StaffStatus } from '../enams/staff-status.enum';
 
@@ -17,55 +17,55 @@ export class UpdateStaffProfileRequestDto extends CreateStaffProfileRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   sex: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   title: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   dateOfBirth: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   maritalStatus: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   nationality: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   religion: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   companyCardNo: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   identityId: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   phone1: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   phone2: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   workingEmail: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   personalEmail: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   placeOfBirth: string;
 
   @ApiProperty()
@@ -81,23 +81,23 @@ export class UpdateStaffProfileRequestDto extends CreateStaffProfileRequestDto {
   positionId: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   hiredDate: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   permanentAddress: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   currenAddress: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   profileImage: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   signatureImage: string;
 
   @ApiProperty({

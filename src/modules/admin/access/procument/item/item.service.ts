@@ -19,11 +19,11 @@ import { ItemExistsException } from './item-exist.exception'; // e.g., custom ex
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
 
-export const ITEM_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
+export const ITEM_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'itemType', 'status', 'note', ];
 @Injectable()
 export class ItemService extends BaseCrudService {
   protected queryName: string = 'item';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
+  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'itemType', 'status', 'note', ];
   protected FILTER_FIELDS = ITEM_FILTER_FIELDS
 
   constructor(
@@ -45,11 +45,26 @@ export class ItemService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<ItemEntity> } = {
+      itemGroup: (query, value) => {
+        return query.andWhere('itemGroup.name_en ILIKE %itemGroup% or itemGroup.name_kh ILIKE %itemGroup%', { itemGroup: value })
+      },
+      valuationMethod: (query, value) => {
+        return query.andWhere('valuationMethod.name_en ILIKE %valuationMethod% or valuationMethod.name_kh ILIKE %valuationMethod%', { valuationMethod: value })
+      },
       category: (query, value) => {
         return query.andWhere('category.name_en ILIKE %category% or category.name_kh ILIKE %category%', { category: value })
       },
       uom: (query, value) => {
         return query.andWhere('uom.name_en ILIKE %uom% or uom.name_kh ILIKE %uom%', { uom: value })
+      },
+      minStock: (query, value) => {
+        return query.andWhere('item.min_stock = :minStock', { minStock: value });
+      },
+      standardCost: (query, value) => {
+        return query.andWhere('item.standard_cost = :standardCost', { standardCost: value });
+      },
+      unitCost: (query, value) => {
+        return query.andWhere('item.unit_cost = :unitCost', { unitCost: value });
       },
       createdAt: (query, value) => {
         const [start, end] = value.split(',');
@@ -65,6 +80,8 @@ export class ItemService extends BaseCrudService {
     return this.itemRepository.createQueryBuilder('item')
       .leftJoinAndSelect('item.category', 'category')
       .leftJoinAndSelect('item.uom', 'uom')
+      .leftJoinAndSelect('item.itemGroup', 'itemGroup')
+      .leftJoinAndSelect('item.valuationMethod', 'valuationMethod')
       .leftJoinAndSelect('item.createdByUser', 'uc')
   }
   async getAllItem() {

@@ -17,7 +17,7 @@ export class StaffProfileEntity extends BaseEntity {
   @Column({
     name: 'staff_code',
     type: 'varchar',
-    nullable: true,
+    nullable: false,
     unique: true,
   })
   staffCode: string;
@@ -25,14 +25,14 @@ export class StaffProfileEntity extends BaseEntity {
   @Column({
     name: 'name_en',
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
   nameEn: string;
   
   @Column({
     name: 'name_kh',
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
   nameKh: string;
   
@@ -131,7 +131,7 @@ export class StaffProfileEntity extends BaseEntity {
   @Column({
     name: 'branch_id',
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
   branchId: number;
 
@@ -142,7 +142,7 @@ export class StaffProfileEntity extends BaseEntity {
   @Column({
     name: 'department_id',
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
   departmentId: number;
 
@@ -153,7 +153,7 @@ export class StaffProfileEntity extends BaseEntity {
   @Column({
     name: 'position_id',
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
   positionId: number;
 
