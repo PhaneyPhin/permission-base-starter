@@ -1,7 +1,7 @@
 import { IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateItemRequestDto {
+export class CreateValuationMethodRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -16,18 +16,6 @@ export class CreateItemRequestDto {
   @IsNotEmpty()
   @MaxLength(160)
   nameKh: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  categoryId: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  uomId: number;
-
-  @ApiProperty()
-  @MaxLength(160)
-  description: string;
 
   
   

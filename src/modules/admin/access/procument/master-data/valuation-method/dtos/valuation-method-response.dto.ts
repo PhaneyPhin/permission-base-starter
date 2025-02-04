@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
-import { CategoryResponseDto } from '../../category/dtos';
-import { UomResponseDto } from '../../uom/dtos';
 
-export class ItemResponseDto {
+export class ValuationMethodResponseDto {
   @ApiProperty()
   id: number;
 
@@ -15,15 +13,6 @@ export class ItemResponseDto {
 
   @ApiProperty()
   nameKh: string;
-
-  @ApiProperty()
-  category: CategoryResponseDto;
-
-  @ApiProperty()
-  uom: UomResponseDto;
-
-  @ApiProperty()
-  description: string;
 
   @ApiProperty()
   active: boolean;

@@ -1,12 +1,9 @@
 import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
-import { fa } from '@faker-js/faker/.';
-import { CategoryEntity } from '../category/category.entity';
-import { UomEntity } from '../uom/uom.entity';
 
-@Entity({ schema: 'admin', name: 'item' })
-export class ItemEntity extends BaseEntity {
+@Entity({ schema: 'admin', name: 'valuation-method' })
+export class ValuationMethodEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
@@ -14,53 +11,23 @@ export class ItemEntity extends BaseEntity {
   @Column({
     name: 'code',
     type: 'varchar',
-    nullable: false,
-    unique: true,
+    nullable: true,
   })
   code: string;
   
   @Column({
     name: 'name_en',
     type: 'varchar',
-    nullable: false,
+    nullable: true,
   })
   nameEn: string;
   
   @Column({
     name: 'name_kh',
     type: 'varchar',
-    nullable: false,
-  })
-  nameKh: string;
-  
-  @Column({
-    name: 'category_id',
-    type: 'integer',
-    nullable: false,
-  })
-  categoryId: number;
-
-  @ManyToOne(() => CategoryEntity, { nullable: true })
-  @JoinColumn({ name: 'category_id' })
-  category: CategoryEntity;
-  
-  @Column({
-    name: 'uom_id',
-    type: 'integer',
-    nullable: false,
-  })
-  uomId: number;
-
-  @ManyToOne(() => UomEntity, { nullable: true })
-  @JoinColumn({ name: 'uom_id' })
-  uom: UomEntity;
-  
-  @Column({
-    name: 'description',
-    type: 'varchar',
     nullable: true,
   })
-  description: string;
+  nameKh: string;
   
 
   @Column({
@@ -87,7 +54,7 @@ export class ItemEntity extends BaseEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
-  constructor(partial?: Partial<ItemEntity>) {
+  constructor(partial?: Partial<ValuationMethodEntity>) {
     super();
     Object.assign(this, partial);
   }

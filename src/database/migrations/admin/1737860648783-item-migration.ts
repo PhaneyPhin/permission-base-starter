@@ -40,6 +40,11 @@ export class ItemMigration1737860648783 implements MigrationInterface {
           },
           
           {
+            name: 'item_group_id',
+            type: 'integer',
+            isNullable: false,
+          },
+          {
             name: 'category_id',
             type: 'integer',
             isNullable: false,
@@ -50,12 +55,49 @@ export class ItemMigration1737860648783 implements MigrationInterface {
             type: 'integer',
             isNullable: false,
           },
-          
           {
-            name: 'description',
+            name: 'valuation_method_id',
+            type: 'integer',
+            isNullable: false,
+          },
+          {
+            name: 'item_type',
             type: 'varchar',
             length: '160',
+            isNullable: false,
+          },
+          {
+            name: 'min_stock',
+            type: 'integer',
             isNullable: true,
+          },
+          {
+            name: 'standard_cost',
+            type: 'integer',
+            isNullable: true,
+          },
+          {
+            name: 'unit_cost',
+            type: 'integer',
+            isNullable: true,
+          },
+          {
+            name: 'item_image',
+            type: 'varchar',
+            length: '500',
+            isNullable: true,
+          },
+          {
+            name: 'note',
+            type: 'varchar',
+            length: '500',
+            isNullable: true,
+          },
+          {
+            name: 'status',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
           },
           
           {
