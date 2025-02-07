@@ -9,6 +9,7 @@ import { CategoryMapper } from '../master-data/category/category.mapper';
 import { UomMapper } from '../master-data/uom/uom.mapper';
 import { ItemGroupMapper } from '../master-data/item-group/item-group.mapper';
 import { ValuationMethodMapper } from '../master-data/valuation-method/valuation-method.mapper';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export class ItemMapper {
   public static async toDto(entity: ItemEntity): Promise<ItemResponseDto> {
@@ -53,8 +54,8 @@ export class ItemMapper {
     entity.itemGroupId = dto.itemGroupId;
     entity.categoryId = dto.categoryId;
     entity.uomId = dto.uomId;
-    entity.valuationMethodId = dto.valuationMethodId;
     entity.itemType = dto.itemType;
+    entity.valuationMethodId = dto.valuationMethodId;
     entity.minStock = dto.minStock;
     entity.standardCost = dto.standardCost;
     entity.unitCost = dto.unitCost;
@@ -94,4 +95,15 @@ export class ItemMapper {
       id: item.id
     }
   }
+
+  public static toBulkUpdateResponse(
+      updatedIds: number[],
+      status: ModuleStatus,
+    ): { message: string; updatedIds: number[]; status: ModuleStatus } {
+      return {
+        message: `Successfully updated the status for ${updatedIds.length} items to '${status}'.`,
+        updatedIds,
+        status,
+      };
+    }
 }

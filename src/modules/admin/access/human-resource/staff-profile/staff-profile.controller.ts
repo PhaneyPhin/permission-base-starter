@@ -35,8 +35,8 @@ import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { StaffProfileEntity } from './staff-profile.entity';
 import { UserEntity } from '@admin/access/users/user.entity';
 import { StaffProfileMapper } from './staff-profile.mapper';
-import { StaffStatus } from './enams/staff-status.enum';
 import { UpdateStatusDto } from './dtos/update-active-status-request-dto';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 @ApiTags('StaffProfile')
 @ApiBearerAuth(TOKEN_NAME)
@@ -121,27 +121,15 @@ export class StaffProfileController {
     return this.staffProfileService.deleteStaffProfile(id);
   }
 
-  @ApiOperation({ description: 'Activate multiple staff profiles' })
+  @ApiOperation({ description: 'Bulk update staff profile statuses' })
   @ApiGlobalResponse(StaffProfileResponseDto)
   @UseGuards(SuperUserGuard)
   @Permissions('admin.access.staff-profile.update-status')
-  @Patch('/active')
-  public async activateStaffProfiles(
-    @Body(ValidationPipe) dto: UpdateStatusDto,
-  ): Promise<{ message: string; updatedIds: number[]; status: StaffStatus }> {
-    const updatedIds = await this.staffProfileService.activateStaffProfiles(dto.ids);
-    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, StaffStatus.ACTIVE);
+  @Post('/inactive-staff')
+  public async updateStaffProfileStatuses(
+    @Body(ValidationPipe) dto: UpdateStatusDto
+  ): Promise<{ message: string; updatedIds: number[]; status: ModuleStatus }> {
+    const updatedIds = await this.staffProfileService.updateStaffProfileStatuses(dto.ids);
+    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, ModuleStatus.INACTIVE);
   }
-  
-  @ApiOperation({ description: 'Deactivate multiple staff profiles' })
-  @ApiGlobalResponse(StaffProfileResponseDto)
-  @UseGuards(SuperUserGuard)
-  @Permissions('admin.access.staff-profile.update-status')
-  @Patch('/deactivate')
-  public async deactivateStaffProfiles(
-    @Body(ValidationPipe) dto: UpdateStatusDto,
-  ): Promise<{ message: string; updatedIds: number[]; status: StaffStatus }> {
-    const updatedIds = await this.staffProfileService.deactivateStaffProfiles(dto.ids);
-    return StaffProfileMapper.toBulkUpdateResponse(updatedIds, StaffStatus.INACTIVE);
-  }  
 }

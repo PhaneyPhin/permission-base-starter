@@ -31,6 +31,9 @@ import { ApiPaginatedResponse, PaginationParams, PaginationRequest, PaginationRe
 import { ApiFields } from '@common/decorators/api-fields.decorator';
 import { ItemEntity } from './item.entity';
 import { UserEntity } from '@admin/access/users/user.entity';
+import { ItemMapper } from './item.mapper';
+import { UpdateStatusDto } from '../../human-resource/staff-profile/dtos/update-active-status-request-dto';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 @ApiTags('Item')
 @ApiBearerAuth(TOKEN_NAME)
@@ -113,5 +116,17 @@ export class ItemController {
     @Param('id', ParseIntPipe) id: number
   ): Promise<ItemResponseDto> {
     return this.itemService.deleteItem(id);
+  }
+
+  @ApiOperation({ description: 'Bulk update staff profile statuses' })
+  @ApiGlobalResponse(ItemResponseDto)
+  @UseGuards(SuperUserGuard)
+  @Permissions('admin.access.staff-profile.update-status')
+  @Post('/inactive-items')
+  public async updateStaffProfileStatuses(
+    @Body(ValidationPipe) dto: UpdateStatusDto
+  ): Promise<{ message: string; updatedIds: number[]; status: ModuleStatus }> {
+    const updatedIds = await this.itemService.updateItemStatuses(dto.ids);
+    return ItemMapper.toBulkUpdateResponse(updatedIds, ModuleStatus.INACTIVE);
   }
 }

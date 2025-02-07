@@ -1,7 +1,7 @@
 import { CreateStaffProfileRequestDto } from './create-staff-profile-request.dto';
 import { IsBoolean, IsNotEmpty, MaxLength, IsEnum, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { StaffStatus } from '../enams/staff-status.enum';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export class UpdateStaffProfileRequestDto extends CreateStaffProfileRequestDto {
   @ApiProperty()
@@ -101,11 +101,11 @@ export class UpdateStaffProfileRequestDto extends CreateStaffProfileRequestDto {
   signatureImage: string;
 
   @ApiProperty({
-    enum: StaffStatus
+    enum: ModuleStatus
   })
   @IsNotEmpty()
-  @IsEnum(StaffStatus)
-  status: StaffStatus
+  @IsEnum(ModuleStatus)
+  status: ModuleStatus
 
   createdBy: string;
 }
