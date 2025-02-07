@@ -14,10 +14,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DBErrorCode } from '@common/enums';
 import { TimeoutError } from 'rxjs';
 import { ItemEntity } from './item.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, In, Repository } from 'typeorm';
 import { ItemExistsException } from './item-exist.exception'; // e.g., custom exception
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter } from 'typeorm';
+import { ItemGroupEntity } from '../master-data/item-group/item-group.entity';
+import { ValuationMethodEntity } from '../master-data/valuation-method/valuation-method.entity';
+import { CategoryEntity } from '../master-data/category/category.entity';
+import { UomEntity } from '../master-data/uom/uom.entity';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export const ITEM_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'itemType', 'status', 'note', ];
 @Injectable()
@@ -29,6 +34,18 @@ export class ItemService extends BaseCrudService {
   constructor(
     @InjectRepository(ItemEntity)
     private itemRepository: Repository<ItemEntity>,
+    @InjectRepository(ItemGroupEntity)
+    private itemGroupRepository: Repository<ItemGroupEntity>,
+
+    @InjectRepository(ValuationMethodEntity)
+    private valuationMethodRepository: Repository<ValuationMethodEntity>,
+
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
+
+    @InjectRepository(UomEntity)
+    private uomRepository: Repository<UomEntity>,
+
   ) {
     super()
   }
@@ -114,6 +131,7 @@ export class ItemService extends BaseCrudService {
       entity = await this.itemRepository.save(entity);
       return ItemMapper.toDto(entity);
     } catch (error) {
+      console.log("error", error)
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new ItemExistsException(dto.code);
       }
@@ -127,18 +145,48 @@ export class ItemService extends BaseCrudService {
   /**
    * Update item by id
    */
+  // public async updateItem(
+  //   id: number,
+  //   dto: UpdateItemRequestDto,
+  // ): Promise<ItemResponseDto> {
+  //   let entity = await this.itemRepository.findOneBy({ id });
+  //   if (!entity) {
+  //     throw new NotFoundException();
+  //   }
+  //   try {
+  //     entity = ItemMapper.toUpdateEntity(entity, dto);
+  //     entity = await this.itemRepository.save(entity);
+  //     return ItemMapper.toDto(entity);
+  //   } catch (error) {
+  //     if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
+  //       throw new ItemExistsException(dto.code);
+  //     }
+  //     if (error instanceof TimeoutError) {
+  //       throw new RequestTimeoutException();
+  //     }
+  //     throw new InternalServerErrorException();
+  //   }
+  // }
   public async updateItem(
     id: number,
     dto: UpdateItemRequestDto,
   ): Promise<ItemResponseDto> {
-    let entity = await this.itemRepository.findOneBy({ id });
+    const entity = await this.itemRepository.findOne({
+      where: { id },
+      relations: ['itemGroup','category','uom','valuationMethod'],
+    });
     if (!entity) {
       throw new NotFoundException();
     }
     try {
-      entity = ItemMapper.toUpdateEntity(entity, dto);
-      entity = await this.itemRepository.save(entity);
-      return ItemMapper.toDto(entity);
+      const [newItemGroup, newCategory, newUom, newValuationMethod] = await this.getRelatedEntities(dto);
+      const updatedEntity = ItemMapper.toUpdateEntity(entity, dto);
+      updatedEntity.itemGroup = newItemGroup;
+      updatedEntity.category = newCategory;
+      updatedEntity.uom = newUom;
+      updatedEntity.valuationMethod = newValuationMethod;
+      const savedEntity = await this.itemRepository.save(updatedEntity);
+      return ItemMapper.toDto(savedEntity)
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new ItemExistsException(dto.code);
@@ -170,4 +218,47 @@ export class ItemService extends BaseCrudService {
       throw new InternalServerErrorException();
     }
   }
+
+  public async updateItemStatuses(ids: number[]): Promise<number[]> {
+      const profiles = await this.itemRepository.find({
+        where: { id: In(ids) },
+      });
+      const foundIds = profiles.map(profile => profile.id);
+      const missingIds = ids.filter(id => !foundIds.includes(id));
+    
+      if (missingIds.length > 0) {
+        throw new NotFoundException(
+          `Item with IDs ${missingIds.join(', ')} not found.`
+        );
+      }
+      await this.itemRepository
+        .createQueryBuilder()
+        .update()
+        .set({ status: ModuleStatus.INACTIVE })
+        .whereInIds(ids)
+        .execute();
+    
+      return ids;
+    }
+
+  private async fetchEntity<T extends { id: number }>(
+      repository: Repository<T>,
+      id: number,
+      entityName: string
+    ): Promise<T> {
+      const entity = await repository.findOneBy({ id } as FindOptionsWhere<T>);
+      if (!entity) {
+        throw new NotFoundException(`${entityName} with id ${id} not found`);
+      }
+      return entity;
+    }
+  private async getRelatedEntities(dto: UpdateItemRequestDto): Promise<[ItemGroupEntity, CategoryEntity, UomEntity, ValuationMethodEntity]> {
+      const [newItemGroup, newCategory, newUom, newValuationMethod] = await Promise.all([
+        this.fetchEntity(this.itemGroupRepository, dto.itemGroupId, 'ItemGroup'),
+        this.fetchEntity(this.categoryRepository, dto.categoryId, 'Category'),
+        this.fetchEntity(this.uomRepository, dto.uomId, 'Uom'),
+        this.fetchEntity(this.valuationMethodRepository, dto.valuationMethodId, 'ValuationMethod'),
+      ]);
+      return [newItemGroup, newCategory, newUom, newValuationMethod];
+    }
 }

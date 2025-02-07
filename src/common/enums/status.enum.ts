@@ -1,4 +1,4 @@
-export enum StaffStatus {
+export enum ModuleStatus {
     ACTIVE = 'active',
     INACTIVE = 'inactive',
   }

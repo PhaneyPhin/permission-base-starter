@@ -14,13 +14,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DBErrorCode } from '@common/enums';
 import { TimeoutError } from 'rxjs';
 import { StaffProfileEntity } from './staff-profile.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { StaffProfileExistsException } from './staff-profile-exist.exception'; // e.g., custom exception
 import { BaseCrudService } from '@common/services/base-crud.service';
 import { Filter, In } from 'typeorm';
-import { StaffStatus } from './enams/staff-status.enum';
+import { BranchEntity } from '../../branch/branch.entity';
+import { EmployeePositionEntity } from '../master-data/employee-position/employee-position.entity';
+import { DepartmentEntity } from '../../department/department.entity';
+import { ModuleStatus } from '@common/enums/status.enum';
 
-export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'dateOfBirth', 'maritalStatus','nationality', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
+export const STAFF_PROFILE_FILTER_FIELDS = ['staffCode', 'nameEn', 'nameKh', 'sex', 'title', 'maritalStatus','nationality', 'religion', 'companyCardNo', 'identityId', 'phone1', 'phone2', 'workingEmail', 'personalEmail', 'placeOfBirth', 'permanentAddress', 'currenAddress', 'profileImage', 'signatureImage' ];
 @Injectable()
 export class StaffProfileService extends BaseCrudService {
   protected queryName: string = 'staffProfile';
@@ -30,6 +33,16 @@ export class StaffProfileService extends BaseCrudService {
   constructor(
     @InjectRepository(StaffProfileEntity)
     private staffProfileRepository: Repository<StaffProfileEntity>,
+
+    @InjectRepository(BranchEntity)
+    private branchRepository: Repository<BranchEntity>,
+
+    @InjectRepository(EmployeePositionEntity)
+    private employeePositionRepository: Repository<EmployeePositionEntity>,
+
+    @InjectRepository(DepartmentEntity)
+    private departmentRepository: Repository<DepartmentEntity>,
+
   ) {
     super()
   }
@@ -47,11 +60,12 @@ export class StaffProfileService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<StaffProfileEntity> } = {
       hiredDate: (query, value) => {
-        const [start, end] = value.split(' to ');
-        return query.andWhere(`${this.queryName}.hired_date BETWEEN :start AND :end`, { start, end });
+        const [start, end] = value.split(',');
+        return query.andWhere('staffProfile.hired_date BETWEEN :start AND :end', { start, end });
       },
       dateOfBirth: (query, value) => {
-        return query.andWhere(`${this.queryName}.date_of_birth = :dateOfBirth`, { dateOfBirth: value });
+        const [start, end] = value.split(',');
+        return query.andWhere('staffProfile.date_of_birth BETWEEN :start AND :end', { start, end });
       },
       createdAt: (query, value) => {
         const [start, end] = value.split(',');
@@ -126,14 +140,22 @@ export class StaffProfileService extends BaseCrudService {
     id: number,
     dto: UpdateStaffProfileRequestDto,
   ): Promise<StaffProfileResponseDto> {
-    let entity = await this.staffProfileRepository.findOneBy({ id });
-    if (!entity) {
-      throw new NotFoundException();
-    }
+    // let entity = await this.staffProfileRepository.findOneBy({ id });
+      const entity = await this.staffProfileRepository.findOne({
+        where: { id },
+        relations: ['branch','department','position'],
+      });
+      if (!entity) {
+        throw new NotFoundException();
+      }
     try {
-      entity = StaffProfileMapper.toUpdateEntity(entity, dto);
-      entity = await this.staffProfileRepository.save(entity);
-      return StaffProfileMapper.toDto(entity);
+      const [newBranch, newDepartment, newPosition] = await this.getRelatedEntities(dto);
+      const updatedEntity = StaffProfileMapper.toUpdateEntity(entity, dto);
+      updatedEntity.branch = newBranch;
+      updatedEntity.department = newDepartment;
+      updatedEntity.position = newPosition;
+      const savedEntity = await this.staffProfileRepository.save(updatedEntity);
+      return StaffProfileMapper.toDto(savedEntity)
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new StaffProfileExistsException(dto.staffCode);
@@ -165,40 +187,50 @@ export class StaffProfileService extends BaseCrudService {
       throw new InternalServerErrorException();
     }
   }
-
-  public async activateStaffProfiles(ids: number[]): Promise<number[]> {
-    return this.updateStaffProfilesStatus(ids, StaffStatus.ACTIVE);
-  }
-  
-  public async deactivateStaffProfiles(ids: number[]): Promise<number[]> {
-    return this.updateStaffProfilesStatus(ids, StaffStatus.INACTIVE);
-  }
-  
-  private async updateStaffProfilesStatus(
-    ids: number[],
-    status: StaffStatus,
-  ): Promise<number[]> {
-    const profiles = await this.staffProfileRepository.findBy({
-      id: In(ids),
+  public async updateStaffProfileStatuses(ids: number[]): Promise<number[]> {
+    // const profiles = await this.staffProfileRepository.findByIds(ids);
+    const profiles = await this.staffProfileRepository.find({
+      where: { id: In(ids) },
     });
-  
-    const foundIds = profiles.map((profile) => profile.id);
-    const missingIds = ids.filter((id) => !foundIds.includes(id));
+    const foundIds = profiles.map(profile => profile.id);
+    const missingIds = ids.filter(id => !foundIds.includes(id));
   
     if (missingIds.length > 0) {
       throw new NotFoundException(
-        `Staff profiles with IDs ${missingIds.join(', ')} not found.`,
+        `Staff profiles with IDs ${missingIds.join(', ')} not found.`
       );
     }
-  
     await this.staffProfileRepository
       .createQueryBuilder()
       .update()
-      .set({ status })
+      .set({ status: ModuleStatus.INACTIVE })
       .whereInIds(ids)
       .execute();
   
-    return foundIds;
-  }   
+    return ids;
+  }
+  
+
+  private async fetchEntity<T extends { id: number }>(
+    repository: Repository<T>,
+    id: number,
+    entityName: string
+  ): Promise<T> {
+    const entity = await repository.findOneBy({ id } as FindOptionsWhere<T>);
+    if (!entity) {
+      throw new NotFoundException(`${entityName} with id ${id} not found`);
+    }
+    return entity;
+  }
+  
+  
+  private async getRelatedEntities(dto: UpdateStaffProfileRequestDto): Promise<[BranchEntity, DepartmentEntity, EmployeePositionEntity]> {
+    const [newBranch, newDepartment, newPosition] = await Promise.all([
+      this.fetchEntity(this.branchRepository, dto.branchId, 'Branch'),
+      this.fetchEntity(this.departmentRepository, dto.departmentId, 'Department'),
+      this.fetchEntity(this.employeePositionRepository, dto.positionId, 'Position'),
+    ]);
+    return [newBranch, newDepartment, newPosition];
+  }
   
 }

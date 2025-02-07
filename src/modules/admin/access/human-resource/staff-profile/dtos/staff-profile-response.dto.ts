@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '@admin/access/users/dtos';
 import { BranchResponseDto } from '@modules/admin/access/branch/dtos';
 import { DepartmentResponseDto } from '@modules/admin/access/department/dtos';
-import { StaffStatus } from '../enams/staff-status.enum';
 import { EmployeePositionResponseDto } from '../../master-data/employee-position/dtos';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export class StaffProfileResponseDto {
   @ApiProperty()
@@ -88,7 +88,7 @@ export class StaffProfileResponseDto {
   signatureImageUrl: string;
 
   @ApiProperty()
-  status: StaffStatus;
+  status: ModuleStatus;
 
   @ApiProperty()
   createdByUser: UserResponseDto

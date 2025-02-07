@@ -4,11 +4,11 @@ import { UserEntity } from '@admin/access/users/user.entity';
 import { CategoryEntity } from '../master-data/category/category.entity';
 import { UomEntity } from '../master-data/uom/uom.entity';
 import { ValuationMethodEntity } from '../master-data/valuation-method/valuation-method.entity';
-import { StaffStatus } from '../../human-resource/staff-profile/enams/staff-status.enum';
-import { Status } from './status-enum';
+// import { Status } from './status-enum';
 import minioClient from '@libs/pagination/minio';
 import { ItemType } from './item-type-enum';
 import { ItemGroupEntity } from '../master-data/item-group/item-group.entity';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 @Entity({ schema: 'admin', name: 'item' })
 export class ItemEntity extends BaseEntity {
@@ -99,14 +99,18 @@ export class ItemEntity extends BaseEntity {
 
   @Column({
     name: 'standard_cost',
-    type: 'integer',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
     nullable: true,
   })
   standardCost: number;
 
   @Column({
     name: 'unit_cost',
-    type: 'integer',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
     nullable: true,
   })
   unitCost: number;
@@ -131,10 +135,10 @@ export class ItemEntity extends BaseEntity {
   @Column({
     name: 'status',
     type: 'enum',
-    enum: Status,
+    enum: ModuleStatus,
     nullable: false,
   })
-  status: Status;
+  status: ModuleStatus;
 
   @Column({
     name: 'created_by',

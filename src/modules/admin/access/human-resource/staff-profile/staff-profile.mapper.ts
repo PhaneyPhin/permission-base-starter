@@ -9,12 +9,11 @@ import { NationalityMapper } from '../master-data/nationality/nationality.mapper
 import { BranchMapper } from '../../branch/branch.mapper';
 import { PositionMapper } from '../master-data/position/position.mapper';
 import { DepartmentMapper } from '../../department/department.mapper';
-import { StaffStatus } from './enams/staff-status.enum';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export class StaffProfileMapper {
   public static async toDto(entity: StaffProfileEntity): Promise<StaffProfileResponseDto> {
     const dto = new StaffProfileResponseDto();
-    console.log(entity.getProfileImageUrl());
     dto.id = entity.id;
     dto.status = entity.status;
     dto.staffCode = entity.staffCode;
@@ -112,9 +111,6 @@ export class StaffProfileMapper {
     entity.workingEmail = dto.workingEmail;
     entity.personalEmail = dto.personalEmail;
     entity.placeOfBirth = dto.placeOfBirth;
-    entity.branchId = dto.branchId;
-    entity.departmentId = dto.departmentId;
-    entity.positionId = dto.positionId;
     entity.hiredDate = dto.hiredDate;
     entity.permanentAddress = dto.permanentAddress;
     entity.currenAddress = dto.currenAddress;
@@ -135,8 +131,8 @@ export class StaffProfileMapper {
 
   public static toBulkUpdateResponse(
     updatedIds: number[],
-    status: StaffStatus,
-  ): { message: string; updatedIds: number[]; status: StaffStatus } {
+    status: ModuleStatus,
+  ): { message: string; updatedIds: number[]; status: ModuleStatus } {
     return {
       message: `Successfully updated the status for ${updatedIds.length} staff profiles to '${status}'.`,
       updatedIds,

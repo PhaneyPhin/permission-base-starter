@@ -1,7 +1,7 @@
-import { IsEnum, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Status } from '../status-enum';
 import { ItemType } from '../item-type-enum';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export class CreateItemRequestDto {
   @ApiProperty()
@@ -41,14 +41,25 @@ export class CreateItemRequestDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsNumber()
   minStock: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Standard cost with up to 15 digits, 2 decimal places',
+    example: 1250.50,
+    type: 'number',
+  })
   @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
   standardCost: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Unit cost with up to 15 digits, 2 decimal places',
+    example: 500.75,
+    type: 'number',
+  })
   @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
   unitCost: number;
 
   @ApiProperty()
@@ -60,11 +71,11 @@ export class CreateItemRequestDto {
   note: string;
 
   @ApiProperty({
-    enum: Status
+    enum: ModuleStatus
   })
   @IsNotEmpty()
-  @IsEnum(Status)
-  status: Status
+  @IsEnum(ModuleStatus)
+  status: ModuleStatus
   
   createdBy: string;
 }

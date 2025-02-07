@@ -4,8 +4,8 @@ import { CategoryResponseDto } from '../../master-data/category/dtos';
 import { UomResponseDto } from '../../master-data/uom/dtos';
 import { ItemGroupResponseDto } from '../../master-data/item-group/dtos';
 import { ValuationMethodResponseDto } from '../../master-data/valuation-method/dtos';
-import { Status } from '../status-enum';
 import { ItemType } from '../item-type-enum';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 export class ItemResponseDto {
   @ApiProperty()
@@ -54,7 +54,7 @@ export class ItemResponseDto {
   note: string;
 
   @ApiProperty()
-  status: Status;
+  status: ModuleStatus;
 
   @ApiProperty()
   createdByUser: UserResponseDto

@@ -73,12 +73,16 @@ export class ItemMigration1737860648783 implements MigrationInterface {
           },
           {
             name: 'standard_cost',
-            type: 'integer',
+            type: 'decimal',
+            precision: 15,
+            scale: 2,
             isNullable: true,
           },
           {
             name: 'unit_cost',
-            type: 'integer',
+            type: 'decimal',
+            precision: 15,
+            scale: 2,
             isNullable: true,
           },
           {

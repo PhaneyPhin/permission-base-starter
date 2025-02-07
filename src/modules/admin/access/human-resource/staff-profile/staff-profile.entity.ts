@@ -2,11 +2,10 @@ import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
 import { BranchEntity } from '../../branch/branch.entity';
-import { PositionEntity } from '../master-data/position/position.entity';
 import { DepartmentEntity } from '../../department/department.entity';
-import { StaffStatus } from './enams/staff-status.enum';
 import { EmployeePositionEntity } from '../master-data/employee-position/employee-position.entity';
 import minioClient from '@libs/pagination/minio';
+import { ModuleStatus } from '@common/enums/status.enum';
 
 @Entity({ schema: 'admin', name: 'staff-profile' })
 export class StaffProfileEntity extends BaseEntity {
@@ -203,10 +202,10 @@ export class StaffProfileEntity extends BaseEntity {
   @Column({
     name: 'status',
     type: 'enum',
-    enum: StaffStatus,
+    enum: ModuleStatus,
     nullable: false,
   })
-  status: StaffStatus;
+  status: ModuleStatus;
 
   @Column({
     name: 'created_by',
@@ -228,12 +227,6 @@ export class StaffProfileEntity extends BaseEntity {
     super();
     Object.assign(this, partial);
   }
-  // async getProfileImageUrl() {
-  //   return await minioClient.presignedGetObject('images', this.profileImage);
-  // }
-  // async getSignatureImageUrl() {
-  //   return await minioClient.presignedGetObject('images', this.signatureImage);
-  // }
   async getProfileImageUrl(): Promise<string | null> {
       if (!this.profileImage) {
         return null;
