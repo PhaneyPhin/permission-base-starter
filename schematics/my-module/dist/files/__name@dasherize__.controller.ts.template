@@ -100,8 +100,9 @@ export class <%= classify(name) %>Controller {
   public update<%= classify(name) %>(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) dto: Update<%= classify(name) %>RequestDto,
+    @CurrentUser() user: UserEntity,
   ): Promise<<%= classify(name) %>ResponseDto> {
-    return this.<%= camelize(name) %>Service.update<%= classify(name) %>(id, dto);
+    return this.<%= camelize(name) %>Service.update<%= classify(name) %>(id, { ...dto, updatedBy: user.id });
   }
 
   @ApiOperation({ description: 'Update <%= name %> by id' })

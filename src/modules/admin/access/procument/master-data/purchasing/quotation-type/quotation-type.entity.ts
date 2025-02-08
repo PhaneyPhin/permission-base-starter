@@ -2,19 +2,33 @@ import { BaseEntity } from '@database/entities';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from '@admin/access/users/user.entity';
 
-@Entity({ schema: 'admin', name: '<%= dasherize(name) %>' })
-export class <%= classify(name) %>Entity extends BaseEntity {
+@Entity({ schema: 'admin', name: 'quotation-type' })
+export class QuotationTypeEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
-  <% fields.forEach((field) => { %>
+  
   @Column({
-    name: '<%= field %>',
+    name: 'code',
     type: 'varchar',
     nullable: true,
   })
-  <%=  camelize(field) %>: string;
-  <% }) %>
+  code: string;
+  
+  @Column({
+    name: 'name_en',
+    type: 'varchar',
+    nullable: true,
+  })
+  nameEn: string;
+  
+  @Column({
+    name: 'name_kh',
+    type: 'varchar',
+    nullable: true,
+  })
+  nameKh: string;
+  
 
   @Column({
     name: 'active',
@@ -44,7 +58,7 @@ export class <%= classify(name) %>Entity extends BaseEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
-  constructor(partial?: Partial<<%= classify(name) %>Entity>) {
+  constructor(partial?: Partial<QuotationTypeEntity>) {
     super();
     Object.assign(this, partial);
   }
