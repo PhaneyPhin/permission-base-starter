@@ -10,13 +10,13 @@ import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
+import { ValuationMethodEntity } from "@modules/admin/access/procument/master-data/valuation-method/valuation-method.entity";
 import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
 import { companies } from "./company.seed";
 import { departments } from "./create-department.seed";
-import { ValuationMethodEntity } from "@modules/admin/access/procument/master-data/valuation-method/valuation-method.entity";
 import { valuationMethods } from "./valuation-method.seed";
 
 // Define seed data
@@ -275,10 +275,87 @@ const permissions = [
     description: "Delete vendor-bank",
   },
 
-  { slug: "admin.access.valuation-method.read", description: "Read Valuation Method" },
-  { slug: "admin.access.valuation-method.create", description: "Create Valuation Method" },
-  { slug: "admin.access.valuation-method.update", description: "Update vValuation Method" },
-  { slug: "admin.access.valuation-method.delete", description: "Delete Valuation Method" },
+  { slug: "admin.access.request-type.read", description: "Read request-type" },
+  {
+    slug: "admin.access.request-type.create",
+    description: "Create request-type",
+  },
+  {
+    slug: "admin.access.request-type.update",
+    description: "Update request-type",
+  },
+  {
+    slug: "admin.access.request-type.delete",
+    description: "Delete request-type",
+  },
+
+  {
+    slug: "admin.access.purchase-order-type.read",
+    description: "Read purchase-order-type",
+  },
+  {
+    slug: "admin.access.purchase-order-type.create",
+    description: "Create purchase-order-type",
+  },
+  {
+    slug: "admin.access.purchase-order-type.update",
+    description: "Update purchase-order-type",
+  },
+  {
+    slug: "admin.access.purchase-order-type.delete",
+    description: "Delete purchase-order-type",
+  },
+
+  {
+    slug: "admin.access.purchase-receipt-type.read",
+    description: "Read purchase-receipt-type",
+  },
+  {
+    slug: "admin.access.purchase-receipt-type.create",
+    description: "Create purchase-receipt-type",
+  },
+  {
+    slug: "admin.access.purchase-receipt-type.update",
+    description: "Update purchase-receipt-type",
+  },
+  {
+    slug: "admin.access.purchase-receipt-type.delete",
+    description: "Delete purchase-receipt-type",
+  },
+
+  {
+    slug: "admin.access.quotation-type.read",
+    description: "Read quotation-type",
+  },
+  {
+    slug: "admin.access.quotation-type.create",
+    description: "Create quotation-type",
+  },
+  {
+    slug: "admin.access.quotation-type.update",
+    description: "Update quotation-type",
+  },
+  {
+    slug: "admin.access.quotation-type.delete",
+    description: "Delete quotation-type",
+  },
+
+  {
+    slug: "admin.access.valuation-method.read",
+    description: "Read Valuation Method",
+  },
+  {
+    slug: "admin.access.valuation-method.create",
+    description: "Create Valuation Method",
+  },
+  {
+    slug: "admin.access.valuation-method.update",
+    description: "Update vValuation Method",
+  },
+  {
+    slug: "admin.access.valuation-method.delete",
+    description: "Delete Valuation Method",
+  },
 ];
 
 const rolePermissions = {

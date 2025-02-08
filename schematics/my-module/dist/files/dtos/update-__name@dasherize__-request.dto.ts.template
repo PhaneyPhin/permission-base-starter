@@ -12,4 +12,6 @@ export class Update<%= classify(name) %>RequestDto extends Create<%= classify(na
   @IsNotEmpty()
   @IsBoolean()
   active: boolean;
+
+  updatedBy: string;
 }
