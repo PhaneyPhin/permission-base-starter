@@ -9,6 +9,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
+import { VendorBankEntity } from "../vendor-bank/vendor-bank.entity";
 import {
   CreateVendorRequestDto,
   UpdateVendorRequestDto,
@@ -45,7 +46,9 @@ export class VendorService extends BaseCrudService {
 
   constructor(
     @InjectRepository(VendorEntity)
-    private vendorRepository: Repository<VendorEntity>
+    private vendorRepository: Repository<VendorEntity>,
+    @InjectRepository(VendorBankEntity)
+    private vendorBankRepository: Repository<VendorBankEntity>
   ) {
     super();
   }
@@ -78,7 +81,12 @@ export class VendorService extends BaseCrudService {
   protected getListQuery() {
     return this.vendorRepository
       .createQueryBuilder("vendor")
-      .leftJoinAndSelect("vendor.createdByUser", "uc");
+      .leftJoinAndSelect("vendor.createdByUser", "cb")
+      .leftJoinAndSelect("vendor.updatedByUser", "ub")
+      .leftJoinAndSelect("vendor.vendorClass", "vc")
+      .leftJoinAndSelect("vendor.vendorType", "vt")
+      .leftJoinAndSelect("vendor.paymentMethod", "pm")
+      .leftJoinAndSelect("vendor.paymentTerm", "pt");
   }
 
   getAllVendor() {
@@ -93,6 +101,7 @@ export class VendorService extends BaseCrudService {
    */
   public async getVendorById(id: number): Promise<VendorResponseDto> {
     const entity = await this.getListQuery()
+      .leftJoinAndSelect("vendor.vendorBanks", "vb")
       .where("vendor.id = :id", { id })
       .getOne();
 
@@ -113,6 +122,7 @@ export class VendorService extends BaseCrudService {
       entity = await this.vendorRepository.save(entity);
       return VendorMapper.toDto(entity);
     } catch (error) {
+      console.log(error);
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new VendorExistsException(dto.nameEn);
       }
@@ -130,15 +140,30 @@ export class VendorService extends BaseCrudService {
     id: number,
     dto: UpdateVendorRequestDto
   ): Promise<VendorResponseDto> {
-    let entity = await this.vendorRepository.findOneBy({ id });
+    let entity = await this.vendorRepository.findOne({
+      where: { id },
+      relations: ["vendorBanks"],
+    });
     if (!entity) {
       throw new NotFoundException();
     }
     try {
+      const existingBankIds = entity.vendorBanks.map((bank) => bank.id);
+      const dtoBankIds = dto.vendorBanks?.map((bank) => bank.id) ?? [];
+      const banksToRemove = existingBankIds.filter(
+        (bankId) => !dtoBankIds.includes(bankId)
+      );
+
+      if (banksToRemove.length > 0) {
+        await this.vendorBankRepository.delete(banksToRemove);
+      }
+
       entity = VendorMapper.toUpdateEntity(entity, dto);
+      console.log(entity.vendorBanks);
       entity = await this.vendorRepository.save(entity);
       return VendorMapper.toDto(entity);
     } catch (error) {
+      console.log(error);
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new VendorExistsException(dto.nameEn);
       }

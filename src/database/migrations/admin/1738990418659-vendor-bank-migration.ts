@@ -1,14 +1,14 @@
+import { commonFields } from "@database/migrations/common.fields";
 import {
   MigrationInterface,
   QueryRunner,
   Table,
   TableForeignKey,
 } from "typeorm";
-import { commonFields } from "../common.fields";
 
-const tableName = "admin.vendor";
+const tableName = "admin.vendor-bank";
 
-export class VendorMigration1737907756901 implements MigrationInterface {
+export class VendorBankMigration1737908491845 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -23,64 +23,44 @@ export class VendorMigration1737907756901 implements MigrationInterface {
           },
 
           {
-            name: "name_en",
-            type: "varchar",
-            length: "160",
-            isNullable: false,
-          },
-
-          {
-            name: "name_kh",
-            type: "varchar",
-            length: "160",
-            isNullable: false,
-          },
-          {
-            name: "contact_person",
-            type: "varchar",
-            length: "160",
-            isNullable: true,
-          },
-
-          {
-            name: "phone_number",
-            type: "varchar",
-            length: "160",
-            isNullable: true,
-          },
-
-          {
-            name: "email",
-            type: "varchar",
-            length: "160",
-            isNullable: true,
-          },
-
-          {
-            name: "address",
-            type: "varchar",
-            length: "160",
-            isNullable: true,
-          },
-          {
-            name: "payment_term_id",
-            type: "integer",
-            isNullable: false,
-          },
-          {
-            name: "vendor_type_id",
-            type: "integer",
-            isNullable: false,
-          },
-          {
-            name: "vendor_group_id",
+            name: "vendor_id",
             type: "integer",
             isNullable: false,
           },
 
           {
-            name: "payment_method_id",
-            type: "integer",
+            name: "bank_id",
+            type: "varchar",
+            length: "160",
+            isNullable: false,
+          },
+
+          {
+            name: "account_number",
+            type: "varchar",
+            length: "160",
+            isNullable: false,
+          },
+
+          {
+            name: "country_code",
+            type: "varchar",
+            length: "50",
+            isNullable: false,
+          },
+
+          {
+            name: "benifitsary_name",
+            type: "varchar",
+            length: "160",
+            isNullable: false,
+          },
+
+          {
+            name: "currency",
+            type: "varchar",
+            length: "160",
+            default: "'USD'",
             isNullable: false,
           },
 

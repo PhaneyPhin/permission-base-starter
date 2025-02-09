@@ -1,12 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, MaxLength } from "class-validator";
-import { CreateVendorBankRequestDto } from "./create-vendor-bank-request.dto";
+import { IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
-export class UpdateVendorBankRequestDto extends CreateVendorBankRequestDto {
+export class VendorBank {
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  vendorId: number;
+  @IsOptional()
+  id: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -19,17 +17,19 @@ export class UpdateVendorBankRequestDto extends CreateVendorBankRequestDto {
   accountNumber: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   benifitsaryName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   currency: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsBoolean()
-  active: boolean;
+  @MaxLength(160)
+  countryCode: string;
+
+  createdBy: string;
 }
