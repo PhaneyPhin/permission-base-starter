@@ -7,7 +7,6 @@ export class VendorClassEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
-  
   @Column({
     name: 'code',
     type: 'varchar',

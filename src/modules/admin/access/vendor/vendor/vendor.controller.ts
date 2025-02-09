@@ -108,9 +108,10 @@ export class VendorController {
   @Put("/:id")
   public updateVendor(
     @Param("id", ParseIntPipe) id: number,
-    @Body(ValidationPipe) dto: UpdateVendorRequestDto
+    @Body(ValidationPipe) dto: UpdateVendorRequestDto,
+    @CurrentUser() user: UserEntity
   ): Promise<VendorResponseDto> {
-    return this.vendorService.updateVendor(id, dto);
+    return this.vendorService.updateVendor(id, { ...dto, updatedBy: user.id });
   }
 
   @ApiOperation({ description: "Update vendor by id" })

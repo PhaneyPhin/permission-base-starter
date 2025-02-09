@@ -9,18 +9,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { VendorEntity } from "../vendor/vendor.entity";
 
 @Entity({ schema: "admin", name: "vendor-bank" })
 export class VendorBankEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "id", type: "integer" })
   id: number;
-
-  @Column({
-    name: "vendor_id",
-    type: "varchar",
-    nullable: true,
-  })
-  vendorId: string;
 
   @Column({
     name: "bank_id",
@@ -37,11 +31,11 @@ export class VendorBankEntity extends BaseEntity {
   accountNumber: string;
 
   @Column({
-    name: "account_holder_name",
+    name: "benifitsary_name",
     type: "varchar",
     nullable: true,
   })
-  accountHolderName: string;
+  benifitsaryName: string;
 
   @Column({
     name: "currency",
@@ -65,6 +59,13 @@ export class VendorBankEntity extends BaseEntity {
   })
   createdBy: string;
 
+  @Column({
+    name: "country_code",
+    type: "varchar",
+    nullable: true,
+  })
+  countryCode: string;
+
   @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdByUser: UserEntity;
@@ -74,6 +75,13 @@ export class VendorBankEntity extends BaseEntity {
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
+
+  @ManyToOne(() => VendorEntity, (vendor) => vendor.vendorBanks, {
+    nullable: true,
+  })
+  @JoinColumn({ name: "vendor_id" })
+  vendor: VendorEntity;
+
   constructor(partial?: Partial<VendorBankEntity>) {
     super();
     Object.assign(this, partial);

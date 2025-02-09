@@ -1,11 +1,15 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
 export class CreateVendorBankRequestDto {
   @ApiProperty()
+  @IsOptional()
+  id: number;
+
+  @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
-  vendorId: string;
+  vendorId: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -20,14 +24,17 @@ export class CreateVendorBankRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
-  accountHolderName: string;
+  benifitsaryName: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
   currency: string;
 
-  
-  
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  countryCode: string;
+
   createdBy: string;
 }

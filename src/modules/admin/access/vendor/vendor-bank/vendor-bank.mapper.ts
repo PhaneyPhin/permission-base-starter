@@ -1,54 +1,60 @@
-import { VendorBankEntity } from './vendor-bank.entity';
-import { UserMapper } from '@admin/access/users/users.mapper';
+import { UserMapper } from "@admin/access/users/users.mapper";
+import { VendorBank } from "../vendor/dtos/vendor-bank.dto";
+import { VendorEntity } from "../vendor/vendor.entity";
 import {
   CreateVendorBankRequestDto,
   UpdateVendorBankRequestDto,
   VendorBankResponseDto,
-} from './dtos';
+} from "./dtos";
+import { VendorBankEntity } from "./vendor-bank.entity";
 
 export class VendorBankMapper {
-  public static async toDto(entity: VendorBankEntity): Promise<VendorBankResponseDto> {
+  public static async toDto(
+    entity: VendorBankEntity
+  ): Promise<VendorBankResponseDto> {
     const dto = new VendorBankResponseDto();
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
-    dto.vendorId = entity.vendorId;
+    dto.vendorId = entity.vendor?.id;
     dto.bankId = entity.bankId;
     dto.accountNumber = entity.accountNumber;
-    dto.accountHolderName = entity.accountHolderName;
+    dto.benifitsaryName = entity.benifitsaryName;
     dto.currency = entity.currency;
-    
+    dto.countryCode = entity.countryCode;
 
-     if (entity.createdByUser) {
+    if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
 
     return dto;
   }
 
-  public static toCreateEntity(dto: CreateVendorBankRequestDto): VendorBankEntity {
+  public static toCreateEntity(
+    dto: CreateVendorBankRequestDto | VendorBank
+  ): VendorBankEntity {
     const entity = new VendorBankEntity();
     // default fields?
     entity.active = true;
-    entity.vendorId = dto.vendorId;
     entity.bankId = dto.bankId;
     entity.accountNumber = dto.accountNumber;
-    entity.accountHolderName = dto.accountHolderName;
+    entity.benifitsaryName = dto.benifitsaryName;
     entity.currency = dto.currency;
-    
+    entity.countryCode = dto.countryCode;
 
     return entity;
   }
 
   public static toUpdateEntity(
     entity: VendorBankEntity,
-    dto: UpdateVendorBankRequestDto,
+    dto: UpdateVendorBankRequestDto | VendorBank
   ): VendorBankEntity {
-    entity.vendorId = dto.vendorId;
+    entity.vendor = new VendorEntity();
+    entity.id = dto.id || undefined;
     entity.bankId = dto.bankId;
     entity.accountNumber = dto.accountNumber;
-    entity.accountHolderName = dto.accountHolderName;
+    entity.benifitsaryName = dto.benifitsaryName;
     entity.currency = dto.currency;
-    
+    entity.countryCode = dto.countryCode;
 
     return entity;
   }

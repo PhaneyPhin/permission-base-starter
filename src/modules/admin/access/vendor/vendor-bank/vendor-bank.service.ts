@@ -22,7 +22,7 @@ export const VENDOR_BANK_FILTER_FIELDS = [
   "vendorId",
   "bankId",
   "accountNumber",
-  "accountHolderName",
+  "benifitsaryName",
   "currency",
 ];
 @Injectable()
@@ -32,7 +32,7 @@ export class VendorBankService extends BaseCrudService {
     "vendorId",
     "bankId",
     "accountNumber",
-    "accountHolderName",
+    "benifitsaryName",
     "currency",
   ];
   protected FILTER_FIELDS = VENDOR_BANK_FILTER_FIELDS;
@@ -108,7 +108,7 @@ export class VendorBankService extends BaseCrudService {
       return VendorBankMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new VendorBankExistsException(dto.vendorId);
+        throw new VendorBankExistsException(dto.bankId);
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -134,7 +134,7 @@ export class VendorBankService extends BaseCrudService {
       return VendorBankMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new VendorBankExistsException(dto.vendorId);
+        throw new VendorBankExistsException(dto.bankId);
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();

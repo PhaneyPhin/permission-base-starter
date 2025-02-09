@@ -1,7 +1,25 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  ArrayMinSize,
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  MaxLength,
+} from "class-validator";
+import { Attachment } from "./attachment.dto";
+import { VendorBank } from "./vendor-bank.dto";
 
 export class CreateVendorRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(160)
+  code: string;
+
+  @ApiProperty()
+  @IsOptional()
+  status: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -14,35 +32,64 @@ export class CreateVendorRequestDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  vendorTypeId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  vendorClassId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  paymentTermId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  paymentMethodId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @MaxLength(10)
+  title: string;
+
+  @ApiProperty()
+  @IsOptional()
   @MaxLength(160)
   contactPerson: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
-  phoneNumber: string;
+  phone1: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
+  phone2: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsEmail({ ignore_max_length: true })
+  workingEmail: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsEmail({ ignore_max_length: true })
   email: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   address: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  paymentTermId: string;
+  @IsOptional()
+  @IsArray()
+  attachments: Attachment[];
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  paymentMethodId: string;
+  @ArrayMinSize(1)
+  @IsArray()
+  vendorBanks: VendorBank[];
 
-  
-  
   createdBy: string;
 }

@@ -5,6 +5,9 @@ import { UserEntity } from "@admin/access/users/user.entity";
 import { faker } from "@faker-js/faker";
 import { HashHelper } from "@helpers";
 import minioClient from "@libs/pagination/minio";
+import { BankEntity } from "@modules/admin/access/bank-classification/bank/bank.entity";
+import { PaymentMethodEntity } from "@modules/admin/access/bank-classification/payment-method/payment-method.entity";
+import { PaymentTermEntity } from "@modules/admin/access/bank-classification/payment-term/payment-term.entity";
 import { BranchEntity } from "@modules/admin/access/branch/branch.entity";
 import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
@@ -12,13 +15,20 @@ import { DimensionEntity } from "@modules/admin/access/construction/master-data/
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
 import { ValuationMethodEntity } from "@modules/admin/access/procurement/master-data/valuation-method/valuation-method.entity";
 import { UserApproval } from "@modules/admin/access/users/user-approval";
+import { VendorClassEntity } from "@modules/admin/access/vendor/vendor-class/vendor-class.entity";
+import { VendorTypeEntity } from "@modules/admin/access/vendor/vendor-type/vendor-type.entity";
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import { banks } from "./bank.seed";
 import { companies } from "./company.seed";
 import { branches } from "./create-branch.seed";
 import { departments } from "./create-department.seed";
+import { paymentMethods } from "./payment-method.seed";
+import { paymentTerms } from "./payment-term.seed";
 import { valuationMethods } from "./valuation-method.seed";
+import { vendorClasses } from "./vendor-class.seed";
+import { vendorTypes } from "./vendor-type.seed";
 
 // Define seed data
 const baseUsers: any[] = [
@@ -469,6 +479,11 @@ async function seedDatabase(dataSource: DataSource) {
   await dataSource.manager.save(BranchEntity, branches);
   await dataSource.manager.save(CompanyEntity, companies);
   await dataSource.manager.save(ValuationMethodEntity, valuationMethods);
+  await dataSource.manager.save(BankEntity, banks);
+  await dataSource.manager.save(PaymentMethodEntity, paymentMethods);
+  await dataSource.manager.save(PaymentTermEntity, paymentTerms);
+  await dataSource.manager.save(VendorClassEntity, vendorClasses);
+  await dataSource.manager.save(VendorTypeEntity, vendorTypes);
 
   const defaultDimension = {
     createdBy: user.id,
