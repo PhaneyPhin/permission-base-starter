@@ -64,10 +64,12 @@ export class PaymentMethodService extends BaseCrudService {
   }
 
   getAllPaymentMethod() {
-    return this.paymentMethodRepository
-      .createQueryBuilder("paymentMethod")
-      .select(["id", "name"])
-      .getRawMany();
+    return this.paymentMethodRepository.find({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
   }
 
   /**

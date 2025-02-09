@@ -64,10 +64,13 @@ export class BankService extends BaseCrudService {
   }
 
   getAllBank() {
-    return this.bankRepository
-      .createQueryBuilder("bank")
-      .select(["id", "name"])
-      .getRawMany();
+    return this.bankRepository.find({
+      select: {
+        id: true,
+        name: true,
+        countryCode: true,
+      },
+    });
   }
 
   /**

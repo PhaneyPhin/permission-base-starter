@@ -14,5 +14,5 @@ import { UomModule } from "./master-data/uom/uom.module";
     PurchasingModule,
   ],
 })
-export class ProcumentModule {}
+export class ProcurementModule {}
 console.log("Purchasing");

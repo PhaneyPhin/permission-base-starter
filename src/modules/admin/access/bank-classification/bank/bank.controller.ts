@@ -62,7 +62,7 @@ export class BankController {
     'admin.access.bank.update',
   )
   @Get('/select-options')
-  public getAllBankForSelect(): Promise<{ id: string, name: string }[]> {
+  public getAllBankForSelect(): Promise<BankEntity[]> {
     return this.bankService.getAllBank();
   }
 

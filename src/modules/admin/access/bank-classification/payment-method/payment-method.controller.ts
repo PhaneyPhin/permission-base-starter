@@ -75,9 +75,7 @@ export class PaymentMethodController {
     "admin.access.payment-method.update"
   )
   @Get("/select-options")
-  public getAllPaymentMethodForSelect(): Promise<
-    { id: string; name: string }[]
-  > {
+  public getAllPaymentMethodForSelect(): Promise<PaymentMethodEntity[]> {
     return this.paymentMethodService.getAllPaymentMethod();
   }
 

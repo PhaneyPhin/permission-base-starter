@@ -68,11 +68,11 @@ export class VendorTypeService extends BaseCrudService {
       .leftJoinAndSelect("vendorType.createdByUser", "uc");
   }
 
-  getAllVendorType() {
+  async getAllVendorType() {
     return this.vendorTypeRepository
       .createQueryBuilder("vendorType")
-      .select(["id", "name"])
-      .getRawMany();
+      .select(["vendorType.id", "vendorType.nameEn", "vendorType.nameKh"])
+      .getMany();
   }
 
   /**

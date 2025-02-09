@@ -1,43 +1,54 @@
+import { DBErrorCode } from "@common/enums";
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateWarehouseRequestDto,
   UpdateWarehouseRequestDto,
   WarehouseResponseDto,
-} from './dtos';
-import { WarehouseMapper } from './warehouse.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { WarehouseEntity } from './warehouse.entity';
-import { Repository } from 'typeorm';
-import { WarehouseExistsException } from './warehouse-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+} from "./dtos";
+import { WarehouseExistsException } from "./warehouse-exist.exception"; // e.g., custom exception
+import { WarehouseEntity } from "./warehouse.entity";
+import { WarehouseMapper } from "./warehouse.mapper";
 
-export const WAREHOUSE_FILTER_FIELDS = ['nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone'];
+export const WAREHOUSE_FILTER_FIELDS = [
+  "nameEn",
+  "nameKh",
+  "description",
+  "createdBy",
+  "contactPhone",
+];
 @Injectable()
 export class WarehouseService extends BaseCrudService {
-  protected queryName: string = 'warehouse';
-  protected SEARCH_FIELDS = ['nameEn', 'nameKh', 'description', 'createdBy', 'contactPhone', ];
-  protected FILTER_FIELDS = WAREHOUSE_FILTER_FIELDS
+  protected queryName: string = "warehouse";
+  protected SEARCH_FIELDS = [
+    "nameEn",
+    "nameKh",
+    "description",
+    "createdBy",
+    "contactPhone",
+  ];
+  protected FILTER_FIELDS = WAREHOUSE_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(WarehouseEntity)
-    private warehouseRepository: Repository<WarehouseEntity>,
+    private warehouseRepository: Repository<WarehouseEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return WarehouseMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return WarehouseMapper.toDto;
   }
 
   /**
@@ -46,28 +57,47 @@ export class WarehouseService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<WarehouseEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('warehouse.created_at BETWEEN :start AND :end', { start, end });
+        const [start, end] = value.split(",");
+        return query.andWhere("warehouse.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
       },
       branch: (query, value) => {
-        return query.andWhere('b.name_en ILIKE %branch% or b.name_kh ILIKE %branch%', { branch: value })
-      }
+        return query.andWhere(
+          "b.name_en ILIKE %branch% or b.name_kh ILIKE %branch%",
+          { branch: value }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.warehouseRepository.createQueryBuilder('warehouse')
-      .leftJoinAndSelect('warehouse.createdByUser', 'uc')
-      .leftJoinAndSelect('warehouse.branch', 'b')
-
+    return this.warehouseRepository
+      .createQueryBuilder("warehouse")
+      .leftJoinAndSelect("warehouse.createdByUser", "uc")
+      .leftJoinAndSelect("warehouse.branch", "b");
   }
 
   async getAllWarehouse() {
-    return (await this.getListQuery()
-      .getMany()).map(WarehouseMapper.toSelectDto)
+    return Promise.all(
+      (
+        await this.warehouseRepository.find({
+          select: {
+            id: true,
+            nameEn: true,
+            nameKh: true,
+            branch: {
+              nameEn: true,
+              nameKh: true,
+            },
+          },
+        })
+      ).map(WarehouseMapper.toSelectDto)
+    );
   }
 
   /**
@@ -75,7 +105,7 @@ export class WarehouseService extends BaseCrudService {
    */
   public async getWarehouseById(id: number): Promise<WarehouseResponseDto> {
     const entity = await this.getListQuery()
-      .where('warehouse.id = :id', { id })
+      .where("warehouse.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -88,16 +118,16 @@ export class WarehouseService extends BaseCrudService {
    * Create new warehouse
    */
   public async createWarehouse(
-    dto: CreateWarehouseRequestDto,
+    dto: CreateWarehouseRequestDto
   ): Promise<WarehouseResponseDto> {
     try {
       let entity = WarehouseMapper.toCreateEntity(dto);
       entity = await this.warehouseRepository.save(entity);
       return WarehouseMapper.toDto(entity);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.branch_id + '');
+        throw new WarehouseExistsException(dto.branch_id + "");
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -111,7 +141,7 @@ export class WarehouseService extends BaseCrudService {
    */
   public async updateWarehouse(
     id: number,
-    dto: UpdateWarehouseRequestDto,
+    dto: UpdateWarehouseRequestDto
   ): Promise<WarehouseResponseDto> {
     let entity = await this.warehouseRepository.findOneBy({ id });
     if (!entity) {
@@ -123,7 +153,7 @@ export class WarehouseService extends BaseCrudService {
       return WarehouseMapper.toDto(entity);
     } catch (error) {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.branch_id + '');
+        throw new WarehouseExistsException(dto.branch_id + "");
       }
       if (error instanceof TimeoutError) {
         throw new RequestTimeoutException();
@@ -135,9 +165,7 @@ export class WarehouseService extends BaseCrudService {
   /**
    * Update warehouse by id
    */
-  public async deleteWarehouse(
-    id: number
-  ): Promise<WarehouseResponseDto> {
+  public async deleteWarehouse(id: number): Promise<WarehouseResponseDto> {
     let entity = await this.warehouseRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

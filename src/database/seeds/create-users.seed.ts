@@ -10,12 +10,13 @@ import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
-import { ValuationMethodEntity } from "@modules/admin/access/procument/master-data/valuation-method/valuation-method.entity";
+import { ValuationMethodEntity } from "@modules/admin/access/procurement/master-data/valuation-method/valuation-method.entity";
 import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
 import { companies } from "./company.seed";
+import { branches } from "./create-branch.seed";
 import { departments } from "./create-department.seed";
 import { valuationMethods } from "./valuation-method.seed";
 
@@ -448,23 +449,13 @@ async function seedDatabase(dataSource: DataSource) {
   const user = await dataSource.manager.findOneByOrFail(UserEntity, {
     username: "admin1",
   });
-  const branch = await dataSource.manager.save(BranchEntity, {
-    nameEn: faker.person.fullName(),
-    nameKh: faker.person.fullName(),
-    active: true,
-    code: "00001",
-    createdBy: user.id,
-    contactPerson: faker.person.fullName(),
-    phoneNumber: "098674565",
-    addressEn: faker.person.jobArea(),
-    addressKh: faker.person.jobArea(),
-    description: faker.person.jobDescriptor(),
-  });
+  await dataSource.manager.save(BranchEntity, branches);
+
   for (var index = 0; index < 5; index++) {
     const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
       active: true,
       code: "00000" + (index + 1),
-      branch_id: branch.id,
+      branch_id: branches[0].id,
       createdBy: user.id,
       description: faker.person.jobDescriptor(),
       nameEn: faker.person.fullName(),
@@ -475,6 +466,7 @@ async function seedDatabase(dataSource: DataSource) {
   }
 
   await dataSource.manager.save(DepartmentEntity, departments);
+  await dataSource.manager.save(BranchEntity, branches);
   await dataSource.manager.save(CompanyEntity, companies);
   await dataSource.manager.save(ValuationMethodEntity, valuationMethods);
 

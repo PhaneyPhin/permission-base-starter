@@ -75,7 +75,7 @@ export class VendorClassController {
     "admin.access.vendor-class.update"
   )
   @Get("/select-options")
-  public getAllVendorClassForSelect(): Promise<{ id: string; name: string }[]> {
+  public getAllVendorClassForSelect(): Promise<Partial<VendorClassEntity>[]> {
     return this.vendorClassService.getAllVendorClass();
   }
 

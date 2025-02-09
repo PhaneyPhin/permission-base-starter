@@ -74,7 +74,7 @@ export class VendorTypeController {
     "admin.access.vendor-type.update"
   )
   @Get("/select-options")
-  public getAllVendorTypeForSelect(): Promise<{ id: string; name: string }[]> {
+  public getAllVendorTypeForSelect(): Promise<any> {
     return this.vendorTypeService.getAllVendorType();
   }
 

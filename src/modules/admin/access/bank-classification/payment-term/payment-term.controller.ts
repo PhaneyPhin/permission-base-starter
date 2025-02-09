@@ -75,7 +75,7 @@ export class PaymentTermController {
     "admin.access.payment-term.update"
   )
   @Get("/select-options")
-  public getAllPaymentTermForSelect(): Promise<{ id: string; name: string }[]> {
+  public getAllPaymentTermForSelect(): Promise<PaymentTermEntity[]> {
     return this.paymentTermService.getAllPaymentTerm();
   }
 

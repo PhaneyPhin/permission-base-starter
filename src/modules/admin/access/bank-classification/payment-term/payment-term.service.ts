@@ -64,10 +64,9 @@ export class PaymentTermService extends BaseCrudService {
   }
 
   getAllPaymentTerm() {
-    return this.paymentTermRepository
-      .createQueryBuilder("paymentTerm")
-      .select(["id", "name"])
-      .getRawMany();
+    return this.paymentTermRepository.find({
+      select: { id: true, name: true },
+    });
   }
 
   /**

@@ -1,14 +1,16 @@
-import { WarehouseEntity } from './warehouse.entity';
+import { BranchMapper } from "../branch/branch.mapper";
+import { UserMapper } from "../users/users.mapper";
 import {
   CreateWarehouseRequestDto,
   UpdateWarehouseRequestDto,
   WarehouseResponseDto,
-} from './dtos';
-import { UserMapper } from '../users/users.mapper';
-import { BranchMapper } from '../branch/branch.mapper';
+} from "./dtos";
+import { WarehouseEntity } from "./warehouse.entity";
 
 export class WarehouseMapper {
-  public static async toDto(entity: WarehouseEntity): Promise<WarehouseResponseDto> {
+  public static async toDto(
+    entity: WarehouseEntity
+  ): Promise<WarehouseResponseDto> {
     const dto = new WarehouseResponseDto();
     dto.id = entity.id;
     dto.code = entity.code;
@@ -18,7 +20,7 @@ export class WarehouseMapper {
     dto.description = entity.description;
     dto.createdBy = entity.createdBy;
     dto.code = entity.code;
-    dto.createdAt = entity.createdAt
+    dto.createdAt = entity.createdAt;
 
     if (entity.branch) {
       dto.branch = await BranchMapper.toDto(entity.branch);
@@ -31,7 +33,9 @@ export class WarehouseMapper {
     return dto;
   }
 
-  public static toCreateEntity(dto: CreateWarehouseRequestDto): WarehouseEntity {
+  public static toCreateEntity(
+    dto: CreateWarehouseRequestDto
+  ): WarehouseEntity {
     const entity = new WarehouseEntity();
     // default fields?
     entity.active = true;
@@ -50,14 +54,14 @@ export class WarehouseMapper {
     return {
       nameEn: warehouse.nameEn,
       nameKh: warehouse.nameKh,
-      branchEn: warehouse.branch.nameEn,
+      branchEn: warehouse.branch?.nameEn,
       branchKh: warehouse.branch?.nameKh,
-      id: warehouse.id
-    }
+      id: warehouse.id,
+    };
   }
   public static toUpdateEntity(
     entity: WarehouseEntity,
-    dto: UpdateWarehouseRequestDto,
+    dto: UpdateWarehouseRequestDto
   ): WarehouseEntity {
     entity.branch_id = dto.branch_id;
     entity.nameEn = dto.nameEn;

@@ -69,10 +69,14 @@ export class VendorClassService extends BaseCrudService {
   }
 
   getAllVendorClass() {
-    return this.vendorClassRepository
-      .createQueryBuilder("vendorClass")
-      .select(["id", "name"])
-      .getRawMany();
+    console.log("qqq");
+    return this.vendorClassRepository.find({
+      select: {
+        id: true,
+        nameEn: true,
+        nameKh: true,
+      },
+    });
   }
 
   /**
