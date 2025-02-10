@@ -21,16 +21,18 @@ export const handleError = (error, dto) => {
   }
 
   if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
+    const message = `The ${toCamelCase(conflictKey)} '${
+      dto[conflictKey]
+    }' is already in use.`;
     throw new UnprocessableEntityException({
       statusCode: 422,
       message: [
         {
           property: toCamelCase(conflictKey || "field"),
           constraints: {
-            unique: `The ${toCamelCase(conflictKey)} '${
-              dto[conflictKey]
-            }' is already in use.`,
+            unique: message,
           },
+          message,
         },
       ],
     });
@@ -40,16 +42,11 @@ export const handleError = (error, dto) => {
     error.code == DBErrorCode.PgForeignKeyConstraintViolation ||
     error.code == DBErrorCode.PgNotNullConstraintViolation
   ) {
-    throw new UnprocessableEntityException({
-      statusCode: 422,
-      errors: [
-        {
-          property: "field",
-          constraints: {
-            notNull: `Foreign key or required field violation. ${errorMessage}`,
-          },
-        },
-      ],
+    const message = `Foreign key or required field violation. ${errorMessage}`;
+
+    throw new InternalServerErrorException({
+      statusCode: 500,
+      message: message,
     });
   }
 
