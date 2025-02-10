@@ -1,42 +1,41 @@
-import { DBErrorCode } from '@common/enums';
-import { BaseCrudService } from '@common/services/base-crud.service';
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   RequestTimeoutException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TimeoutError } from 'rxjs';
-import { Filter, Repository } from 'typeorm';
-import { DimensionExistsException } from './dimension-exist.exception'; // e.g., custom exception
-import { DimensionEntity } from './dimension.entity';
-import { DimensionMapper } from './dimension.mapper';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
+import { DimensionEntity } from "./dimension.entity";
+import { DimensionMapper } from "./dimension.mapper";
 import {
   CreateDimensionRequestDto,
   DimensionResponseDto,
   UpdateDimensionRequestDto,
-} from './dtos';
+} from "./dtos";
 
-export const DIMENSION_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', ];
+export const DIMENSION_FILTER_FIELDS = ["code", "nameEn", "nameKh"];
 @Injectable()
 export class DimensionService extends BaseCrudService {
-  protected queryName: string = 'dimension';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', ];
-  protected FILTER_FIELDS = DIMENSION_FILTER_FIELDS
+  protected queryName: string = "dimension";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh"];
+  protected FILTER_FIELDS = DIMENSION_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(DimensionEntity)
-    private dimensionRepository: Repository<DimensionEntity>,
+    private dimensionRepository: Repository<DimensionEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return DimensionMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return DimensionMapper.toDto;
   }
 
   /**
@@ -45,22 +44,26 @@ export class DimensionService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<DimensionEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('dimension.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("dimension.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.dimensionRepository.createQueryBuilder('dimension')
-      .leftJoinAndSelect('dimension.createdByUser', 'uc')
+    return this.dimensionRepository
+      .createQueryBuilder("dimension")
+      .leftJoinAndSelect("dimension.createdByUser", "uc");
   }
 
   getAllDimension() {
-    return this.dimensionRepository.createQueryBuilder('dimension').getMany()
+    return this.dimensionRepository.createQueryBuilder("dimension").getMany();
   }
 
   /**
@@ -68,7 +71,7 @@ export class DimensionService extends BaseCrudService {
    */
   public async getDimensionById(id: number): Promise<DimensionResponseDto> {
     const entity = await this.getListQuery()
-      .where('dimension.id = :id', { id })
+      .where("dimension.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -81,21 +84,14 @@ export class DimensionService extends BaseCrudService {
    * Create new dimension
    */
   public async createDimension(
-    dto: CreateDimensionRequestDto,
+    dto: CreateDimensionRequestDto
   ): Promise<DimensionResponseDto> {
     try {
       let entity = DimensionMapper.toCreateEntity(dto);
       entity = await this.dimensionRepository.save(entity);
       return DimensionMapper.toDto(entity);
     } catch (error) {
-      console.log(error)
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new DimensionExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -104,7 +100,7 @@ export class DimensionService extends BaseCrudService {
    */
   public async updateDimension(
     id: number,
-    dto: UpdateDimensionRequestDto,
+    dto: UpdateDimensionRequestDto
   ): Promise<DimensionResponseDto> {
     let entity = await this.dimensionRepository.findOneBy({ id });
     if (!entity) {
@@ -115,22 +111,14 @@ export class DimensionService extends BaseCrudService {
       entity = await this.dimensionRepository.save(entity);
       return DimensionMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new DimensionExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
   /**
    * Update dimension by id
    */
-  public async deleteDimension(
-    id: number
-  ): Promise<DimensionResponseDto> {
+  public async deleteDimension(id: number): Promise<DimensionResponseDto> {
     let entity = await this.dimensionRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

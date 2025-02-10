@@ -1,42 +1,41 @@
-import { DBErrorCode } from '@common/enums';
-import { BaseCrudService } from '@common/services/base-crud.service';
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   RequestTimeoutException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TimeoutError } from 'rxjs';
-import { Filter, Repository } from 'typeorm';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateEmployeePositionRequestDto,
   EmployeePositionResponseDto,
   UpdateEmployeePositionRequestDto,
-} from './dtos';
-import { EmployeePositionExistsException } from './employee-position-exist.exception'; // e.g., custom exception
-import { EmployeePositionEntity } from './employee-position.entity';
-import { EmployeePositionMapper } from './employee-position.mapper';
+} from "./dtos";
+import { EmployeePositionEntity } from "./employee-position.entity";
+import { EmployeePositionMapper } from "./employee-position.mapper";
 
-export const EMPLOYEE_POSITION_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', ];
+export const EMPLOYEE_POSITION_FILTER_FIELDS = ["code", "nameEn", "nameKh"];
 @Injectable()
 export class EmployeePositionService extends BaseCrudService {
-  protected queryName: string = 'employeePosition';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', ];
-  protected FILTER_FIELDS = EMPLOYEE_POSITION_FILTER_FIELDS
+  protected queryName: string = "employeePosition";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh"];
+  protected FILTER_FIELDS = EMPLOYEE_POSITION_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(EmployeePositionEntity)
-    private employeePositionRepository: Repository<EmployeePositionEntity>,
+    private employeePositionRepository: Repository<EmployeePositionEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return EmployeePositionMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return EmployeePositionMapper.toDto;
   }
 
   /**
@@ -45,30 +44,37 @@ export class EmployeePositionService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<EmployeePositionEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('employeePosition.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "employeePosition.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.employeePositionRepository.createQueryBuilder('employeePosition')
-      .leftJoinAndSelect('employeePosition.createdByUser', 'uc')
+    return this.employeePositionRepository
+      .createQueryBuilder("employeePosition")
+      .leftJoinAndSelect("employeePosition.createdByUser", "uc");
   }
   async getAllEmployeePosition() {
-    return (await this.getListQuery()
-      .getMany()).map(EmployeePositionMapper.toSelectDto)
+    return (await this.getListQuery().getMany()).map(
+      EmployeePositionMapper.toSelectDto
+    );
   }
 
   /**
    * Get employee-position by id
    */
-  public async getEmployeePositionById(id: number): Promise<EmployeePositionResponseDto> {
+  public async getEmployeePositionById(
+    id: number
+  ): Promise<EmployeePositionResponseDto> {
     const entity = await this.getListQuery()
-      .where('employeePosition.id = :id', { id })
+      .where("employeePosition.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -81,20 +87,14 @@ export class EmployeePositionService extends BaseCrudService {
    * Create new employee-position
    */
   public async createEmployeePosition(
-    dto: CreateEmployeePositionRequestDto,
+    dto: CreateEmployeePositionRequestDto
   ): Promise<EmployeePositionResponseDto> {
     try {
       let entity = EmployeePositionMapper.toCreateEntity(dto);
       entity = await this.employeePositionRepository.save(entity);
       return EmployeePositionMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new EmployeePositionExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -103,7 +103,7 @@ export class EmployeePositionService extends BaseCrudService {
    */
   public async updateEmployeePosition(
     id: number,
-    dto: UpdateEmployeePositionRequestDto,
+    dto: UpdateEmployeePositionRequestDto
   ): Promise<EmployeePositionResponseDto> {
     let entity = await this.employeePositionRepository.findOneBy({ id });
     if (!entity) {
@@ -114,13 +114,7 @@ export class EmployeePositionService extends BaseCrudService {
       entity = await this.employeePositionRepository.save(entity);
       return EmployeePositionMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new EmployeePositionExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

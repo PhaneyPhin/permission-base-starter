@@ -1,43 +1,41 @@
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateNationalityRequestDto,
-  UpdateNationalityRequestDto,
   NationalityResponseDto,
-} from './dtos';
-import { NationalityMapper } from './nationality.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { NationalityEntity } from './nationality.entity';
-import { Repository } from 'typeorm';
-import { NationalityExistsException } from './nationality-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdateNationalityRequestDto,
+} from "./dtos";
+import { NationalityEntity } from "./nationality.entity";
+import { NationalityMapper } from "./nationality.mapper";
 
-export const NATIONALITY_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', ];
+export const NATIONALITY_FILTER_FIELDS = ["code", "nameEn", "nameKh"];
 @Injectable()
 export class NationalityService extends BaseCrudService {
-  protected queryName: string = 'nationality';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', ];
-  protected FILTER_FIELDS = NATIONALITY_FILTER_FIELDS
+  protected queryName: string = "nationality";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh"];
+  protected FILTER_FIELDS = NATIONALITY_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(NationalityEntity)
-    private nationalityRepository: Repository<NationalityEntity>,
+    private nationalityRepository: Repository<NationalityEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return NationalityMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return NationalityMapper.toDto;
   }
 
   /**
@@ -46,22 +44,27 @@ export class NationalityService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<NationalityEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('nationality.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "nationality.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.nationalityRepository.createQueryBuilder('nationality')
-      .leftJoinAndSelect('nationality.createdByUser', 'uc')
+    return this.nationalityRepository
+      .createQueryBuilder("nationality")
+      .leftJoinAndSelect("nationality.createdByUser", "uc");
   }
   async getAllNationality() {
-    return (await this.getListQuery()
-      .getMany()).map(NationalityMapper.toSelectDto)
+    return (await this.getListQuery().getMany()).map(
+      NationalityMapper.toSelectDto
+    );
   }
 
   /**
@@ -69,7 +72,7 @@ export class NationalityService extends BaseCrudService {
    */
   public async getNationalityById(id: number): Promise<NationalityResponseDto> {
     const entity = await this.getListQuery()
-      .where('nationality.id = :id', { id })
+      .where("nationality.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,20 +85,14 @@ export class NationalityService extends BaseCrudService {
    * Create new nationality
    */
   public async createNationality(
-    dto: CreateNationalityRequestDto,
+    dto: CreateNationalityRequestDto
   ): Promise<NationalityResponseDto> {
     try {
       let entity = NationalityMapper.toCreateEntity(dto);
       entity = await this.nationalityRepository.save(entity);
       return NationalityMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new NationalityExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -104,7 +101,7 @@ export class NationalityService extends BaseCrudService {
    */
   public async updateNationality(
     id: number,
-    dto: UpdateNationalityRequestDto,
+    dto: UpdateNationalityRequestDto
   ): Promise<NationalityResponseDto> {
     let entity = await this.nationalityRepository.findOneBy({ id });
     if (!entity) {
@@ -115,22 +112,14 @@ export class NationalityService extends BaseCrudService {
       entity = await this.nationalityRepository.save(entity);
       return NationalityMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new NationalityExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
   /**
    * Update nationality by id
    */
-  public async deleteNationality(
-    id: number
-  ): Promise<NationalityResponseDto> {
+  public async deleteNationality(id: number): Promise<NationalityResponseDto> {
     let entity = await this.nationalityRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

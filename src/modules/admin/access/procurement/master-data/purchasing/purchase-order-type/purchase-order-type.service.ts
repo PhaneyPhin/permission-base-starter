@@ -1,4 +1,3 @@
-import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
@@ -7,6 +6,7 @@ import {
   RequestTimeoutException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
 import {
@@ -14,7 +14,6 @@ import {
   PurchaseOrderTypeResponseDto,
   UpdatePurchaseOrderTypeRequestDto,
 } from "./dtos";
-import { PurchaseOrderTypeExistsException } from "./purchase-order-type-exist.exception"; // e.g., custom exception
 import { PurchaseOrderTypeEntity } from "./purchase-order-type.entity";
 import { PurchaseOrderTypeMapper } from "./purchase-order-type.mapper";
 
@@ -97,13 +96,7 @@ export class PurchaseOrderTypeService extends BaseCrudService {
       entity = await this.purchaseOrderTypeRepository.save(entity);
       return PurchaseOrderTypeMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new PurchaseOrderTypeExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -123,13 +116,7 @@ export class PurchaseOrderTypeService extends BaseCrudService {
       entity = await this.purchaseOrderTypeRepository.save(entity);
       return PurchaseOrderTypeMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new PurchaseOrderTypeExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

@@ -1,4 +1,3 @@
-import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
@@ -7,6 +6,7 @@ import {
   RequestTimeoutException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
 import {
@@ -14,7 +14,6 @@ import {
   PaymentMethodResponseDto,
   UpdatePaymentMethodRequestDto,
 } from "./dtos";
-import { PaymentMethodExistsException } from "./payment-method-exist.exception"; // e.g., custom exception
 import { PaymentMethodEntity } from "./payment-method.entity";
 import { PaymentMethodMapper } from "./payment-method.mapper";
 
@@ -100,13 +99,7 @@ export class PaymentMethodService extends BaseCrudService {
       return PaymentMethodMapper.toDto(entity);
     } catch (error) {
       console.log(error);
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new PaymentMethodExistsException(dto.name);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -126,13 +119,7 @@ export class PaymentMethodService extends BaseCrudService {
       entity = await this.paymentMethodRepository.save(entity);
       return PaymentMethodMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new PaymentMethodExistsException(dto.name);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

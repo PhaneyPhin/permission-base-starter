@@ -1,4 +1,3 @@
-import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
@@ -7,6 +6,7 @@ import {
   RequestTimeoutException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
 import {
@@ -14,7 +14,6 @@ import {
   ItemGroupResponseDto,
   UpdateItemGroupRequestDto,
 } from "./dtos";
-import { ItemGroupExistsException } from "./item-group-exist.exception"; // e.g., custom exception
 import { ItemGroupEntity } from "./item-group.entity";
 import { ItemGroupMapper } from "./item-group.mapper";
 
@@ -98,13 +97,7 @@ export class ItemGroupService extends BaseCrudService {
       entity = await this.itemGroupRepository.save(entity);
       return ItemGroupMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new ItemGroupExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -124,13 +117,7 @@ export class ItemGroupService extends BaseCrudService {
       entity = await this.itemGroupRepository.save(entity);
       return ItemGroupMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new ItemGroupExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

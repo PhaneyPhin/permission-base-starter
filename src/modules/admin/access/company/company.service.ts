@@ -1,46 +1,60 @@
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { MinioService } from "src/minio/minio.service";
+import { Filter, Repository } from "typeorm";
+import { CompanyEntity } from "./company.entity";
+import { CompanyMapper } from "./company.mapper";
 import {
+  CompanyResponseDto,
   CreateCompanyRequestDto,
   UpdateCompanyRequestDto,
-  CompanyResponseDto,
-} from './dtos';
-import { CompanyMapper } from './company.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { CompanyEntity } from './company.entity';
-import { Repository } from 'typeorm';
-import { CompanyExistsException } from './company-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
-import { MinioService } from 'src/minio/minio.service';
+} from "./dtos";
 
-export const COMPANY_FILTER_FIELDS = ['nameEn', 'nameKh', 'email', 'website', 'addressEn', 'addressKh', 'logo', ];
+export const COMPANY_FILTER_FIELDS = [
+  "nameEn",
+  "nameKh",
+  "email",
+  "website",
+  "addressEn",
+  "addressKh",
+  "logo",
+];
 
 @Injectable()
 export class CompanyService extends BaseCrudService {
-  protected queryName: string = 'company';
-  protected SEARCH_FIELDS = ['nameEn', 'nameKh', 'email', 'website', 'addressEn', 'addressKh', 'logo', ];
-  protected FILTER_FIELDS = COMPANY_FILTER_FIELDS
+  protected queryName: string = "company";
+  protected SEARCH_FIELDS = [
+    "nameEn",
+    "nameKh",
+    "email",
+    "website",
+    "addressEn",
+    "addressKh",
+    "logo",
+  ];
+  protected FILTER_FIELDS = COMPANY_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(CompanyEntity)
     private companyRepository: Repository<CompanyEntity>,
-    private readonly minioService: MinioService,
+    private readonly minioService: MinioService
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return CompanyMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return CompanyMapper.toDto;
   }
 
   /**
@@ -49,22 +63,29 @@ export class CompanyService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<CompanyEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('company.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("company.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.companyRepository.createQueryBuilder('company')
-      .leftJoinAndSelect('company.createdByUser', 'uc')
+    return this.companyRepository
+      .createQueryBuilder("company")
+      .leftJoinAndSelect("company.createdByUser", "uc");
   }
 
   getAllCompany() {
-    return this.companyRepository.createQueryBuilder('company').select(['id', 'name']).getRawMany()
+    return this.companyRepository
+      .createQueryBuilder("company")
+      .select(["id", "name"])
+      .getRawMany();
   }
 
   /**
@@ -72,7 +93,7 @@ export class CompanyService extends BaseCrudService {
    */
   public async getCompanyById(id: number): Promise<CompanyResponseDto> {
     const entity = await this.getListQuery()
-      .where('company.id = :id', { id })
+      .where("company.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -85,20 +106,14 @@ export class CompanyService extends BaseCrudService {
    * Create new company
    */
   public async createCompany(
-    dto: CreateCompanyRequestDto,
+    dto: CreateCompanyRequestDto
   ): Promise<CompanyResponseDto> {
     try {
       let entity = CompanyMapper.toCreateEntity(dto);
       entity = await this.companyRepository.save(entity);
       return CompanyMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new CompanyExistsException(dto.nameEn);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -107,7 +122,7 @@ export class CompanyService extends BaseCrudService {
    */
   public async updateCompany(
     id: number,
-    dto: UpdateCompanyRequestDto,
+    dto: UpdateCompanyRequestDto
   ): Promise<CompanyResponseDto> {
     let entity = await this.companyRepository.findOneBy({ id });
     if (!entity) {
@@ -118,22 +133,14 @@ export class CompanyService extends BaseCrudService {
       entity = await this.companyRepository.save(entity);
       return CompanyMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new CompanyExistsException(dto.nameEn);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
   /**
    * Update company by id
    */
-  public async deleteCompany(
-    id: number
-  ): Promise<CompanyResponseDto> {
+  public async deleteCompany(id: number): Promise<CompanyResponseDto> {
     let entity = await this.companyRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

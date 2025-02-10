@@ -1,4 +1,3 @@
-import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
@@ -7,6 +6,7 @@ import {
   RequestTimeoutException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
 import {
@@ -14,7 +14,6 @@ import {
   UpdateVendorBankRequestDto,
   VendorBankResponseDto,
 } from "./dtos";
-import { VendorBankExistsException } from "./vendor-bank-exist.exception"; // e.g., custom exception
 import { VendorBankEntity } from "./vendor-bank.entity";
 import { VendorBankMapper } from "./vendor-bank.mapper";
 
@@ -107,13 +106,7 @@ export class VendorBankService extends BaseCrudService {
       entity = await this.vendorBankRepository.save(entity);
       return VendorBankMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new VendorBankExistsException(dto.bankId);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -133,13 +126,7 @@ export class VendorBankService extends BaseCrudService {
       entity = await this.vendorBankRepository.save(entity);
       return VendorBankMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new VendorBankExistsException(dto.bankId);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
