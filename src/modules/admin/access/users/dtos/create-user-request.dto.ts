@@ -7,6 +7,7 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -64,6 +65,7 @@ export class CreateUserRequestDto {
   createdBy: UserEntity;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   expiredAt: Date;
 
