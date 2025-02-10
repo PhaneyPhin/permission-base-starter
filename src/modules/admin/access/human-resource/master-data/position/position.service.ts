@@ -1,43 +1,41 @@
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreatePositionRequestDto,
-  UpdatePositionRequestDto,
   PositionResponseDto,
-} from './dtos';
-import { PositionMapper } from './position.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { PositionEntity } from './position.entity';
-import { Repository } from 'typeorm';
-import { PositionExistsException } from './position-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdatePositionRequestDto,
+} from "./dtos";
+import { PositionEntity } from "./position.entity";
+import { PositionMapper } from "./position.mapper";
 
-export const POSITION_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', ];
+export const POSITION_FILTER_FIELDS = ["code", "nameEn", "nameKh"];
 @Injectable()
 export class PositionService extends BaseCrudService {
-  protected queryName: string = 'position';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', ];
-  protected FILTER_FIELDS = POSITION_FILTER_FIELDS
+  protected queryName: string = "position";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh"];
+  protected FILTER_FIELDS = POSITION_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(PositionEntity)
-    private positionRepository: Repository<PositionEntity>,
+    private positionRepository: Repository<PositionEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return PositionMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return PositionMapper.toDto;
   }
 
   /**
@@ -46,22 +44,27 @@ export class PositionService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<PositionEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('position.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("position.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.positionRepository.createQueryBuilder('position')
-      .leftJoinAndSelect('position.createdByUser', 'uc')
+    return this.positionRepository
+      .createQueryBuilder("position")
+      .leftJoinAndSelect("position.createdByUser", "uc");
   }
   async getAllPosition() {
-    return (await this.getListQuery()
-      .getMany()).map(PositionMapper.toSelectDto)
+    return (await this.getListQuery().getMany()).map(
+      PositionMapper.toSelectDto
+    );
   }
 
   /**
@@ -69,7 +72,7 @@ export class PositionService extends BaseCrudService {
    */
   public async getPositionById(id: number): Promise<PositionResponseDto> {
     const entity = await this.getListQuery()
-      .where('position.id = :id', { id })
+      .where("position.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,20 +85,14 @@ export class PositionService extends BaseCrudService {
    * Create new position
    */
   public async createPosition(
-    dto: CreatePositionRequestDto,
+    dto: CreatePositionRequestDto
   ): Promise<PositionResponseDto> {
     try {
       let entity = PositionMapper.toCreateEntity(dto);
       entity = await this.positionRepository.save(entity);
       return PositionMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new PositionExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -104,7 +101,7 @@ export class PositionService extends BaseCrudService {
    */
   public async updatePosition(
     id: number,
-    dto: UpdatePositionRequestDto,
+    dto: UpdatePositionRequestDto
   ): Promise<PositionResponseDto> {
     let entity = await this.positionRepository.findOneBy({ id });
     if (!entity) {
@@ -115,22 +112,14 @@ export class PositionService extends BaseCrudService {
       entity = await this.positionRepository.save(entity);
       return PositionMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new PositionExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
   /**
    * Update position by id
    */
-  public async deletePosition(
-    id: number
-  ): Promise<PositionResponseDto> {
+  public async deletePosition(id: number): Promise<PositionResponseDto> {
     let entity = await this.positionRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

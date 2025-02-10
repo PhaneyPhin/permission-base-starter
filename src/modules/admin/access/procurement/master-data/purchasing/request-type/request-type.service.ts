@@ -1,4 +1,3 @@
-import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
@@ -7,6 +6,7 @@ import {
   RequestTimeoutException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
 import {
@@ -14,7 +14,6 @@ import {
   RequestTypeResponseDto,
   UpdateRequestTypeRequestDto,
 } from "./dtos";
-import { RequestTypeExistsException } from "./request-type-exist.exception"; // e.g., custom exception
 import { RequestTypeEntity } from "./request-type.entity";
 import { RequestTypeMapper } from "./request-type.mapper";
 
@@ -109,13 +108,7 @@ export class RequestTypeService extends BaseCrudService {
       entity = await this.requestTypeRepository.save(entity);
       return RequestTypeMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new RequestTypeExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -135,13 +128,7 @@ export class RequestTypeService extends BaseCrudService {
       entity = await this.requestTypeRepository.save(entity);
       return RequestTypeMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new RequestTypeExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

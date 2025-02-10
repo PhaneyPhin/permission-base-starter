@@ -1,42 +1,46 @@
-import { DBErrorCode } from '@common/enums';
-import { BaseCrudService } from '@common/services/base-crud.service';
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   RequestTimeoutException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TimeoutError } from 'rxjs';
-import { Filter, Repository } from 'typeorm';
-import { AnalysisCodeExistsException } from './analysis-code-exist.exception'; // e.g., custom exception
-import { AnalysisCodeEntity } from './analysis-code.entity';
-import { AnalysisCodeMapper } from './analysis-code.mapper';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
+import { AnalysisCodeEntity } from "./analysis-code.entity";
+import { AnalysisCodeMapper } from "./analysis-code.mapper";
 import {
   AnalysisCodeResponseDto,
   CreateAnalysisCodeRequestDto,
   UpdateAnalysisCodeRequestDto,
-} from './dtos';
+} from "./dtos";
 
-export const ANALYSIS_CODE_FILTER_FIELDS = ['dimensionId', 'code', 'nameEn', 'nameKh', ];
+export const ANALYSIS_CODE_FILTER_FIELDS = [
+  "dimensionId",
+  "code",
+  "nameEn",
+  "nameKh",
+];
 @Injectable()
 export class AnalysisCodeService extends BaseCrudService {
-  protected queryName: string = 'analysisCode';
-  protected SEARCH_FIELDS = ['dimensionId', 'code', 'nameEn', 'nameKh', ];
-  protected FILTER_FIELDS = ANALYSIS_CODE_FILTER_FIELDS
+  protected queryName: string = "analysisCode";
+  protected SEARCH_FIELDS = ["dimensionId", "code", "nameEn", "nameKh"];
+  protected FILTER_FIELDS = ANALYSIS_CODE_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(AnalysisCodeEntity)
-    private analysisCodeRepository: Repository<AnalysisCodeEntity>,
+    private analysisCodeRepository: Repository<AnalysisCodeEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return AnalysisCodeMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return AnalysisCodeMapper.toDto;
   }
 
   /**
@@ -45,40 +49,47 @@ export class AnalysisCodeService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<AnalysisCodeEntity> } = {
       dimension: (query, value) => {
-        return query.where('d.name_en ILIKE :search', {
-          search: `%${value}%`
-        })
+        return query.where("d.name_en ILIKE :search", {
+          search: `%${value}%`,
+        });
       },
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('analysisCode.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "analysisCode.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.analysisCodeRepository.createQueryBuilder('analysisCode')
-      .leftJoinAndSelect('analysisCode.dimension', 'd')
-      .leftJoinAndSelect('analysisCode.createdByUser', 'uc')
+    return this.analysisCodeRepository
+      .createQueryBuilder("analysisCode")
+      .leftJoinAndSelect("analysisCode.dimension", "d")
+      .leftJoinAndSelect("analysisCode.createdByUser", "uc");
   }
 
   async getAllAnalysisCode() {
-    const analysisCodes = await this.analysisCodeRepository.createQueryBuilder('analysisCode')
-    .leftJoinAndSelect('analysisCode.dimension', 'd')
-    .getMany()
+    const analysisCodes = await this.analysisCodeRepository
+      .createQueryBuilder("analysisCode")
+      .leftJoinAndSelect("analysisCode.dimension", "d")
+      .getMany();
 
-    return await Promise.all(analysisCodes.map(AnalysisCodeMapper.toDto))
+    return await Promise.all(analysisCodes.map(AnalysisCodeMapper.toDto));
   }
 
   /**
    * Get analysis-code by id
    */
-  public async getAnalysisCodeById(id: number): Promise<AnalysisCodeResponseDto> {
+  public async getAnalysisCodeById(
+    id: number
+  ): Promise<AnalysisCodeResponseDto> {
     const entity = await this.getListQuery()
-      .where('analysisCode.id = :id', { id })
+      .where("analysisCode.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -91,21 +102,14 @@ export class AnalysisCodeService extends BaseCrudService {
    * Create new analysis-code
    */
   public async createAnalysisCode(
-    dto: CreateAnalysisCodeRequestDto,
+    dto: CreateAnalysisCodeRequestDto
   ): Promise<AnalysisCodeResponseDto> {
     try {
       let entity = AnalysisCodeMapper.toCreateEntity(dto);
       entity = await this.analysisCodeRepository.save(entity);
       return AnalysisCodeMapper.toDto(entity);
     } catch (error) {
-      console.log(error)
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new AnalysisCodeExistsException(dto.dimensionId + '');
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -114,7 +118,7 @@ export class AnalysisCodeService extends BaseCrudService {
    */
   public async updateAnalysisCode(
     id: number,
-    dto: UpdateAnalysisCodeRequestDto,
+    dto: UpdateAnalysisCodeRequestDto
   ): Promise<AnalysisCodeResponseDto> {
     let entity = await this.analysisCodeRepository.findOneBy({ id });
     if (!entity) {
@@ -125,13 +129,7 @@ export class AnalysisCodeService extends BaseCrudService {
       entity = await this.analysisCodeRepository.save(entity);
       return AnalysisCodeMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new AnalysisCodeExistsException(dto.dimensionId + '');
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

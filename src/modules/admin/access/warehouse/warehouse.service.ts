@@ -1,4 +1,3 @@
-import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
 import {
   Injectable,
@@ -7,6 +6,7 @@ import {
   RequestTimeoutException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
 import { TimeoutError } from "rxjs";
 import { Filter, Repository } from "typeorm";
 import {
@@ -14,7 +14,6 @@ import {
   UpdateWarehouseRequestDto,
   WarehouseResponseDto,
 } from "./dtos";
-import { WarehouseExistsException } from "./warehouse-exist.exception"; // e.g., custom exception
 import { WarehouseEntity } from "./warehouse.entity";
 import { WarehouseMapper } from "./warehouse.mapper";
 
@@ -125,14 +124,7 @@ export class WarehouseService extends BaseCrudService {
       entity = await this.warehouseRepository.save(entity);
       return WarehouseMapper.toDto(entity);
     } catch (error) {
-      console.log(error);
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.branch_id + "");
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -152,13 +144,7 @@ export class WarehouseService extends BaseCrudService {
       entity = await this.warehouseRepository.save(entity);
       return WarehouseMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new WarehouseExistsException(dto.branch_id + "");
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 

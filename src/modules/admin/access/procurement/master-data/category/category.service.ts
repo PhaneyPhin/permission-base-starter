@@ -1,43 +1,46 @@
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
+import { CategoryEntity } from "./category.entity";
+import { CategoryMapper } from "./category.mapper";
 import {
+  CategoryResponseDto,
   CreateCategoryRequestDto,
   UpdateCategoryRequestDto,
-  CategoryResponseDto,
-} from './dtos';
-import { CategoryMapper } from './category.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { CategoryEntity } from './category.entity';
-import { Repository } from 'typeorm';
-import { CategoryExistsException } from './category-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+} from "./dtos";
 
-export const CATEGORY_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
+export const CATEGORY_FILTER_FIELDS = [
+  "code",
+  "nameEn",
+  "nameKh",
+  "description",
+];
 @Injectable()
 export class CategoryService extends BaseCrudService {
-  protected queryName: string = 'category';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
-  protected FILTER_FIELDS = CATEGORY_FILTER_FIELDS
+  protected queryName: string = "category";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh", "description"];
+  protected FILTER_FIELDS = CATEGORY_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(CategoryEntity)
-    private categoryRepository: Repository<CategoryEntity>,
+    private categoryRepository: Repository<CategoryEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return CategoryMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return CategoryMapper.toDto;
   }
 
   /**
@@ -46,51 +49,70 @@ export class CategoryService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<CategoryEntity> } = {
       parent: (query, value) => {
-        return query.andWhere('parent.name_en ILIKE %parent% or parent.name_kh ILIKE %parent%', { parent: value })
+        return query.andWhere(
+          "parent.name_en ILIKE %parent% or parent.name_kh ILIKE %parent%",
+          { parent: value }
+        );
       },
       itemGroup: (query, value) => {
-        return query.andWhere('itemGroup.name_en ILIKE %itemGroup% or itemGroup.name_kh ILIKE %itemGroup%', { itemGroup: value })
+        return query.andWhere(
+          "itemGroup.name_en ILIKE %itemGroup% or itemGroup.name_kh ILIKE %itemGroup%",
+          { itemGroup: value }
+        );
       },
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('category.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("category.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.categoryRepository.createQueryBuilder('category')
-      .leftJoinAndSelect('category.parent', 'parent')
-      .leftJoinAndSelect('category.itemGroup', 'itemGroup')
-      .leftJoinAndSelect('category.createdByUser', 'uc')
+    return this.categoryRepository
+      .createQueryBuilder("category")
+      .leftJoinAndSelect("category.parent", "parent")
+      .leftJoinAndSelect("category.itemGroup", "itemGroup")
+      .leftJoinAndSelect("category.createdByUser", "uc");
   }
-  
+
   async getAllCategory() {
-    return (await this.getListQuery()
-      .getMany()).map(CategoryMapper.toSelectDto)
+    return (await this.getListQuery().getMany()).map(
+      CategoryMapper.toSelectDto
+    );
   }
-  async getCategoryByItemGroup(itemGroupId?: number): Promise<{ id: number; nameEn: string; nameKh: string; parentId: number | null }[]> {
-    const query = this.categoryRepository.createQueryBuilder('category')
-      .select(['category.id', 'category.nameEn', 'category.nameKh', 'category.parentId'])
-  
+  async getCategoryByItemGroup(
+    itemGroupId?: number
+  ): Promise<
+    { id: number; nameEn: string; nameKh: string; parentId: number | null }[]
+  > {
+    const query = this.categoryRepository
+      .createQueryBuilder("category")
+      .select([
+        "category.id",
+        "category.nameEn",
+        "category.nameKh",
+        "category.parentId",
+      ]);
+
     if (itemGroupId) {
-      query.andWhere('category.itemGroupId = :itemGroupId', { itemGroupId });
+      query.andWhere("category.itemGroupId = :itemGroupId", { itemGroupId });
     }
     const categories = await query.getMany();
     return categories.map(CategoryMapper.toSelectDto);
-  }  
-  
-  
+  }
 
   /**
    * Get category by id
    */
   public async getCategoryById(id: number): Promise<CategoryResponseDto> {
     const entity = await this.getListQuery()
-      .where('category.id = :id', { id })
+      .where("category.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -103,20 +125,14 @@ export class CategoryService extends BaseCrudService {
    * Create new category
    */
   public async createCategory(
-    dto: CreateCategoryRequestDto,
+    dto: CreateCategoryRequestDto
   ): Promise<CategoryResponseDto> {
     try {
       let entity = CategoryMapper.toCreateEntity(dto);
       entity = await this.categoryRepository.save(entity);
       return CategoryMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new CategoryExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -125,7 +141,7 @@ export class CategoryService extends BaseCrudService {
    */
   public async updateCategory(
     id: number,
-    dto: UpdateCategoryRequestDto,
+    dto: UpdateCategoryRequestDto
   ): Promise<CategoryResponseDto> {
     let entity = await this.categoryRepository.findOneBy({ id });
     if (!entity) {
@@ -136,22 +152,14 @@ export class CategoryService extends BaseCrudService {
       entity = await this.categoryRepository.save(entity);
       return CategoryMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new CategoryExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
   /**
    * Update category by id
    */
-  public async deleteCategory(
-    id: number
-  ): Promise<CategoryResponseDto> {
+  public async deleteCategory(id: number): Promise<CategoryResponseDto> {
     let entity = await this.categoryRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();

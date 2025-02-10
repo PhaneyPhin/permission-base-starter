@@ -1,43 +1,41 @@
+import { BaseCrudService } from "@common/services/base-crud.service";
 import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
   Injectable,
-} from '@nestjs/common';
+  InternalServerErrorException,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleError } from "@utils/handle-error";
+import { TimeoutError } from "rxjs";
+import { Filter, Repository } from "typeorm";
 import {
   CreateUomRequestDto,
-  UpdateUomRequestDto,
   UomResponseDto,
-} from './dtos';
-import { UomMapper } from './uom.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { UomEntity } from './uom.entity';
-import { Repository } from 'typeorm';
-import { UomExistsException } from './uom-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdateUomRequestDto,
+} from "./dtos";
+import { UomEntity } from "./uom.entity";
+import { UomMapper } from "./uom.mapper";
 
-export const UOM_FILTER_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
+export const UOM_FILTER_FIELDS = ["code", "nameEn", "nameKh", "description"];
 @Injectable()
 export class UomService extends BaseCrudService {
-  protected queryName: string = 'uom';
-  protected SEARCH_FIELDS = ['code', 'nameEn', 'nameKh', 'description', ];
-  protected FILTER_FIELDS = UOM_FILTER_FIELDS
+  protected queryName: string = "uom";
+  protected SEARCH_FIELDS = ["code", "nameEn", "nameKh", "description"];
+  protected FILTER_FIELDS = UOM_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(UomEntity)
-    private uomRepository: Repository<UomEntity>,
+    private uomRepository: Repository<UomEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return UomMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return UomMapper.toDto;
   }
 
   /**
@@ -46,23 +44,26 @@ export class UomService extends BaseCrudService {
   protected getFilters() {
     const filters: { [key: string]: Filter<UomEntity> } = {
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('uom.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere("uom.created_at BETWEEN :start AND :end", {
+          start,
+          end,
+        });
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.uomRepository.createQueryBuilder('uom')
-      .leftJoinAndSelect('uom.createdByUser', 'uc')
+    return this.uomRepository
+      .createQueryBuilder("uom")
+      .leftJoinAndSelect("uom.createdByUser", "uc");
   }
 
   async getAllUom() {
-    return (await this.getListQuery()
-      .getMany()).map(UomMapper.toSelectDto)
+    return (await this.getListQuery().getMany()).map(UomMapper.toSelectDto);
   }
 
   /**
@@ -70,7 +71,7 @@ export class UomService extends BaseCrudService {
    */
   public async getUomById(id: number): Promise<UomResponseDto> {
     const entity = await this.getListQuery()
-      .where('uom.id = :id', { id })
+      .where("uom.id = :id", { id })
       .getOne();
 
     if (!entity) {
@@ -82,21 +83,13 @@ export class UomService extends BaseCrudService {
   /**
    * Create new uom
    */
-  public async createUom(
-    dto: CreateUomRequestDto,
-  ): Promise<UomResponseDto> {
+  public async createUom(dto: CreateUomRequestDto): Promise<UomResponseDto> {
     try {
       let entity = UomMapper.toCreateEntity(dto);
       entity = await this.uomRepository.save(entity);
       return UomMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new UomExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
@@ -105,7 +98,7 @@ export class UomService extends BaseCrudService {
    */
   public async updateUom(
     id: number,
-    dto: UpdateUomRequestDto,
+    dto: UpdateUomRequestDto
   ): Promise<UomResponseDto> {
     let entity = await this.uomRepository.findOneBy({ id });
     if (!entity) {
@@ -116,22 +109,14 @@ export class UomService extends BaseCrudService {
       entity = await this.uomRepository.save(entity);
       return UomMapper.toDto(entity);
     } catch (error) {
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new UomExistsException(dto.code);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
 
   /**
    * Update uom by id
    */
-  public async deleteUom(
-    id: number
-  ): Promise<UomResponseDto> {
+  public async deleteUom(id: number): Promise<UomResponseDto> {
     let entity = await this.uomRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();
