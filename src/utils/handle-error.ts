@@ -23,7 +23,7 @@ export const handleError = (error, dto) => {
   if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
     throw new UnprocessableEntityException({
       statusCode: 422,
-      errors: [
+      message: [
         {
           property: toCamelCase(conflictKey || "field"),
           constraints: {
