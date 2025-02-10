@@ -1,21 +1,32 @@
-import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsEmail, IsEnum, IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { UserStatus } from '../user-status.enum';
-import { UserEntity } from '../user.entity';
-import { UserApproval } from '../user-approval';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  ArrayNotEmpty,
+  IsAlphanumeric,
+  IsArray,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from "class-validator";
+import { UserApproval } from "../user-approval";
+import { UserStatus } from "../user-status.enum";
+import { UserEntity } from "../user.entity";
 
 export class UpdateUserRequestDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty({
-    example: 'jdoe',
+    example: "jdoe",
   })
   username: string;
 
   @IsNotEmpty()
   @MaxLength(100)
   @ApiProperty({
-    example: 'John',
+    example: "John",
   })
   name: string;
 
@@ -23,7 +34,7 @@ export class UpdateUserRequestDto {
   @MaxLength(100)
   @IsEmail()
   @ApiProperty({
-    example: 'admin@gmail.com',
+    example: "admin@gmail.com",
   })
   email: string;
 
@@ -39,25 +50,24 @@ export class UpdateUserRequestDto {
   @IsInt({ each: true })
   warehouse: number[];
 
-  createdBy: UserEntity
-
+  createdBy: UserEntity;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  expiredAt: Date
+  expiredAt: Date;
 
   @ApiProperty({
-    enum: UserApproval
+    enum: UserApproval,
   })
   @IsNotEmpty()
   @IsEnum(UserApproval)
-  userApproval: UserApproval
+  userApproval: UserApproval;
 
   @ApiProperty({
-    enum: UserStatus
+    enum: UserStatus,
   })
   @IsNotEmpty()
   @IsEnum(UserStatus)
-  status: UserStatus
+  status: UserStatus;
 }
