@@ -17,11 +17,11 @@ import {
 import { PaymentTermEntity } from "./payment-term.entity";
 import { PaymentTermMapper } from "./payment-term.mapper";
 
-export const PAYMENT_TERM_FILTER_FIELDS = ["name", "daysDue", "description"];
+export const PAYMENT_TERM_FILTER_FIELDS = ["name", "daysDue"];
 @Injectable()
 export class PaymentTermService extends BaseCrudService {
   protected queryName: string = "paymentTerm";
-  protected SEARCH_FIELDS = ["name", "daysDue", "description"];
+  protected SEARCH_FIELDS = ["name", "daysDue"];
   protected FILTER_FIELDS = PAYMENT_TERM_FILTER_FIELDS;
 
   constructor(
