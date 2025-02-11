@@ -48,7 +48,7 @@ export class BankMigration1737906926699 implements MigrationInterface {
             name: "address",
             type: "varchar",
             length: "160",
-            isNullable: false,
+            isNullable: true,
           },
 
           {

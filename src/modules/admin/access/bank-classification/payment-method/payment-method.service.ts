@@ -17,11 +17,11 @@ import {
 import { PaymentMethodEntity } from "./payment-method.entity";
 import { PaymentMethodMapper } from "./payment-method.mapper";
 
-export const PAYMENT_METHOD_FILTER_FIELDS = ["name", "description"];
+export const PAYMENT_METHOD_FILTER_FIELDS = ["name"];
 @Injectable()
 export class PaymentMethodService extends BaseCrudService {
   protected queryName: string = "paymentMethod";
-  protected SEARCH_FIELDS = ["name", "description"];
+  protected SEARCH_FIELDS = ["name"];
   protected FILTER_FIELDS = PAYMENT_METHOD_FILTER_FIELDS;
 
   constructor(
