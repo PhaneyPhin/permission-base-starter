@@ -147,9 +147,14 @@ export class UsersService extends BaseCrudService {
     } catch (error) {
       if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
         const user = await this.usersRepository.findOne({
-          where: {
-            username: userDto.username,
-          },
+          where: [
+            {
+              username: userDto.username,
+            },
+            {
+              email: userDto.email,
+            },
+          ],
           withDeleted: true,
         });
         if (user && user.deletedAt) {
