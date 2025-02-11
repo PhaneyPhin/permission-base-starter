@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, MaxLength } from "class-validator";
+import { IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
 export class CreateBankRequestDto {
   @ApiProperty()
@@ -18,7 +18,7 @@ export class CreateBankRequestDto {
   name: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   address: string;
 
