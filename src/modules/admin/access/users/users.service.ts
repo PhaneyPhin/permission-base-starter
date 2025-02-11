@@ -146,8 +146,11 @@ export class UsersService extends BaseCrudService {
       return UserMapper.toDto({ ...userEntity, createdBy: userDto.createdBy });
     } catch (error) {
       if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
-        const user = await this.usersRepository.findOneBy({
-          username: userDto.username,
+        const user = await this.usersRepository.findOne({
+          where: {
+            username: userDto.username,
+          },
+          withDeleted: true,
         });
         if (user && user.deletedAt) {
           await this.usersRepository.restore(user.id);
