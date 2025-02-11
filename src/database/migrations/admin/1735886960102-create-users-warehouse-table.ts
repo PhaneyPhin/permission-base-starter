@@ -1,8 +1,8 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-const tableName = 'admin.users_warehouses',
-  usersTableName = 'admin.users',
-  rolesTableName = 'admin.roles';
+const tableName = "admin.users_warehouses",
+  usersTableName = "admin.users",
+  warehouseTable = "admin.warehouse";
 export class createUsersWarehouse1610321079178 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -10,34 +10,34 @@ export class createUsersWarehouse1610321079178 implements MigrationInterface {
         name: tableName,
         columns: [
           {
-            name: 'user_id',
-            type: 'uuid',
+            name: "user_id",
+            type: "uuid",
             isPrimary: true,
             isNullable: false,
           },
           {
-            name: 'warehouse_id',
-            type: 'integer',
+            name: "warehouse_id",
+            type: "integer",
             isPrimary: true,
             isNullable: false,
           },
         ],
         foreignKeys: [
           {
-            columnNames: ['user_id'],
-            referencedColumnNames: ['id'],
+            columnNames: ["user_id"],
+            referencedColumnNames: ["id"],
             referencedTableName: usersTableName,
-            onUpdate: 'CASCADE',
+            onUpdate: "CASCADE",
           },
           {
-            columnNames: ['warehouse_id'],
-            referencedColumnNames: ['id'],
-            referencedTableName: rolesTableName,
-            onUpdate: 'CASCADE',
+            columnNames: ["warehouse_id"],
+            referencedColumnNames: ["id"],
+            referencedTableName: warehouseTable,
+            onUpdate: "CASCADE",
           },
         ],
       }),
-      true,
+      true
     );
   }
 
