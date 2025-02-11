@@ -15,11 +15,11 @@ export class CategoryResponseDto {
   @ApiProperty()
   nameKh: string;
 
-  @ApiProperty()
-  parentId: number;
+  // @ApiProperty()
+  // parentId: number;
 
-  @ApiProperty()
-  parent: CategoryResponseDto;
+  // @ApiProperty()
+  // parent: CategoryResponseDto;
 
   @ApiProperty()
   itemGroupId: number;

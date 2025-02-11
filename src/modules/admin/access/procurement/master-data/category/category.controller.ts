@@ -75,7 +75,7 @@ export class CategoryController {
   @Get('/select-by-item-group')
   public async getCategoryByItemGroupForSelect(
     @Query('itemGroupId') itemGroupId?: number,
-  ): Promise<{ id: number; nameEn: string; nameKh: string; parentId: number | null }[]> {
+  ): Promise<{ id: number; nameEn: string; nameKh: string; }[]> {
     return this.categoryService.getCategoryByItemGroup(itemGroupId);
   }
 

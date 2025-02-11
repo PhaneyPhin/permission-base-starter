@@ -112,6 +112,9 @@ export class ItemService extends BaseCrudService {
           unitCost: value,
         });
       },
+      itemType: (query, value) => {
+        return query.andWhere("item.item_type = :itemType", { itemType: value });
+      },
       createdAt: (query, value) => {
         const [start, end] = value.split(",");
         return query.andWhere("item.created_at BETWEEN :start AND :end", {
@@ -132,7 +135,11 @@ export class ItemService extends BaseCrudService {
       .leftJoinAndSelect("item.uom", "uom")
       .leftJoinAndSelect("item.itemGroup", "itemGroup")
       .leftJoinAndSelect("item.valuationMethod", "valuationMethod")
-      .leftJoinAndSelect("item.createdByUser", "uc");
+      .leftJoinAndSelect("item.createdByUser", "uc")
+      .leftJoinAndSelect("item.updatedByUser", "uu")
+      .where("item.item_type IN (:...allowedTypes)", {
+        allowedTypes: ["inventory", "non_stock_item"],
+      });
   }
   async getAllItem() {
     return (await this.getListQuery().getMany()).map(ItemMapper.toSelectDto);
@@ -164,26 +171,6 @@ export class ItemService extends BaseCrudService {
       handleError(error, dto);
     }
   }
-
-  /**
-   * Update item by id
-   */
-  // public async updateItem(
-  //   id: number,
-  //   dto: UpdateItemRequestDto,
-  // ): Promise<ItemResponseDto> {
-  //   let entity = await this.itemRepository.findOneBy({ id });
-  //   if (!entity) {
-  //     throw new NotFoundException();
-  //   }
-  //   try {
-  //     entity = ItemMapper.toUpdateEntity(entity, dto);
-  //     entity = await this.itemRepository.save(entity);
-  //     return ItemMapper.toDto(entity);
-  //   } catch (error) {
-  //     handleError(error, dto);
-  //   }
-  // }
   public async updateItem(
     id: number,
     dto: UpdateItemRequestDto
@@ -203,6 +190,7 @@ export class ItemService extends BaseCrudService {
       updatedEntity.category = newCategory;
       updatedEntity.uom = newUom;
       updatedEntity.valuationMethod = newValuationMethod;
+      updatedEntity.updatedBy = dto.updatedBy;
       const savedEntity = await this.itemRepository.save(updatedEntity);
       return ItemMapper.toDto(savedEntity);
     } catch (error) {

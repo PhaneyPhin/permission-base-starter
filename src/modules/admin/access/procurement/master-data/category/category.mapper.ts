@@ -15,14 +15,14 @@ export class CategoryMapper {
     dto.code = entity.code;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
-    dto.parentId = entity.parentId;
+    // dto.parentId = entity.parentId;
     dto.itemGroupId = entity.itemGroupId;
-    entity.parentId = dto.parentId === 0 ? null : dto.parentId;
+    // entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     dto.description = entity.description;
 
-    if (entity.parent) {
-      dto.parent = await CategoryMapper.toDto(entity.parent);
-    }
+    // if (entity.parent) {
+    //   dto.parent = await CategoryMapper.toDto(entity.parent);
+    // }
 
     if (entity.itemGroup) {
       dto.itemGroup = await ItemGroupMapper.toDto(entity.itemGroup);
@@ -42,7 +42,7 @@ export class CategoryMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
-    entity.parentId = dto.parentId === 0 ? null : dto.parentId;
+    // entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     entity.itemGroupId = dto.itemGroupId;
     entity.description = dto.description;
     
@@ -57,7 +57,7 @@ export class CategoryMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
-    entity.parentId = dto.parentId === 0 ? null : dto.parentId;
+    // entity.parentId = dto.parentId === 0 ? null : dto.parentId;
     entity.itemGroupId = dto.itemGroupId;
     entity.description = dto.description;
     
@@ -77,7 +77,7 @@ export class CategoryMapper {
       id: category.id,
       nameEn: category.nameEn,
       nameKh: category.nameKh,
-      parentId: category.parentId,
+      // parentId: category.parentId,
     };
   }
   

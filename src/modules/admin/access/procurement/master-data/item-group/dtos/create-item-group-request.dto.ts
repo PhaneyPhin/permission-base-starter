@@ -1,4 +1,4 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateItemGroupRequestDto {
@@ -20,6 +20,14 @@ export class CreateItemGroupRequestDto {
   @ApiProperty()
   @MaxLength(160)
   description: string;
+
+  @ApiProperty({ default: true })
+  @IsBoolean()
+  isStockItem: boolean;
+
+  @ApiProperty({ default: false })
+  @IsBoolean()
+  isNonStockItem: boolean;
 
   
   

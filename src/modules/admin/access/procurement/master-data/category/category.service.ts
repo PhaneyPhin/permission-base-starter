@@ -48,12 +48,12 @@ export class CategoryService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<CategoryEntity> } = {
-      parent: (query, value) => {
-        return query.andWhere(
-          "parent.name_en ILIKE %parent% or parent.name_kh ILIKE %parent%",
-          { parent: value }
-        );
-      },
+      // parent: (query, value) => {
+      //   return query.andWhere(
+      //     "parent.name_en ILIKE %parent% or parent.name_kh ILIKE %parent%",
+      //     { parent: value }
+      //   );
+      // },
       itemGroup: (query, value) => {
         return query.andWhere(
           "itemGroup.name_en ILIKE %itemGroup% or itemGroup.name_kh ILIKE %itemGroup%",
@@ -76,7 +76,7 @@ export class CategoryService extends BaseCrudService {
   protected getListQuery() {
     return this.categoryRepository
       .createQueryBuilder("category")
-      .leftJoinAndSelect("category.parent", "parent")
+      // .leftJoinAndSelect("category.parent", "parent")
       .leftJoinAndSelect("category.itemGroup", "itemGroup")
       .leftJoinAndSelect("category.createdByUser", "uc");
   }
@@ -89,7 +89,7 @@ export class CategoryService extends BaseCrudService {
   async getCategoryByItemGroup(
     itemGroupId?: number
   ): Promise<
-    { id: number; nameEn: string; nameKh: string; parentId: number | null }[]
+    { id: number; nameEn: string; nameKh: string; }[]
   > {
     const query = this.categoryRepository
       .createQueryBuilder("category")
@@ -97,7 +97,7 @@ export class CategoryService extends BaseCrudService {
         "category.id",
         "category.nameEn",
         "category.nameKh",
-        "category.parentId",
+        // "category.parentId",
       ]);
 
     if (itemGroupId) {

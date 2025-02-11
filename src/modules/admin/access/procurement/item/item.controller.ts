@@ -103,8 +103,9 @@ export class ItemController {
   public updateItem(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) dto: UpdateItemRequestDto,
+    @CurrentUser() user: UserEntity,
   ): Promise<ItemResponseDto> {
-    return this.itemService.updateItem(id, dto);
+    return this.itemService.updateItem(id, { ...dto, updatedBy: user.id });
   }
 
   @ApiOperation({ description: 'Update item by id' })

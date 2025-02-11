@@ -18,6 +18,12 @@ export class ItemGroupResponseDto {
   description: string;
 
   @ApiProperty()
+  isStockItem: boolean;
+
+  @ApiProperty()
+  isNonStockItem: boolean;
+
+  @ApiProperty()
   active: boolean;
 
   @ApiProperty()
