@@ -14,6 +14,8 @@ export class ItemGroupMapper {
     dto.code = entity.code;
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
+    dto.isStockItem = entity.isStockItem;
+    dto.isNonStockItem = entity.isNonStockItem;
     dto.description = entity.description;
     
 
@@ -31,6 +33,8 @@ export class ItemGroupMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
+    entity.isStockItem = dto.isStockItem;
+    entity.isNonStockItem = dto.isNonStockItem;
     entity.description = dto.description;
     
 
@@ -44,6 +48,8 @@ export class ItemGroupMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
+    entity.isStockItem = dto.isStockItem;
+    entity.isNonStockItem = dto.isNonStockItem;
     entity.description = dto.description;
     
 

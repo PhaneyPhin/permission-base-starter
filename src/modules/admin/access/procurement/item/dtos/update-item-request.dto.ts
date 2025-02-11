@@ -30,7 +30,7 @@ export class UpdateItemRequestDto extends CreateItemRequestDto {
   uomId: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   valuationMethodId: number;
 
   @ApiProperty({
@@ -77,4 +77,6 @@ export class UpdateItemRequestDto extends CreateItemRequestDto {
   @IsNotEmpty()
   @IsEnum(ModuleStatus)
   status: ModuleStatus
+
+  updatedBy: string
 }

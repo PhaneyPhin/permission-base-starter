@@ -44,7 +44,18 @@ export class ItemGroupMigration1737799956228 implements MigrationInterface {
             length: '160',
             isNullable: true,
           },
-          
+          {
+            name: 'is_stock_item',
+            type: 'boolean',
+            isNullable: false,
+            default: true,
+          },
+          {
+            name: 'is_non_stock_item',
+            type: 'boolean',
+            isNullable: false,
+            default: false,
+          },
           {
             name: 'created_by',
             type: 'uuid',

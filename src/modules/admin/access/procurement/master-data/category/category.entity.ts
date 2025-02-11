@@ -31,19 +31,19 @@ export class CategoryEntity extends BaseEntity {
   })
   nameKh: string;
   
-  @Column({
-    name: 'parent_id',
-    type: 'integer',
-    nullable: true,
-  })
-  parentId: number | null;
+  // @Column({
+  //   name: 'parent_id',
+  //   type: 'integer',
+  //   nullable: true,
+  // })
+  // parentId: number | null;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.children, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'parent_id' })
-  parent: CategoryEntity;
+  // @ManyToOne(() => CategoryEntity, (category) => category.children, { nullable: true, onDelete: 'SET NULL' })
+  // @JoinColumn({ name: 'parent_id' })
+  // parent: CategoryEntity;
 
-  @OneToMany(() => CategoryEntity, (category) => category.parent)
-  children: CategoryEntity[];
+  // @OneToMany(() => CategoryEntity, (category) => category.parent)
+  // children: CategoryEntity[];
 
   @Column({
     name: 'item_group_id',

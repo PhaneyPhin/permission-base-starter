@@ -61,13 +61,11 @@ export class ValuationMethodService extends BaseCrudService {
       .createQueryBuilder("valuationMethod")
       .leftJoinAndSelect("valuationMethod.createdByUser", "uc");
   }
-
-  getAllValuationMethod() {
-    return this.valuationMethodRepository
-      .createQueryBuilder("valuationMethod")
-      .select(["id", "name"])
-      .getRawMany();
-  }
+  async getAllValuationMethod() {
+      return (await this.getListQuery().getMany()).map(
+        ValuationMethodMapper.toSelectDto
+      );
+    }
 
   /**
    * Get valuation-method by id

@@ -46,4 +46,11 @@ export class ValuationMethodMapper {
 
     return entity;
   }
+  public static toSelectDto(valuationMethod: ValuationMethodEntity) {
+      return {
+        nameEn: valuationMethod.nameEn,
+        nameKh: valuationMethod.nameKh,
+        id: valuationMethod.id
+      }
+    }
 }

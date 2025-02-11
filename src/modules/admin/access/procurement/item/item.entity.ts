@@ -74,7 +74,7 @@ export class ItemEntity extends BaseEntity {
   @Column({
     name: 'valuation_method_id',
     type: 'integer',
-    nullable: false,
+    nullable: true,
   })
   valuationMethodId: number;
 
@@ -150,6 +150,18 @@ export class ItemEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: 'created_by' })
   createdByUser: UserEntity;
+
+  @Column({
+    name: 'updated_by',
+    type: 'uuid',
+    nullable: true,
+  })
+  updatedBy: string;
+  
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'updated_by' })
+  updatedByUser: UserEntity;
+  
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;

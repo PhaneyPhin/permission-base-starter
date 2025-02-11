@@ -38,7 +38,7 @@ export class ItemMapper {
     }
     if (entity.valuationMethod) {
       dto.valuationMethod = await ValuationMethodMapper.toDto(entity.valuationMethod);
-    }
+    }    
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
@@ -62,6 +62,7 @@ export class ItemMapper {
     entity.itemImage = dto.itemImage;
     entity.status = dto.status;
     entity.note = dto.note;
+    entity.createdBy = dto.createdBy;
 
     return entity;
   }
@@ -84,6 +85,8 @@ export class ItemMapper {
     entity.itemImage = dto.itemImage;
     entity.status = dto.status;
     entity.note = dto.note;
+    entity.updatedBy = dto.updatedBy;
+
 
     return entity;
   }

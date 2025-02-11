@@ -39,11 +39,11 @@ export class CategoryMigration1737558836224 implements MigrationInterface {
             isNullable: false,
           },
           
-          {
-            name: 'parent_id',
-            type: 'integer',
-            isNullable: true,
-          },
+          // {
+          //   name: 'parent_id',
+          //   type: 'integer',
+          //   isNullable: true,
+          // },
 
           {
             name: 'item_group_id',

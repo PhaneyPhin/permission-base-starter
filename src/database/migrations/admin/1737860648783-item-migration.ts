@@ -58,7 +58,7 @@ export class ItemMigration1737860648783 implements MigrationInterface {
           {
             name: 'valuation_method_id',
             type: 'integer',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'item_type',
@@ -110,6 +110,11 @@ export class ItemMigration1737860648783 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'updated_by',
+            type: 'uuid',
+            isNullable: true,
+          },
+          {
             name: 'active',
             type: 'boolean',
             isNullable: false,
@@ -131,6 +136,15 @@ export class ItemMigration1737860648783 implements MigrationInterface {
             onDelete: 'SET NULL',
         }),
     );
+    await queryRunner.createForeignKey(
+      tableName,
+      new TableForeignKey({
+          columnNames: ['updated_by'],
+          referencedColumnNames: ['id'],
+          referencedTableName: 'admin.users',
+          onDelete: 'SET NULL',
+      }),
+  );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

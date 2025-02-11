@@ -35,6 +35,22 @@ export class ItemGroupEntity extends BaseEntity {
     nullable: true,
   })
   description: string;
+
+  @Column({
+    name: 'is_stock_item',
+    type: 'boolean',
+    nullable: false,
+    default: true,
+  })
+  isStockItem: boolean;
+
+  @Column({
+    name: 'is_non_stock_item',
+    type: 'boolean',
+    nullable: false,
+    default: false,
+  })
+  isNonStockItem: boolean;
   
 
   @Column({

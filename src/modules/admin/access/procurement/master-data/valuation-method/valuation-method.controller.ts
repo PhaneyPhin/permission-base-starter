@@ -54,16 +54,16 @@ export class ValuationMethodController {
   public getValuationMethods(@PaginationParams() pagination: PaginationRequest): Promise<PaginationResponseDto<ValuationMethodResponseDto>> {
     return this.valuationMethodService.list<ValuationMethodEntity, ValuationMethodResponseDto>(pagination);
   }
-
+  
   @ApiOperation({ description: 'Get all valuation-method list form select form' })  
   @Permissions(
-    'admin.access.valuation-method.read',
-    'admin.access.valuation-method.create',
-    'admin.access.valuation-method.update',
+    'admin.access.item-group.read',
+    'admin.access.item-group.create',
+    'admin.access.item-group.update',
   )
   @Get('/select-options')
-  public getAllValuationMethodForSelect(): Promise<{ id: string, name: string }[]> {
-    return this.valuationMethodService.getAllValuationMethod();
+  public async  getAllValuationMethodForSelect() {
+    return await this.valuationMethodService.getAllValuationMethod();
   }
 
   @ApiOperation({ description: 'Get valuation-method by id' })

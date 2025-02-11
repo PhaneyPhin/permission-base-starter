@@ -58,4 +58,7 @@ export class ItemResponseDto {
 
   @ApiProperty()
   createdByUser: UserResponseDto
+
+  @ApiProperty()
+  updatedByUser: UserResponseDto
 }

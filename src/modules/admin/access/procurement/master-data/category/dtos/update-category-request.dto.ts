@@ -19,9 +19,9 @@ export class UpdateCategoryRequestDto extends CreateCategoryRequestDto {
   @MaxLength(160)
   nameKh: string;
 
-  @ApiProperty({ required: false, nullable: true })
-  @IsOptional()
-  parentId?: number | null;
+  // @ApiProperty({ required: false, nullable: true })
+  // @IsOptional()
+  // parentId?: number | null;
 
   @ApiProperty()
   @IsNotEmpty()

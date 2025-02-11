@@ -29,7 +29,7 @@ export class CreateItemRequestDto {
   uomId: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   valuationMethodId: number;
 
   @ApiProperty({
