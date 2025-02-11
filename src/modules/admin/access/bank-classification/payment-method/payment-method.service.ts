@@ -78,7 +78,7 @@ export class PaymentMethodService extends BaseCrudService {
     id: number
   ): Promise<PaymentMethodResponseDto> {
     const entity = await this.getListQuery()
-      .where("warehouse.id = :id", { id })
+      .where("paymentMethod.id = :id", { id })
       .getOne();
 
     if (!entity) {
