@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner, Table } from "typeorm";
 const tableName = "admin.users_warehouses",
   usersTableName = "admin.users",
   warehouseTable = "admin.warehouse";
-export class createUsersWarehouse1610321079178 implements MigrationInterface {
+export class createUsersWarehouse1735886960102 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
