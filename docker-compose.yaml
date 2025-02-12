@@ -1,6 +1,22 @@
 version: '3.7'
 
 services:
+  app:
+    build: .
+    container_name: nestjs-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - TYPEORM_HOST=host.docker.internal
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: ["node", "dist/main"]
+
   boilerplate_db:
     container_name: boilerplate_db
     image: postgres:12.3-alpine

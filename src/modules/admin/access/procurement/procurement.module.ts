@@ -17,4 +17,3 @@ import { ValuationMethodModule } from "./master-data/valuation-method/valuation-
   ],
 })
 export class ProcurementModule {}
-console.log("Purchasing");

@@ -97,6 +97,42 @@ export class MasterPlanService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<MasterPlanEntity> } = {
+      project: (query, value) => {
+        return query.andWhere(
+          "project.name_en ILIKE :value or .name_kh ILIKE :value",
+          { value }
+        );
+      },
+      block: (query, value) => {
+        return query.andWhere(
+          "block.name_en ILIKE :value or block.name_kh ILIKE :value",
+          { value }
+        );
+      },
+      building: (query, value) => {
+        return query.andWhere(
+          "building.name_en ILIKE :value or building.name_kh ILIKE :value",
+          { value }
+        );
+      },
+      street: (query, value) => {
+        return query.andWhere(
+          "street.name_en ILIKE :value or street.name_kh ILIKE :value",
+          { value }
+        );
+      },
+      division: (query, value) => {
+        return query.andWhere(
+          "division.name_en ILIKE :value or division.name_kh ILIKE :value",
+          { value }
+        );
+      },
+      unitType: (query, value) => {
+        return query.andWhere(
+          "unitType.name_en ILIKE :value or unitType.name_kh ILIKE :value",
+          { value }
+        );
+      },
       createdAt: (query, value) => {
         const [start, end] = value.split(",");
         return query.andWhere("masterPlan.created_at BETWEEN :start AND :end", {

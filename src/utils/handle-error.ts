@@ -5,7 +5,7 @@ import {
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { TimeoutError } from "rxjs";
-import { toCamelCase } from "./camel-case";
+import { toCamelCase } from "./case";
 
 export const handleError = (error, dto) => {
   // ✅ Extract detailed error message
