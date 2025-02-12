@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, MaxLength } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
 export class CreateRequestTypeRequestDto {
   @ApiProperty()
@@ -10,26 +10,35 @@ export class CreateRequestTypeRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
-  name: string;
+  nameEn: string;
 
   @ApiProperty()
   @IsNotEmpty()
+  @MaxLength(160)
+  nameKh: string;
+
+  @ApiProperty()
+  @IsOptional()
   @MaxLength(160)
   numberRank: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   approvalFlow: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  defaultQuotation: string;
+  @IsOptional()
+  defaultQuotation: number;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   isRequireApproval: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  active: boolean;
 
   createdBy: string;
 }

@@ -9,7 +9,10 @@ export class RequestTypeResponseDto {
   code: string;
 
   @ApiProperty()
-  name: string;
+  nameEn: string;
+
+  @ApiProperty()
+  nameKh: string;
 
   @ApiProperty()
   numberRank: string;
@@ -18,7 +21,7 @@ export class RequestTypeResponseDto {
   approvalFlow: string;
 
   @ApiProperty()
-  defaultQuotation: string;
+  defaultQuotation: number;
 
   @ApiProperty()
   isRequireApproval: boolean;

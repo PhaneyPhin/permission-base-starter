@@ -1,13 +1,15 @@
-import { VendorClassEntity } from './vendor-class.entity';
-import { UserMapper } from '@admin/access/users/users.mapper';
+import { UserMapper } from "@admin/access/users/users.mapper";
 import {
   CreateVendorClassRequestDto,
   UpdateVendorClassRequestDto,
   VendorClassResponseDto,
-} from './dtos';
+} from "./dtos";
+import { VendorClassEntity } from "./vendor-class.entity";
 
 export class VendorClassMapper {
-  public static async toDto(entity: VendorClassEntity): Promise<VendorClassResponseDto> {
+  public static async toDto(
+    entity: VendorClassEntity
+  ): Promise<VendorClassResponseDto> {
     const dto = new VendorClassResponseDto();
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
@@ -15,16 +17,17 @@ export class VendorClassMapper {
     dto.nameEn = entity.nameEn;
     dto.nameKh = entity.nameKh;
     dto.description = entity.description;
-    
 
-     if (entity.createdByUser) {
+    if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
 
     return dto;
   }
 
-  public static toCreateEntity(dto: CreateVendorClassRequestDto): VendorClassEntity {
+  public static toCreateEntity(
+    dto: CreateVendorClassRequestDto
+  ): VendorClassEntity {
     const entity = new VendorClassEntity();
     // default fields?
     entity.active = true;
@@ -32,20 +35,17 @@ export class VendorClassMapper {
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
-    
 
     return entity;
   }
 
   public static toUpdateEntity(
     entity: VendorClassEntity,
-    dto: UpdateVendorClassRequestDto,
+    dto: UpdateVendorClassRequestDto
   ): VendorClassEntity {
-    entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
     entity.description = dto.description;
-    
 
     return entity;
   }

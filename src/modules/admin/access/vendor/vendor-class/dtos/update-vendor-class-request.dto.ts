@@ -1,13 +1,7 @@
-import { CreateVendorClassRequestDto } from './create-vendor-class-request.dto';
-import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
-export class UpdateVendorClassRequestDto extends CreateVendorClassRequestDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  code: string;
-
+export class UpdateVendorClassRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -19,7 +13,7 @@ export class UpdateVendorClassRequestDto extends CreateVendorClassRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(160)
   description: string;
 

@@ -32,6 +32,7 @@ export class PaymentTermMigration1737907658724 implements MigrationInterface {
             name: "name",
             type: "varchar",
             length: "160",
+            isUnique: true,
             isNullable: false,
           },
 

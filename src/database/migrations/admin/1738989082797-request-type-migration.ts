@@ -29,9 +29,17 @@ export class RequestTypeMigration1738989082797 implements MigrationInterface {
             isUnique: true,
           },
           {
-            name: "name",
+            name: "name_en",
             type: "varchar",
             length: "160",
+            isUnique: true,
+            isNullable: false,
+          },
+          {
+            name: "name_kh",
+            type: "varchar",
+            length: "160",
+            isUnique: true,
             isNullable: false,
           },
 
@@ -39,7 +47,7 @@ export class RequestTypeMigration1738989082797 implements MigrationInterface {
             name: "number_rank",
             type: "varchar",
             length: "160",
-            isNullable: false,
+            isNullable: true,
           },
 
           {
@@ -50,10 +58,9 @@ export class RequestTypeMigration1738989082797 implements MigrationInterface {
           },
 
           {
-            name: "default_qoatation",
-            type: "varchar",
-            length: "160",
-            isNullable: false,
+            name: "default_quotation",
+            type: "integer",
+            isNullable: true,
           },
           {
             name: "is_require_approval",

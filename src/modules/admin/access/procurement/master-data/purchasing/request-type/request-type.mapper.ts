@@ -14,7 +14,8 @@ export class RequestTypeMapper {
     dto.id = entity.id;
     dto.active = (entity as any).active; // or your default fields
     dto.code = entity.code;
-    dto.name = entity.name;
+    dto.nameEn = entity.nameEn;
+    dto.nameEn = entity.nameEn;
     dto.numberRank = entity.numberRank;
     dto.approvalFlow = entity.approvalFlow;
     dto.defaultQuotation = entity.defaultQuotation;
@@ -34,7 +35,8 @@ export class RequestTypeMapper {
     // default fields?
     entity.active = true;
     entity.code = dto.code;
-    entity.name = dto.name;
+    entity.nameEn = dto.nameEn;
+    entity.nameKh = dto.nameKh;
     entity.numberRank = dto.numberRank;
     entity.approvalFlow = dto.approvalFlow;
     entity.defaultQuotation = dto.defaultQuotation;
@@ -48,7 +50,8 @@ export class RequestTypeMapper {
     dto: UpdateRequestTypeRequestDto
   ): RequestTypeEntity {
     entity.code = dto.code;
-    entity.name = dto.name;
+    entity.nameEn = dto.nameEn;
+    entity.nameKh = dto.nameKh;
     entity.numberRank = dto.numberRank;
     entity.approvalFlow = dto.approvalFlow;
     entity.defaultQuotation = dto.defaultQuotation;

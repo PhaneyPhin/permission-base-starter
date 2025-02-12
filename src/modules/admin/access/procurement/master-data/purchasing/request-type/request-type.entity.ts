@@ -23,11 +23,18 @@ export class RequestTypeEntity extends BaseEntity {
   code: string;
 
   @Column({
-    name: "name",
+    name: "name_en",
     type: "varchar",
     nullable: true,
   })
-  name: string;
+  nameEn: string;
+
+  @Column({
+    name: "name_kh",
+    type: "varchar",
+    nullable: true,
+  })
+  nameKh: string;
 
   @Column({
     name: "number_rank",
@@ -44,11 +51,11 @@ export class RequestTypeEntity extends BaseEntity {
   approvalFlow: string;
 
   @Column({
-    name: "default_qoatation",
-    type: "varchar",
+    name: "default_quotation",
+    type: "integer",
     nullable: true,
   })
-  defaultQuotation: string;
+  defaultQuotation: number;
 
   @Column({
     name: "is_require_approval",
