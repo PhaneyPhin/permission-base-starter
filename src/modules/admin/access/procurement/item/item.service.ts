@@ -27,6 +27,10 @@ export const ITEM_FILTER_FIELDS = [
   "nameEn",
   "nameKh",
   "itemType",
+  "category",
+  "itemGroup",
+  "valuationMethod",
+  "uom",
   "status",
   "note",
 ];
@@ -38,6 +42,10 @@ export class ItemService extends BaseCrudService {
     "nameEn",
     "nameKh",
     "itemType",
+    "category",
+    "itemGroup",
+    "valuationMethod",
+    "uom",
     "status",
     "note",
   ];
@@ -90,7 +98,7 @@ export class ItemService extends BaseCrudService {
           "category.name_en ILIKE %category% or category.name_kh ILIKE %category%",
           { category: value }
         );
-      },
+      },   
       uom: (query, value) => {
         return query.andWhere(
           "uom.name_en ILIKE %uom% or uom.name_kh ILIKE %uom%",

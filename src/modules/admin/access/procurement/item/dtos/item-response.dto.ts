@@ -61,4 +61,7 @@ export class ItemResponseDto {
 
   @ApiProperty()
   updatedByUser: UserResponseDto
+
+  @ApiProperty()
+  createdAt: Date
 }

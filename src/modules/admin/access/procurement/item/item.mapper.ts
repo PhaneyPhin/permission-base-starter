@@ -26,6 +26,7 @@ export class ItemMapper {
     dto.itemImage = entity.itemImage;
     dto.itemImageUrl = entity.itemImage ? await entity.getItemImageUrl() : null;
     dto.note = entity.note;
+    dto.createdAt = entity.createdAt;
     
     if (entity.category) {
       dto.category = await CategoryMapper.toDto(entity.category);
@@ -41,6 +42,9 @@ export class ItemMapper {
     }    
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
+    }
+    if (entity.updatedByUser) {
+      dto.updatedByUser = await UserMapper.toDto(entity.createdByUser);
     }
 
     return dto;
