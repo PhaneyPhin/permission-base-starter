@@ -10,6 +10,7 @@ import { UomMapper } from '../master-data/uom/uom.mapper';
 import { ItemGroupMapper } from '../master-data/item-group/item-group.mapper';
 import { ValuationMethodMapper } from '../master-data/valuation-method/valuation-method.mapper';
 import { ModuleStatus } from '@common/enums/status.enum';
+import { ItemGroupEntity } from '../master-data/item-group/item-group.entity';
 
 export class ItemMapper {
   public static async toDto(entity: ItemEntity): Promise<ItemResponseDto> {
@@ -20,13 +21,14 @@ export class ItemMapper {
     dto.nameKh = entity.nameKh;
     dto.itemType = entity.itemType;
     dto.minStock = entity.minStock;
-    dto.standardCost = entity.standardCost;
-    dto.unitCost = entity.unitCost;
+    dto.standardCost = entity.standardCost ? parseFloat(entity.standardCost as any) : null;
+    dto.unitCost = entity.unitCost ? parseFloat(entity.unitCost as any) : null;
     dto.status = entity.status;
     dto.itemImage = entity.itemImage;
     dto.itemImageUrl = entity.itemImage ? await entity.getItemImageUrl() : null;
     dto.note = entity.note;
     dto.createdAt = entity.createdAt;
+    dto.updatedAt = entity.updatedAt;
     
     if (entity.category) {
       dto.category = await CategoryMapper.toDto(entity.category);
@@ -44,7 +46,7 @@ export class ItemMapper {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
     if (entity.updatedByUser) {
-      dto.updatedByUser = await UserMapper.toDto(entity.createdByUser);
+      dto.updatedByUser = await UserMapper.toDto(entity.updatedByUser);
     }
 
     return dto;
@@ -78,7 +80,6 @@ export class ItemMapper {
     entity.code = dto.code;
     entity.nameEn = dto.nameEn;
     entity.nameKh = dto.nameKh;
-    entity.itemGroupId = dto.itemGroupId;
     entity.categoryId = dto.categoryId;
     entity.uomId = dto.uomId;
     entity.valuationMethodId = dto.valuationMethodId;
@@ -90,6 +91,12 @@ export class ItemMapper {
     entity.status = dto.status;
     entity.note = dto.note;
     entity.updatedBy = dto.updatedBy;
+    entity.itemGroupId = dto.itemGroupId;
+    entity.valuationMethodId = dto.valuationMethodId;
+    entity.uomId = dto.uomId;
+    entity.categoryId = dto.categoryId;
+    entity.updatedAt = dto.updatedAt;
+    // entity.itemGroup = new ItemGroupEntity({id: dto.itemGroupId})
 
 
     return entity;

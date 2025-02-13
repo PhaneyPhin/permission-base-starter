@@ -16,7 +16,7 @@ export class WarehouseEntity extends BaseEntity {
   })
   branch_id: number;
   
-  @ManyToOne(() => BranchEntity, { nullable: true, eager: true })
+  @ManyToOne(() => BranchEntity, { nullable: true })
   @JoinColumn({ name: 'branch_id' })
   branch: BranchEntity;
 

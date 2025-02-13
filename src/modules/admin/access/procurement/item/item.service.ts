@@ -27,10 +27,6 @@ export const ITEM_FILTER_FIELDS = [
   "nameEn",
   "nameKh",
   "itemType",
-  "category",
-  "itemGroup",
-  "valuationMethod",
-  "uom",
   "status",
   "note",
 ];
@@ -42,10 +38,6 @@ export class ItemService extends BaseCrudService {
     "nameEn",
     "nameKh",
     "itemType",
-    "category",
-    "itemGroup",
-    "valuationMethod",
-    "uom",
     "status",
     "note",
   ];
@@ -54,17 +46,6 @@ export class ItemService extends BaseCrudService {
   constructor(
     @InjectRepository(ItemEntity)
     private itemRepository: Repository<ItemEntity>,
-    @InjectRepository(ItemGroupEntity)
-    private itemGroupRepository: Repository<ItemGroupEntity>,
-
-    @InjectRepository(ValuationMethodEntity)
-    private valuationMethodRepository: Repository<ValuationMethodEntity>,
-
-    @InjectRepository(CategoryEntity)
-    private categoryRepository: Repository<CategoryEntity>,
-
-    @InjectRepository(UomEntity)
-    private uomRepository: Repository<UomEntity>
   ) {
     super();
   }
@@ -83,41 +64,41 @@ export class ItemService extends BaseCrudService {
     const filters: { [key: string]: Filter<ItemEntity> } = {
       itemGroup: (query, value) => {
         return query.andWhere(
-          "itemGroup.name_en ILIKE %itemGroup% or itemGroup.name_kh ILIKE %itemGroup%",
-          { itemGroup: value }
+          "itemGroup.name_en ILIKE :itemGroup or itemGroup.name_kh ILIKE :itemGroup",
+          { itemGroup: `%${value}%` }
         );
       },
       valuationMethod: (query, value) => {
         return query.andWhere(
-          "valuationMethod.name_en ILIKE %valuationMethod% or valuationMethod.name_kh ILIKE %valuationMethod%",
-          { valuationMethod: value }
+          "valuationMethod.name_en ILIKE :valuationMethod or valuationMethod.name_kh ILIKE :valuationMethod",
+          { valuationMethod: `%${value}%` }
         );
       },
       category: (query, value) => {
         return query.andWhere(
-          "category.name_en ILIKE %category% or category.name_kh ILIKE %category%",
-          { category: value }
+          "category.name_en ILIKE :category or category.name_kh ILIKE :category",
+          { category: `%${value}%` }
         );
       },   
       uom: (query, value) => {
         return query.andWhere(
-          "uom.name_en ILIKE %uom% or uom.name_kh ILIKE %uom%",
-          { uom: value }
+          "uom.name_en ILIKE :uom or uom.name_kh ILIKE :uom",
+          { uom: `%${value}%` }
         );
       },
       minStock: (query, value) => {
         return query.andWhere("item.min_stock = :minStock", {
-          minStock: value,
+          minStock: `%${value}%`,
         });
       },
       standardCost: (query, value) => {
         return query.andWhere("item.standard_cost = :standardCost", {
-          standardCost: value,
+          standardCost: `%${value}%`,
         });
       },
       unitCost: (query, value) => {
         return query.andWhere("item.unit_cost = :unitCost", {
-          unitCost: value,
+          unitCost: `%${value}%`,
         });
       },
       itemType: (query, value) => {
@@ -183,22 +164,12 @@ export class ItemService extends BaseCrudService {
     id: number,
     dto: UpdateItemRequestDto
   ): Promise<ItemResponseDto> {
-    const entity = await this.itemRepository.findOne({
-      where: { id },
-      relations: ["itemGroup", "category", "uom", "valuationMethod"],
-    });
+    const entity = await this.itemRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();
     }
     try {
-      const [newItemGroup, newCategory, newUom, newValuationMethod] =
-        await this.getRelatedEntities(dto);
       const updatedEntity = ItemMapper.toUpdateEntity(entity, dto);
-      updatedEntity.itemGroup = newItemGroup;
-      updatedEntity.category = newCategory;
-      updatedEntity.uom = newUom;
-      updatedEntity.valuationMethod = newValuationMethod;
-      updatedEntity.updatedBy = dto.updatedBy;
       const savedEntity = await this.itemRepository.save(updatedEntity);
       return ItemMapper.toDto(savedEntity);
     } catch (error) {
@@ -245,39 +216,5 @@ export class ItemService extends BaseCrudService {
       .execute();
 
     return ids;
-  }
-
-  private async fetchEntity<T extends { id: number }>(
-    repository: Repository<T>,
-    id: number,
-    entityName: string
-  ): Promise<T> {
-    const entity = await repository.findOneBy({ id } as FindOptionsWhere<T>);
-    if (!entity) {
-      throw new NotFoundException(`${entityName} with id ${id} not found`);
-    }
-    return entity;
-  }
-  private async getRelatedEntities(
-    dto: UpdateItemRequestDto
-  ): Promise<
-    [ItemGroupEntity, CategoryEntity, UomEntity, ValuationMethodEntity]
-  > {
-    const [newItemGroup, newCategory, newUom, newValuationMethod] =
-      await Promise.all([
-        this.fetchEntity(
-          this.itemGroupRepository,
-          dto.itemGroupId,
-          "ItemGroup"
-        ),
-        this.fetchEntity(this.categoryRepository, dto.categoryId, "Category"),
-        this.fetchEntity(this.uomRepository, dto.uomId, "Uom"),
-        this.fetchEntity(
-          this.valuationMethodRepository,
-          dto.valuationMethodId,
-          "ValuationMethod"
-        ),
-      ]);
-    return [newItemGroup, newCategory, newUom, newValuationMethod];
   }
 }

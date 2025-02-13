@@ -64,8 +64,8 @@ export class WarehouseService extends BaseCrudService {
       },
       branch: (query, value) => {
         return query.andWhere(
-          "b.name_en ILIKE %branch% or b.name_kh ILIKE %branch%",
-          { branch: value }
+          "b.name_en ILIKE :branch or b.name_kh ILIKE :branch",
+          { branch: `%${value}%` }
         );
       },
     };

@@ -79,4 +79,5 @@ export class UpdateItemRequestDto extends CreateItemRequestDto {
   status: ModuleStatus
 
   updatedBy: string
+  updatedAt: Date
 }
