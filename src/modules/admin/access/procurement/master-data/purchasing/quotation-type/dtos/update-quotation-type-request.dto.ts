@@ -1,13 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, MaxLength } from "class-validator";
-import { CreateQuotationTypeRequestDto } from "./create-quotation-type-request.dto";
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
-export class UpdateQuotationTypeRequestDto extends CreateQuotationTypeRequestDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  code: string;
-
+export class UpdateQuotationTypeRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -22,6 +16,15 @@ export class UpdateQuotationTypeRequestDto extends CreateQuotationTypeRequestDto
   @IsNotEmpty()
   @IsBoolean()
   active: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @MaxLength(160)
+  codePrefix: string;
+
+  @ApiProperty()
+  @IsOptional()
+  defaultPOTypeId: number;
 
   updatedBy: string;
 }

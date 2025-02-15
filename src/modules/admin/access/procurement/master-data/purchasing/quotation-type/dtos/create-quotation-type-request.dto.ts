@@ -1,5 +1,5 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
 export class CreateQuotationTypeRequestDto {
   @ApiProperty()
@@ -17,7 +17,14 @@ export class CreateQuotationTypeRequestDto {
   @MaxLength(160)
   nameKh: string;
 
-  
-  
+  @ApiProperty()
+  @IsOptional()
+  @MaxLength(160)
+  codePrefix: string;
+
+  @ApiProperty()
+  @IsOptional()
+  defaultPOTypeId: number;
+
   createdBy: string;
 }

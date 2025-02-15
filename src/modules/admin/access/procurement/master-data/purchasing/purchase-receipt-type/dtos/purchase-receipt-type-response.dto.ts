@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from '@admin/access/users/dtos';
+import { UserResponseDto } from "@admin/access/users/dtos";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class PurchaseReceiptTypeResponseDto {
   @ApiProperty()
@@ -18,5 +18,8 @@ export class PurchaseReceiptTypeResponseDto {
   active: boolean;
 
   @ApiProperty()
-  createdByUser: UserResponseDto
+  codePrefix: string;
+
+  @ApiProperty()
+  createdByUser: UserResponseDto;
 }

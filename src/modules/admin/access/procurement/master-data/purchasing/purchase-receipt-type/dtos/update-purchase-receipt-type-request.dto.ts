@@ -1,13 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, MaxLength } from "class-validator";
-import { CreatePurchaseReceiptTypeRequestDto } from "./create-purchase-receipt-type-request.dto";
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
-export class UpdatePurchaseReceiptTypeRequestDto extends CreatePurchaseReceiptTypeRequestDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  code: string;
-
+export class UpdatePurchaseReceiptTypeRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -23,5 +17,9 @@ export class UpdatePurchaseReceiptTypeRequestDto extends CreatePurchaseReceiptTy
   @IsBoolean()
   active: boolean;
 
+  @ApiProperty()
+  @IsOptional()
+  @MaxLength(160)
+  codePrefix: string;
   updatedBy: string;
 }

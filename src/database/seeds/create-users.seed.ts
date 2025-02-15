@@ -13,6 +13,10 @@ import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
+import { PurchaseOrderTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/purchase-order-type/purchase-order-type.entity";
+import { PurchaseReceiptTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/purchase-receipt-type/purchase-receipt-type.entity";
+import { QuotationTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/quotation-type/quotation-type.entity";
+import { RequestTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/request-type/request-type.entity";
 import { ValuationMethodEntity } from "@modules/admin/access/procurement/master-data/valuation-method/valuation-method.entity";
 import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { VendorClassEntity } from "@modules/admin/access/vendor/vendor-class/vendor-class.entity";
@@ -26,6 +30,11 @@ import { branches } from "./create-branch.seed";
 import { departments } from "./create-department.seed";
 import { paymentMethods } from "./payment-method.seed";
 import { paymentTerms } from "./payment-term.seed";
+import {
+  purchaseOrderTypes,
+  purchaseQuotationTypes,
+  purchaseRequestTypes,
+} from "./purchase-master.seed";
 import { valuationMethods } from "./valuation-method.seed";
 import { vendorClasses } from "./vendor-class.seed";
 import { vendorTypes } from "./vendor-type.seed";
@@ -483,6 +492,13 @@ async function seedDatabase(dataSource: DataSource) {
   await dataSource.manager.save(PaymentMethodEntity, paymentMethods);
   await dataSource.manager.save(PaymentTermEntity, paymentTerms);
   await dataSource.manager.save(VendorClassEntity, vendorClasses);
+  await dataSource.manager.save(
+    PurchaseReceiptTypeEntity,
+    purchaseRequestTypes
+  );
+  await dataSource.manager.save(PurchaseOrderTypeEntity, purchaseOrderTypes);
+  await dataSource.manager.save(QuotationTypeEntity, purchaseQuotationTypes);
+  await dataSource.manager.save(RequestTypeEntity, purchaseRequestTypes);
   await dataSource.manager.save(VendorTypeEntity, vendorTypes);
 
   const defaultDimension = {

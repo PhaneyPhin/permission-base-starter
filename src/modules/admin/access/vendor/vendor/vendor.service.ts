@@ -1,13 +1,8 @@
 import { DBErrorCode } from "@common/enums";
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import { VendorBankEntity } from "../vendor-bank/vendor-bank.entity";
 import {
@@ -122,18 +117,10 @@ export class VendorService extends BaseCrudService {
       entity = await this.vendorRepository.save(entity);
       return VendorMapper.toDto(entity);
     } catch (error) {
-      console.log(error);
-      if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
-        throw new VendorExistsException(dto.nameEn);
-      }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleError(error, dto);
     }
   }
-
-  /**
+  /*
    * Update vendor by id
    */
   public async updateVendor(
@@ -167,10 +154,7 @@ export class VendorService extends BaseCrudService {
       if (error.code === DBErrorCode.PgUniqueConstraintViolation) {
         throw new VendorExistsException(dto.nameEn);
       }
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 
@@ -186,10 +170,7 @@ export class VendorService extends BaseCrudService {
       await this.vendorRepository.delete({ id: id });
       return VendorMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

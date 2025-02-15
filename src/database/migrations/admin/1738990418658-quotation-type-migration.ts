@@ -8,7 +8,7 @@ import { commonFields } from "../common.fields";
 
 const tableName = "admin.quotation-type";
 
-export class QuotationTypeMigration1738990501351 implements MigrationInterface {
+export class QuotationTypeMigration1738990418658 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -26,6 +26,7 @@ export class QuotationTypeMigration1738990501351 implements MigrationInterface {
             name: "code",
             type: "varchar",
             length: "160",
+            isUnique: true,
             isNullable: false,
           },
 
@@ -33,6 +34,7 @@ export class QuotationTypeMigration1738990501351 implements MigrationInterface {
             name: "name_en",
             type: "varchar",
             length: "160",
+            isUnique: true,
             isNullable: false,
           },
 
@@ -40,9 +42,20 @@ export class QuotationTypeMigration1738990501351 implements MigrationInterface {
             name: "name_kh",
             type: "varchar",
             length: "160",
+            isUnique: true,
             isNullable: false,
           },
-
+          {
+            name: "code_prefix",
+            type: "varchar",
+            length: "160",
+            isNullable: true,
+          },
+          {
+            name: "default_po_type_id",
+            type: "integer",
+            isNullable: true,
+          },
           {
             name: "created_by",
             type: "uuid",
@@ -66,6 +79,7 @@ export class QuotationTypeMigration1738990501351 implements MigrationInterface {
     );
 
     // Add the foreign key constraint
+
     await queryRunner.createForeignKey(
       tableName,
       new TableForeignKey({
@@ -75,15 +89,29 @@ export class QuotationTypeMigration1738990501351 implements MigrationInterface {
         onDelete: "SET NULL",
       })
     );
+    await queryRunner.createForeignKey(
+      tableName,
+      new TableForeignKey({
+        columnNames: ["default_po_type_id"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "admin.purchase-order-type",
+        onDelete: "RESTRICT",
+      })
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await this.dropForeignKey(queryRunner, "created_by");
+    await this.dropForeignKey(queryRunner, "default_po_type_id");
+    await queryRunner.dropTable(tableName, true);
+  }
+
+  private async dropForeignKey(queryRunner, name: string) {
     const table = await queryRunner.getTable(tableName);
 
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf("created_by") !== -1
+      (fk) => fk.columnNames.indexOf(name) !== -1
     );
     await queryRunner.dropForeignKey(tableName, foreignKey);
-    await queryRunner.dropTable(tableName, true);
   }
 }

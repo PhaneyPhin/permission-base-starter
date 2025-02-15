@@ -1,13 +1,7 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import {
   CreateRequestTypeRequestDto,
@@ -22,20 +16,12 @@ export const REQUEST_TYPE_FILTER_FIELDS = [
   "name",
   "numberRank",
   "approvalFlow",
-  "defaultQuatation",
   "isRequireApproval",
 ];
 @Injectable()
 export class RequestTypeService extends BaseCrudService {
   protected queryName: string = "requestType";
-  protected SEARCH_FIELDS = [
-    "code",
-    "name",
-    "numberRank",
-    "approvalFlow",
-    "defaultQuatation",
-    "isRequireApproval",
-  ];
+  protected SEARCH_FIELDS = ["code", "name"];
   protected FILTER_FIELDS = REQUEST_TYPE_FILTER_FIELDS;
 
   constructor(
@@ -64,6 +50,14 @@ export class RequestTypeService extends BaseCrudService {
           { start, end }
         );
       },
+      defaultQuotation: (query, value) => {
+        return query.andWhere(
+          "qt.nameEn ILIKE :value or qt.nameKh ILIKE :value",
+          {
+            value: `%${value}%`,
+          }
+        );
+      },
     };
 
     return filters;
@@ -73,14 +67,18 @@ export class RequestTypeService extends BaseCrudService {
   protected getListQuery() {
     return this.requestTypeRepository
       .createQueryBuilder("requestType")
-      .leftJoinAndSelect("requestType.createdByUser", "uc");
+      .leftJoinAndSelect("requestType.createdByUser", "uc")
+      .leftJoinAndSelect("requestType.defaultQuotation", "qt");
   }
 
   getAllRequestType() {
-    return this.requestTypeRepository
-      .createQueryBuilder("requestType")
-      .select(["id", "name"])
-      .getRawMany();
+    return this.requestTypeRepository.find({
+      select: {
+        id: true,
+        nameEn: true,
+        nameKh: true,
+      },
+    });
   }
 
   /**
@@ -144,10 +142,7 @@ export class RequestTypeService extends BaseCrudService {
       await this.requestTypeRepository.delete({ id: id });
       return RequestTypeMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

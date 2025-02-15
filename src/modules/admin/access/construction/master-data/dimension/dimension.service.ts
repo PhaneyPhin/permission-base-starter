@@ -1,13 +1,7 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import { DimensionEntity } from "./dimension.entity";
 import { DimensionMapper } from "./dimension.mapper";
@@ -127,10 +121,7 @@ export class DimensionService extends BaseCrudService {
       await this.dimensionRepository.delete({ id: id });
       return DimensionMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

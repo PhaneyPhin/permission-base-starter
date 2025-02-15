@@ -75,9 +75,7 @@ export class QuotationTypeController {
     "admin.access.quotation-type.update"
   )
   @Get("/select-options")
-  public getAllQuotationTypeForSelect(): Promise<
-    { id: string; name: string }[]
-  > {
+  public getAllQuotationTypeForSelect(): Promise<QuotationTypeEntity[]> {
     return this.quotationTypeService.getAllQuotationType();
   }
 

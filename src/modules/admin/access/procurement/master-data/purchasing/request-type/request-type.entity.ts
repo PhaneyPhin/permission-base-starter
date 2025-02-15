@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { QuotationTypeEntity } from "../quotation-type/quotation-type.entity";
 
 @Entity({ schema: "admin", name: "request-type" })
 export class RequestTypeEntity extends BaseEntity {
@@ -51,13 +52,6 @@ export class RequestTypeEntity extends BaseEntity {
   approvalFlow: string;
 
   @Column({
-    name: "default_quotation",
-    type: "integer",
-    nullable: true,
-  })
-  defaultQuotation: number;
-
-  @Column({
     name: "is_require_approval",
   })
   isRequireApproval: boolean;
@@ -77,9 +71,19 @@ export class RequestTypeEntity extends BaseEntity {
   })
   createdBy: string;
 
+  @Column({ name: "code_prefix" })
+  codePrefix: string;
+
   @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdByUser: UserEntity;
+
+  @Column({ name: "default_quotation_id" })
+  defaultQuotationId;
+
+  @ManyToOne(() => QuotationTypeEntity, { nullable: true })
+  @JoinColumn({ name: "default_quotation_id" })
+  defaultQuotation: QuotationTypeEntity;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;

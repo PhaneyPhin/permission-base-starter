@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from '@admin/access/users/dtos';
+import { UserResponseDto } from "@admin/access/users/dtos";
+import { ApiProperty } from "@nestjs/swagger";
+import { PurchaseOrderTypeResponseDto } from "../../purchase-order-type/dtos";
 
 export class QuotationTypeResponseDto {
   @ApiProperty()
@@ -18,5 +19,14 @@ export class QuotationTypeResponseDto {
   active: boolean;
 
   @ApiProperty()
-  createdByUser: UserResponseDto
+  codePrefix: string;
+
+  @ApiProperty()
+  defaultPOTypeId: number;
+
+  @ApiProperty()
+  defaultPOType: PurchaseOrderTypeResponseDto;
+
+  @ApiProperty()
+  createdByUser: UserResponseDto;
 }

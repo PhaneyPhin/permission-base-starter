@@ -1,5 +1,6 @@
 import { DBErrorCode } from "@common/enums";
 import {
+  ConflictException,
   InternalServerErrorException,
   RequestTimeoutException,
   UnprocessableEntityException,
@@ -7,8 +8,18 @@ import {
 import { TimeoutError } from "rxjs";
 import { toCamelCase } from "./case";
 
+export const handleDeleteError = (id: string | number, error: any) => {
+  if (error.code === "23503") {
+    throw new ConflictException(
+      `Cannot delete Purchase Order Type with ID ${id} because it is still referenced in the "${error.table}" table. Please remove related records first.`
+    );
+  }
+  throw new InternalServerErrorException();
+};
+
 export const handleError = (error, dto) => {
   // ✅ Extract detailed error message
+  console.log(error);
   const errorMessage = error.detail || error.message;
 
   // ✅ Extract the conflicting field dynamically
@@ -22,7 +33,7 @@ export const handleError = (error, dto) => {
 
   if (error.code == DBErrorCode.PgUniqueConstraintViolation) {
     const message = `The ${toCamelCase(conflictKey)} '${
-      dto[conflictKey]
+      dto[toCamelCase(conflictKey)]
     }' is already in use.`;
     throw new UnprocessableEntityException({
       statusCode: 422,

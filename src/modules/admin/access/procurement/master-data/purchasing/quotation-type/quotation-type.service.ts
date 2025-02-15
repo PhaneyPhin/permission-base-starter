@@ -1,13 +1,7 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import {
   CreateQuotationTypeRequestDto,
@@ -59,14 +53,18 @@ export class QuotationTypeService extends BaseCrudService {
   protected getListQuery() {
     return this.quotationTypeRepository
       .createQueryBuilder("quotationType")
+      .leftJoinAndSelect("quotationType.defaultPOType", "dpo")
       .leftJoinAndSelect("quotationType.createdByUser", "uc");
   }
 
   getAllQuotationType() {
-    return this.quotationTypeRepository
-      .createQueryBuilder("quotationType")
-      .select(["id", "name_en", "name_kh"])
-      .getRawMany();
+    return this.quotationTypeRepository.find({
+      select: {
+        id: true,
+        nameEn: true,
+        nameKh: true,
+      },
+    });
   }
 
   /**
@@ -134,10 +132,7 @@ export class QuotationTypeService extends BaseCrudService {
       await this.quotationTypeRepository.delete({ id: id });
       return QuotationTypeMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

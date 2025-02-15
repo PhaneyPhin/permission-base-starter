@@ -1,14 +1,8 @@
 import { ModuleStatus } from "@common/enums/status.enum";
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, FindOptionsWhere, In, Repository } from "typeorm";
 import { BranchEntity } from "../../branch/branch.entity";
 import { DepartmentEntity } from "../../department/department.entity";
@@ -229,10 +223,7 @@ export class StaffProfileService extends BaseCrudService {
       await this.staffProfileRepository.delete({ id: id });
       return StaffProfileMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
   public async updateStaffProfileStatuses(ids: number[]): Promise<number[]> {

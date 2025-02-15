@@ -1,13 +1,7 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import {
   CreatePurchaseOrderTypeRequestDto,
@@ -59,14 +53,18 @@ export class PurchaseOrderTypeService extends BaseCrudService {
   protected getListQuery() {
     return this.purchaseOrderTypeRepository
       .createQueryBuilder("purchaseOrderType")
+      .leftJoinAndSelect("purchaseOrderType.defaultPRType", "dpr")
       .leftJoinAndSelect("purchaseOrderType.createdByUser", "uc");
   }
 
   getAllPurchaseOrderType() {
-    return this.purchaseOrderTypeRepository
-      .createQueryBuilder("purchaseOrderType")
-      .select(["id", "name_en", "name_kh"])
-      .getRawMany();
+    return this.purchaseOrderTypeRepository.find({
+      select: {
+        nameEn: true,
+        nameKh: true,
+        id: true,
+      },
+    });
   }
 
   /**
@@ -134,10 +132,7 @@ export class PurchaseOrderTypeService extends BaseCrudService {
       await this.purchaseOrderTypeRepository.delete({ id: id });
       return PurchaseOrderTypeMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

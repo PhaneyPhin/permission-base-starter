@@ -1,14 +1,8 @@
 import { ModuleStatus } from "@common/enums/status.enum";
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, FindOptionsWhere, In, Repository } from "typeorm";
 import { CategoryEntity } from "../master-data/category/category.entity";
 import { ItemGroupEntity } from "../master-data/item-group/item-group.entity";
@@ -79,7 +73,7 @@ export class ItemService extends BaseCrudService {
           "category.name_en ILIKE :category or category.name_kh ILIKE :category",
           { category: `%${value}%` }
         );
-      },   
+      },
       uom: (query, value) => {
         return query.andWhere(
           "uom.name_en ILIKE :uom or uom.name_kh ILIKE :uom",
@@ -102,7 +96,9 @@ export class ItemService extends BaseCrudService {
         });
       },
       itemType: (query, value) => {
-        return query.andWhere("item.item_type = :itemType", { itemType: value });
+        return query.andWhere("item.item_type = :itemType", {
+          itemType: value,
+        });
       },
       createdAt: (query, value) => {
         const [start, end] = value.split(",");
@@ -189,10 +185,7 @@ export class ItemService extends BaseCrudService {
       await this.itemRepository.delete({ id: id });
       return ItemMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 

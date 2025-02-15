@@ -1,13 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, MaxLength } from "class-validator";
-import { CreatePurchaseOrderTypeRequestDto } from "./create-purchase-order-type-request.dto";
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 
-export class UpdatePurchaseOrderTypeRequestDto extends CreatePurchaseOrderTypeRequestDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  code: string;
-
+export class UpdatePurchaseOrderTypeRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(160)
@@ -23,5 +17,14 @@ export class UpdatePurchaseOrderTypeRequestDto extends CreatePurchaseOrderTypeRe
   @IsBoolean()
   active: boolean;
 
+  @ApiProperty()
+  @IsOptional()
+  @MaxLength(160)
+  codePrefix: string;
+
   updatedBy: string;
+
+  @ApiProperty()
+  @IsOptional()
+  defaultPRTypeId: number;
 }

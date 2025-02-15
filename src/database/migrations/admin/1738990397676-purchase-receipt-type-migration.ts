@@ -6,9 +6,11 @@ import {
 } from "typeorm";
 import { commonFields } from "../common.fields";
 
-const tableName = "admin.request-type";
+const tableName = "admin.purchase-receipt-type";
 
-export class RequestTypeMigration1738989082797 implements MigrationInterface {
+export class PurchaseReceiptTypeMigration1738990397676
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -21,52 +23,37 @@ export class RequestTypeMigration1738989082797 implements MigrationInterface {
             isPrimary: true,
             isNullable: false,
           },
+
           {
             name: "code",
             type: "varchar",
             length: "160",
-            isNullable: false,
             isUnique: true,
+            isNullable: false,
           },
+
           {
             name: "name_en",
+            isUnique: true,
             type: "varchar",
             length: "160",
-            isUnique: true,
             isNullable: false,
           },
+
           {
             name: "name_kh",
             type: "varchar",
-            length: "160",
             isUnique: true,
+            length: "160",
             isNullable: false,
           },
-
           {
-            name: "number_rank",
+            name: "code_prefix",
             type: "varchar",
             length: "160",
             isNullable: true,
           },
 
-          {
-            name: "approval_flow",
-            type: "varchar",
-            length: "160",
-            isNullable: false,
-          },
-
-          {
-            name: "default_quotation",
-            type: "integer",
-            isNullable: true,
-          },
-          {
-            name: "is_require_approval",
-            type: "boolean",
-            default: false,
-          },
           {
             name: "created_by",
             type: "uuid",

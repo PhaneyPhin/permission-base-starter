@@ -1,4 +1,5 @@
 import { UserMapper } from "@admin/access/users/users.mapper";
+import { QuotationTypeMapper } from "../quotation-type/quotation-type.mapper";
 import {
   CreateRequestTypeRequestDto,
   RequestTypeResponseDto,
@@ -15,11 +16,16 @@ export class RequestTypeMapper {
     dto.active = (entity as any).active; // or your default fields
     dto.code = entity.code;
     dto.nameEn = entity.nameEn;
-    dto.nameEn = entity.nameEn;
+    dto.nameKh = entity.nameKh;
     dto.numberRank = entity.numberRank;
     dto.approvalFlow = entity.approvalFlow;
-    dto.defaultQuotation = entity.defaultQuotation;
     dto.isRequireApproval = entity.isRequireApproval;
+    dto.defaultQuotationId = entity.defaultQuotationId;
+    if (entity.defaultQuotation) {
+      dto.defaultQuotation = await QuotationTypeMapper.toDto(
+        entity.defaultQuotation
+      );
+    }
 
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
@@ -39,7 +45,9 @@ export class RequestTypeMapper {
     entity.nameKh = dto.nameKh;
     entity.numberRank = dto.numberRank;
     entity.approvalFlow = dto.approvalFlow;
-    entity.defaultQuotation = dto.defaultQuotation;
+    entity.codePrefix = entity.codePrefix;
+    dto.codePrefix = entity.codePrefix;
+    entity.defaultQuotationId = dto.defaultQuotationId;
     entity.isRequireApproval = dto.isRequireApproval;
 
     return entity;
@@ -54,7 +62,8 @@ export class RequestTypeMapper {
     entity.nameKh = dto.nameKh;
     entity.numberRank = dto.numberRank;
     entity.approvalFlow = dto.approvalFlow;
-    entity.defaultQuotation = dto.defaultQuotation;
+    entity.codePrefix = dto.codePrefix;
+    entity.defaultQuotationId = dto.defaultQuotationId;
     entity.isRequireApproval = dto.isRequireApproval;
 
     return entity;

@@ -9,7 +9,7 @@ import {
   Update<%= classify(name) %>RequestDto,
   <%= classify(name) %>ResponseDto,
 } from './dtos';
-import { handleError } from "@utils/handle-error";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { <%= classify(name) %>Mapper } from './<%= name %>.mapper';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DBErrorCode } from '@common/enums';
@@ -128,10 +128,7 @@ export class <%= classify(name) %>Service extends BaseCrudService {
       await this.<%= camelize(name) %>Repository.delete({ id: id });
       return <%= classify(name) %>Mapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

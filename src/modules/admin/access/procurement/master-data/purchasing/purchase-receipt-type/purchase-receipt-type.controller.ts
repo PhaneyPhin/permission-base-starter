@@ -80,7 +80,7 @@ export class PurchaseReceiptTypeController {
   )
   @Get("/select-options")
   public getAllPurchaseReceiptTypeForSelect(): Promise<
-    { id: string; name: string }[]
+    PurchaseReceiptTypeEntity[]
   > {
     return this.purchaseReceiptTypeService.getAllPurchaseReceiptType();
   }

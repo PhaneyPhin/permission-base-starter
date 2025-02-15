@@ -1,13 +1,7 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import { CategoryEntity } from "./category.entity";
 import { CategoryMapper } from "./category.mapper";
@@ -74,11 +68,13 @@ export class CategoryService extends BaseCrudService {
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.categoryRepository
-      .createQueryBuilder("category")
-      // .leftJoinAndSelect("category.parent", "parent")
-      .leftJoinAndSelect("category.itemGroup", "itemGroup")
-      .leftJoinAndSelect("category.createdByUser", "uc");
+    return (
+      this.categoryRepository
+        .createQueryBuilder("category")
+        // .leftJoinAndSelect("category.parent", "parent")
+        .leftJoinAndSelect("category.itemGroup", "itemGroup")
+        .leftJoinAndSelect("category.createdByUser", "uc")
+    );
   }
 
   async getAllCategory() {
@@ -88,9 +84,7 @@ export class CategoryService extends BaseCrudService {
   }
   async getCategoryByItemGroup(
     itemGroupId?: number
-  ): Promise<
-    { id: number; nameEn: string; nameKh: string; }[]
-  > {
+  ): Promise<{ id: number; nameEn: string; nameKh: string }[]> {
     const query = this.categoryRepository
       .createQueryBuilder("category")
       .select([
@@ -168,10 +162,7 @@ export class CategoryService extends BaseCrudService {
       await this.categoryRepository.delete({ id: id });
       return CategoryMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }

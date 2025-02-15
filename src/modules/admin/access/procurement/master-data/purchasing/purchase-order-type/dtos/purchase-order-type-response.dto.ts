@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from '@admin/access/users/dtos';
+import { UserResponseDto } from "@admin/access/users/dtos";
+import { ApiProperty } from "@nestjs/swagger";
+import { PurchaseReceiptTypeResponseDto } from "../../purchase-receipt-type/dtos";
 
 export class PurchaseOrderTypeResponseDto {
   @ApiProperty()
@@ -18,5 +19,14 @@ export class PurchaseOrderTypeResponseDto {
   active: boolean;
 
   @ApiProperty()
-  createdByUser: UserResponseDto
+  codePrefix: string;
+
+  @ApiProperty()
+  defaultPRTypeId: number;
+
+  @ApiProperty()
+  createdByUser: UserResponseDto;
+
+  @ApiProperty()
+  defaultPRType: PurchaseReceiptTypeResponseDto;
 }

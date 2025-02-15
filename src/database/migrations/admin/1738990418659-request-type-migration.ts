@@ -6,11 +6,9 @@ import {
 } from "typeorm";
 import { commonFields } from "../common.fields";
 
-const tableName = "admin.purchase-order-type";
+const tableName = "admin.request-type";
 
-export class PurchaseOrderTypeMigration1738990397677
-  implements MigrationInterface
-{
+export class RequestTypeMigration1738990418659 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -23,15 +21,13 @@ export class PurchaseOrderTypeMigration1738990397677
             isPrimary: true,
             isNullable: false,
           },
-
           {
             name: "code",
             type: "varchar",
             length: "160",
-            isUnique: true,
             isNullable: false,
+            isUnique: true,
           },
-
           {
             name: "name_en",
             type: "varchar",
@@ -39,17 +35,18 @@ export class PurchaseOrderTypeMigration1738990397677
             isUnique: true,
             isNullable: false,
           },
-
           {
             name: "name_kh",
             type: "varchar",
-            isUnique: true,
             length: "160",
+            isUnique: true,
             isNullable: false,
           },
+
           {
-            name: "default_pr_type_id",
-            type: "integer",
+            name: "number_rank",
+            type: "varchar",
+            length: "160",
             isNullable: true,
           },
           {
@@ -58,7 +55,23 @@ export class PurchaseOrderTypeMigration1738990397677
             length: "160",
             isNullable: true,
           },
+          {
+            name: "approval_flow",
+            type: "varchar",
+            length: "160",
+            isNullable: true,
+          },
 
+          {
+            name: "default_quotation_id",
+            type: "integer",
+            isNullable: true,
+          },
+          {
+            name: "is_require_approval",
+            type: "boolean",
+            default: false,
+          },
           {
             name: "created_by",
             type: "uuid",
@@ -95,9 +108,9 @@ export class PurchaseOrderTypeMigration1738990397677
     await queryRunner.createForeignKey(
       tableName,
       new TableForeignKey({
-        columnNames: ["default_pr_type_id"],
+        columnNames: ["default_quotation_id"],
         referencedColumnNames: ["id"],
-        referencedTableName: "admin.purchase-receipt-type",
+        referencedTableName: "admin.quotation-type",
         onDelete: "RESTRICT",
       })
     );
@@ -106,7 +119,7 @@ export class PurchaseOrderTypeMigration1738990397677
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable(tableName);
 
-    await this.dropForeignKey(queryRunner, "default_pr_type_id");
+    await this.dropForeignKey(queryRunner, "default_quotation_id");
     await this.dropForeignKey(queryRunner, "created_by");
   }
 

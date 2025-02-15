@@ -80,7 +80,7 @@ export class PurchaseOrderTypeController {
   )
   @Get("/select-options")
   public getAllPurchaseOrderTypeForSelect(): Promise<
-    { id: string; name: string }[]
+    PurchaseOrderTypeEntity[]
   > {
     return this.purchaseOrderTypeService.getAllPurchaseOrderType();
   }

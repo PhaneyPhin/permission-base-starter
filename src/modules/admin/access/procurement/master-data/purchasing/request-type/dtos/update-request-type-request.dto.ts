@@ -29,11 +29,16 @@ export class UpdateRequestTypeRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  defaultQuotation: number;
+  defaultQuotationId: number;
 
   @ApiProperty()
   @IsOptional()
   isRequireApproval: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @MaxLength(160)
+  codePrefix: string;
 
   @ApiProperty()
   @IsOptional()

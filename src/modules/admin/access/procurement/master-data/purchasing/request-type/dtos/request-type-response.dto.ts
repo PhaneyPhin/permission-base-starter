@@ -1,5 +1,6 @@
 import { UserResponseDto } from "@admin/access/users/dtos";
 import { ApiProperty } from "@nestjs/swagger";
+import { QuotationTypeResponseDto } from "../../quotation-type/dtos";
 
 export class RequestTypeResponseDto {
   @ApiProperty()
@@ -21,10 +22,16 @@ export class RequestTypeResponseDto {
   approvalFlow: string;
 
   @ApiProperty()
-  defaultQuotation: number;
+  defaultQuotationId: number;
+
+  @ApiProperty()
+  defaultQuotation: QuotationTypeResponseDto;
 
   @ApiProperty()
   isRequireApproval: boolean;
+
+  @ApiProperty()
+  codePrefix: string;
 
   @ApiProperty()
   active: boolean;

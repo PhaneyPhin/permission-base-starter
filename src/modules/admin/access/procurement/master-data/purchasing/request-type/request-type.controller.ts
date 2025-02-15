@@ -75,7 +75,7 @@ export class RequestTypeController {
     "admin.access.request-type.update"
   )
   @Get("/select-options")
-  public getAllRequestTypeForSelect(): Promise<{ id: string; name: string }[]> {
+  public getAllRequestTypeForSelect(): Promise<RequestTypeEntity[]> {
     return this.requestTypeService.getAllRequestType();
   }
 

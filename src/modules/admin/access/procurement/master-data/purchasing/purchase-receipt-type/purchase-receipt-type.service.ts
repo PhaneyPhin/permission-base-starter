@@ -1,13 +1,7 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { handleError } from "@utils/handle-error";
-import { TimeoutError } from "rxjs";
+import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
 import {
   CreatePurchaseReceiptTypeRequestDto,
@@ -63,10 +57,13 @@ export class PurchaseReceiptTypeService extends BaseCrudService {
   }
 
   getAllPurchaseReceiptType() {
-    return this.purchaseReceiptTypeRepository
-      .createQueryBuilder("purchaseReceiptType")
-      .select(["id", "name_en", "name_kh"])
-      .getRawMany();
+    return this.purchaseReceiptTypeRepository.find({
+      select: {
+        nameEn: true,
+        nameKh: true,
+        id: true,
+      },
+    });
   }
 
   /**
@@ -134,10 +131,7 @@ export class PurchaseReceiptTypeService extends BaseCrudService {
       await this.purchaseReceiptTypeRepository.delete({ id: id });
       return PurchaseReceiptTypeMapper.toDto(entity);
     } catch (error) {
-      if (error instanceof TimeoutError) {
-        throw new RequestTimeoutException();
-      }
-      throw new InternalServerErrorException();
+      handleDeleteError(id, error);
     }
   }
 }
