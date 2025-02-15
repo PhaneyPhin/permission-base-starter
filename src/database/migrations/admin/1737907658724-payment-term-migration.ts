@@ -40,7 +40,7 @@ export class PaymentTermMigration1737907658724 implements MigrationInterface {
             name: "days_due",
             type: "varchar",
             length: "160",
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: "created_by",
