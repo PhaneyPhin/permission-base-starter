@@ -12,4 +12,4 @@ import { RequestTypeModule } from "./request-type/request-type.module";
     PurchaseReceiptTypeModule,
   ],
 })
-export class PurchasingModule {}
+export class PurchasingMasterModule {}
