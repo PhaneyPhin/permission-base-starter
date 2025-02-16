@@ -376,6 +376,22 @@ const permissions = [
     slug: "admin.access.valuation-method.delete",
     description: "Delete Valuation Method",
   },
+  {
+    slug: "admin.access.purchase-quotation.read",
+    description: "Read purchase-quotation",
+  },
+  {
+    slug: "admin.access.purchase-quotation.create",
+    description: "Create purchase-quotation",
+  },
+  {
+    slug: "admin.access.purchase-quotation.update",
+    description: "Update purchase-quotation",
+  },
+  {
+    slug: "admin.access.purchase-quotation.delete",
+    description: "Delete purchase-quotation",
+  },
 ];
 
 const rolePermissions = {

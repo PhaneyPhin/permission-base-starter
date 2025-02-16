@@ -43,17 +43,24 @@ export abstract class BaseCrudService {
     if (this.FILTER_FIELDS) {
       this.FILTER_FIELDS.forEach((field) => {
         filters[field] = (query, value) =>
-          query.andWhere(`${this.queryName}.${field} ILIKE :${field}`, {
-            [field]: `%${value}%`,
-          });
+          query.andWhere(
+            `${
+              field.includes(".") ? "" : this.queryName + "."
+            }${field} ILIKE :${field}`,
+            {
+              [field]: `%${value}%`,
+            }
+          );
       });
     }
 
     // Add search logic that applies to multiple fields
     if (this.SEARCH_FIELDS && this.SEARCH_FIELDS.length > 0) {
       filters["search"] = (query, searchValue) => {
-        const searchConditions = this.SEARCH_FIELDS.map(
-          (field) => `${this.queryName}.${field} ILIKE :search`
+        const searchConditions = this.SEARCH_FIELDS.map((field) =>
+          field.includes(".")
+            ? `${field} ILIKE :search`
+            : `${this.queryName}.${field} ILIKE :search`
         ).join(" OR ");
 
         query.andWhere(`(${searchConditions})`, { search: `%${searchValue}%` });
