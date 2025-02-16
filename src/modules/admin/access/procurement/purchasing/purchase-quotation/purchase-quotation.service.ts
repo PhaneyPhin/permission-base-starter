@@ -8,6 +8,7 @@ import {
   PurchaseQuotationResponseDto,
   UpdatePurchaseQuotationRequestDto,
 } from "./dtos";
+import { PurchaseQuotationItemEntity } from "./purchase-quotation-item.entity";
 import { PurchaseQuotationEntity } from "./purchase-quotation.entity";
 import { PurchaseQuotationMapper } from "./purchase-quotation.mapper";
 
@@ -39,7 +40,9 @@ export class PurchaseQuotationService extends BaseCrudService {
 
   constructor(
     @InjectRepository(PurchaseQuotationEntity)
-    private purchaseQuotationRepository: Repository<PurchaseQuotationEntity>
+    private purchaseQuotationRepository: Repository<PurchaseQuotationEntity>,
+    @InjectRepository(PurchaseQuotationItemEntity)
+    private purchaseQuotationItemRepository: Repository<PurchaseQuotationItemEntity>
   ) {
     super();
   }
@@ -149,11 +152,26 @@ export class PurchaseQuotationService extends BaseCrudService {
     id: number,
     dto: UpdatePurchaseQuotationRequestDto
   ): Promise<PurchaseQuotationResponseDto> {
-    let entity = await this.purchaseQuotationRepository.findOneBy({ id });
+    let entity = await this.purchaseQuotationRepository.findOne({
+      where: { id },
+      relations: {
+        items: true,
+      },
+    });
     if (!entity) {
       throw new NotFoundException();
     }
     try {
+      const existingItemIds = entity.items.map((item) => item.id);
+      const dtoItemIds = dto.items?.map((item) => item.id) ?? [];
+      const itemsToRemove = existingItemIds.filter(
+        (itemId) => !dtoItemIds.includes(itemId)
+      );
+
+      if (itemsToRemove.length > 0) {
+        await this.purchaseQuotationItemRepository.delete(itemsToRemove);
+      }
+
       entity = PurchaseQuotationMapper.toUpdateEntity(entity, dto);
       entity = await this.purchaseQuotationRepository.save(entity);
       return PurchaseQuotationMapper.toDto(entity);
