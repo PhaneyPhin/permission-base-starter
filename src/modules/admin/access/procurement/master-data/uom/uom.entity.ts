@@ -12,6 +12,7 @@ export class UomEntity extends BaseEntity {
     name: 'code',
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   code: string;
   
@@ -19,6 +20,7 @@ export class UomEntity extends BaseEntity {
     name: 'name_en',
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   nameEn: string;
   
@@ -26,6 +28,7 @@ export class UomEntity extends BaseEntity {
     name: 'name_kh',
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   nameKh: string;
   

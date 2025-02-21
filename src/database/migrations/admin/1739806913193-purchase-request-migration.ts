@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.item';
+const tableName = 'admin.purchase-request';
 
-export class ItemMigration1737860648783 implements MigrationInterface {
+export class PurchaseRequestMigration1739806913193 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -18,92 +18,120 @@ export class ItemMigration1737860648783 implements MigrationInterface {
           },
           
           {
-            name: 'code',
+            name: 'request_number',
             type: 'varchar',
             length: '160',
-            isUnique: true,
             isNullable: false,
           },
           
           {
-            name: 'name_en',
-            type: 'varchar',
-            length: '160',
-            isNullable: false,
-            isUnique: true,
-          },
-          
-          {
-            name: 'name_kh',
-            type: 'varchar',
-            length: '160',
-            isNullable: false,
-            isUnique: true,
-          },
-          
-          {
-            name: 'item_group_id',
-            type: 'integer',
-            isNullable: false,
-          },
-          {
-            name: 'category_id',
+            name: 'request_type_id',
             type: 'integer',
             isNullable: false,
           },
           
           {
-            name: 'uom_id',
+            name: 'department_id',
             type: 'integer',
             isNullable: false,
           },
+          
           {
-            name: 'valuation_method_id',
+            name: 'branch_id',
             type: 'integer',
-            isNullable: true,
-          },
-          {
-            name: 'item_type',
-            type: 'varchar',
-            length: '160',
             isNullable: false,
           },
+          
           {
-            name: 'min_stock',
+            name: 'project_id',
             type: 'integer',
-            isNullable: true,
+            isNullable: false,
           },
+          
           {
-            name: 'standard_cost',
+            name: 'request_date',
+            type: 'timestamp with time zone',
+            isNullable: false,
+          },
+          
+          {
+            name: 'required_date',
+            type: 'timestamp with time zone',
+            isNullable: false,
+          },
+          
+          {
+            name: 'total_qty',
             type: 'decimal',
             precision: 15,
             scale: 2,
             isNullable: true,
           },
+          
           {
-            name: 'unit_cost',
+            name: 'open_qty',
             type: 'decimal',
             precision: 15,
             scale: 2,
             isNullable: true,
           },
+          
           {
-            name: 'item_image',
-            type: 'varchar',
-            length: '500',
+            name: 'receipt_qty',
+            type: 'decimal',
+            precision: 15,
+            scale: 2,
             isNullable: true,
           },
+          
           {
-            name: 'note',
-            type: 'varchar',
-            length: '500',
+            name: 'total_cost',
+            type: 'decimal',
+            precision: 15,
+            scale: 2,
             isNullable: true,
           },
+          
+          {
+            name: 'total_estimated_price',
+            type: 'decimal',
+            precision: 15,
+            scale: 2,
+            isNullable: true,
+          },
+          
+          {
+            name: 'requested_by',
+            type: 'integer',
+            isNullable: false,
+          },
+          
+          {
+            name: 'priority',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'currency_code',
+            type: 'varchar',
+            length: '160',
+            isNullable: false,
+          },
+          
           {
             name: 'status',
             type: 'varchar',
             length: '160',
             isNullable: false,
+          },
+          
+          {
+            name: 'description',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
           },
           
           {
@@ -122,6 +150,12 @@ export class ItemMigration1737860648783 implements MigrationInterface {
             isNullable: false,
             default: true,
           },
+          {
+            name: 'is_approved',
+            type: 'boolean',
+            isNullable: false,
+            default: false,
+          },
           ...commonFields,
         ],
       }),
@@ -138,15 +172,6 @@ export class ItemMigration1737860648783 implements MigrationInterface {
             onDelete: 'SET NULL',
         }),
     );
-    await queryRunner.createForeignKey(
-      tableName,
-      new TableForeignKey({
-          columnNames: ['updated_by'],
-          referencedColumnNames: ['id'],
-          referencedTableName: 'admin.users',
-          onDelete: 'SET NULL',
-      }),
-  );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

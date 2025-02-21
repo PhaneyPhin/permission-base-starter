@@ -22,6 +22,7 @@ export class UomMigration1737800552434 implements MigrationInterface {
             type: 'varchar',
             length: '160',
             isNullable: false,
+            isUnique: true,
           },
           
           {
@@ -29,6 +30,7 @@ export class UomMigration1737800552434 implements MigrationInterface {
             type: 'varchar',
             length: '160',
             isNullable: false,
+            isUnique: true,
           },
           
           {
@@ -36,6 +38,7 @@ export class UomMigration1737800552434 implements MigrationInterface {
             type: 'varchar',
             length: '160',
             isNullable: false,
+            isUnique: true,
           },
           
           {

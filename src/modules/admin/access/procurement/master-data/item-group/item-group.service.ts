@@ -1,5 +1,5 @@
 import { BaseCrudService } from "@common/services/base-crud.service";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { handleDeleteError, handleError } from "@utils/handle-error";
 import { Filter, Repository } from "typeorm";
@@ -10,6 +10,7 @@ import {
 } from "./dtos";
 import { ItemGroupEntity } from "./item-group.entity";
 import { ItemGroupMapper } from "./item-group.mapper";
+import { CategoryEntity } from "../category/category.entity";
 
 export const ITEM_GROUP_FILTER_FIELDS = [
   "code",
@@ -25,7 +26,9 @@ export class ItemGroupService extends BaseCrudService {
 
   constructor(
     @InjectRepository(ItemGroupEntity)
-    private itemGroupRepository: Repository<ItemGroupEntity>
+    private itemGroupRepository: Repository<ItemGroupEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {
     super();
   }
@@ -122,6 +125,10 @@ export class ItemGroupService extends BaseCrudService {
     let entity = await this.itemGroupRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException();
+    }
+    const isLinked = await this.categoryRepository.count({ where: { itemGroupId: id } }) > 0;
+    if (isLinked) {
+      throw new BadRequestException("This group is linked to item categories and cannot be deleted.");
     }
     try {
       await this.itemGroupRepository.delete({ id: id });
