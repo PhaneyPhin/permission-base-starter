@@ -21,6 +21,7 @@ export class CategoryEntity extends BaseEntity {
     name: 'name_en',
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   nameEn: string;
   
@@ -28,6 +29,7 @@ export class CategoryEntity extends BaseEntity {
     name: 'name_kh',
     type: 'varchar',
     nullable: false,
+    unique: true,
   })
   nameKh: string;
   

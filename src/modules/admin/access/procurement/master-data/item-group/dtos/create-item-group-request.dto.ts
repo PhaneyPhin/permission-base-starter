@@ -18,7 +18,6 @@ export class CreateItemGroupRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @MaxLength(160)
   description: string;
 
   @ApiProperty({ default: true })

@@ -38,6 +38,14 @@ import {
 import { valuationMethods } from "./valuation-method.seed";
 import { vendorClasses } from "./vendor-class.seed";
 import { vendorTypes } from "./vendor-type.seed";
+import { UomEntity } from "@modules/admin/access/procurement/master-data/uom/uom.entity";
+import { uoms } from "./uom.seed";
+import { ItemGroupEntity } from "@modules/admin/access/procurement/master-data/item-group/item-group.entity";
+import { itemGroups } from "./item-group.seed";
+import { CategoryEntity } from "@modules/admin/access/procurement/master-data/category/category.entity";
+import { categories } from "./category.seed";
+import { ItemEntity } from "@modules/admin/access/procurement/item/item.entity";
+import { itemSeed } from "./item.seed";
 
 // Define seed data
 const baseUsers: any[] = [
@@ -392,6 +400,22 @@ const permissions = [
     slug: "admin.access.purchase-quotation.delete",
     description: "Delete purchase-quotation",
   },
+  {
+    slug: "admin.access.purchase-request.read",
+    description: "Read purchase-request",
+  },
+  {
+    slug: "admin.access.purchase-request.create",
+    description: "Create purchase-request",
+  },
+  {
+    slug: "admin.access.purchase-request.update",
+    description: "Update purchase-request",
+  },
+  {
+    slug: "admin.access.purchase-request.delete",
+    description: "Delete purchase-request",
+  },
 ];
 
 const rolePermissions = {
@@ -516,6 +540,10 @@ async function seedDatabase(dataSource: DataSource) {
   await dataSource.manager.save(QuotationTypeEntity, purchaseQuotationTypes);
   await dataSource.manager.save(RequestTypeEntity, purchaseRequestTypes);
   await dataSource.manager.save(VendorTypeEntity, vendorTypes);
+  await dataSource.manager.save(UomEntity, uoms);
+  await dataSource.manager.save(ItemGroupEntity, itemGroups);
+  await dataSource.manager.save(CategoryEntity, categories);
+  await dataSource.manager.save(ItemEntity, itemSeed);
 
   const defaultDimension = {
     createdBy: user.id,

@@ -30,6 +30,7 @@ export class CategoryMigration1737558836224 implements MigrationInterface {
             type: 'varchar',
             length: '160',
             isNullable: false,
+            isUnique: true,
           },
           
           {
@@ -37,6 +38,7 @@ export class CategoryMigration1737558836224 implements MigrationInterface {
             type: 'varchar',
             length: '160',
             isNullable: false,
+            isUnique: true,
           },
           
           // {

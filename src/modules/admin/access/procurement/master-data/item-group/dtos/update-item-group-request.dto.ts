@@ -15,7 +15,6 @@ export class UpdateItemGroupRequestDto extends CreateItemGroupRequestDto {
   nameKh: string;
 
   @ApiProperty()
-  @MaxLength(160)
   description: string;
 
   @ApiProperty({ default: true })
