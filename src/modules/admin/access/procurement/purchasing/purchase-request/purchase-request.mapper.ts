@@ -11,6 +11,7 @@ import { AnalysisCodeMapper } from '@modules/admin/access/construction/master-da
 import { DepartmentMapper } from '@modules/admin/access/department/department.mapper';
 import { RequestTypeMapper } from '../../master-data/purchasing/request-type/request-type.mapper';
 import { PurchaseRequestItemEntity } from './purchase-request-item.entity';
+import { StaffProfileMapper } from '@modules/admin/access/human-resource/staff-profile/staff-profile.mapper';
 
 export class PurchaseRequestMapper {
   public static async toDto(entity: PurchaseRequestEntity): Promise<PurchaseRequestResponseDto> {

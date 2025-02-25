@@ -134,9 +134,9 @@ export class PurchaseRequestEntity extends BaseEntity {
   })
   requestedBy: number;
 
-    @ManyToOne(() => StaffProfileEntity, { nullable: false })
-    @JoinColumn({ name: "requested_by" })
-    requestedByUser: StaffProfileEntity;
+  @ManyToOne(() => StaffProfileEntity, { nullable: false })
+  @JoinColumn({ name: "requested_by" })
+  requestedByUser: StaffProfileEntity;
   
 
   @Column({
