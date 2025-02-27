@@ -1,63 +1,57 @@
-import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
-  Injectable,
-} from '@nestjs/common';
+import { BaseCrudService } from "@common/services/base-crud.service";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleDeleteError, handleError } from "@utils/handle-error";
+import { Filter, Repository, SelectQueryBuilder } from "typeorm";
 import {
   CreatePurchaseOrderRequestDto,
-  UpdatePurchaseOrderRequestDto,
   PurchaseOrderResponseDto,
-} from './dtos';
-import { handleDeleteError, handleError } from "@utils/handle-error";
-import { PurchaseOrderMapper } from './purchase-order.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { PurchaseOrderEntity } from './purchase-order.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { PurchaseOrderExistsException } from './purchase-order-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
+  UpdatePurchaseOrderRequestDto,
+} from "./dtos";
+import { PurchaseOrderItemEntity } from "./purchase-order-item.entity";
+import { PurchaseOrderEntity } from "./purchase-order.entity";
+import { PurchaseOrderMapper } from "./purchase-order.mapper";
 
 export const PURCHASE_ORDER_FILTER_FIELDS = [
-  'poNumber',
-  'vendorName',
-  'documentRef', 
-  'secondRef', 
-  'poRef', 
-  'currencyCode', 
-  'description',
-  'status', 
+  "poNumber",
+  "vendorName",
+  "documentRef",
+  "secondRef",
+  "poRef",
+  "currencyCode",
+  "description",
+  "status",
 ];
 @Injectable()
 export class PurchaseOrderService extends BaseCrudService {
-  protected queryName: string = 'purchaseOrder';
+  protected queryName: string = "purchaseOrder";
   protected SEARCH_FIELDS = [
-  'poNumber',  
-  'vendorName', 
-  'documentRef', 
-  'secondRef', 
-  'poRef', 
-  'currencyCode', 
-  'priority',
-  'description',
-  'status', 
-];
-  protected FILTER_FIELDS = PURCHASE_ORDER_FILTER_FIELDS
+    "poNumber",
+    "vendorName",
+    "documentRef",
+    "secondRef",
+    "poRef",
+    "currencyCode",
+    "priority",
+    "description",
+    "status",
+  ];
+  protected FILTER_FIELDS = PURCHASE_ORDER_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(PurchaseOrderEntity)
     private purchaseOrderRepository: Repository<PurchaseOrderEntity>,
+    @InjectRepository(PurchaseOrderItemEntity)
+    private purchaseOrderItemRepository: Repository<PurchaseOrderItemEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return PurchaseOrderMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return PurchaseOrderMapper.toDto;
   }
 
   /**
@@ -95,20 +89,14 @@ export class PurchaseOrderService extends BaseCrudService {
           status: value.split(","),
         });
       },
-      poDate: (
-        query: SelectQueryBuilder<PurchaseOrderEntity>,
-        value
-      ) => {
+      poDate: (query: SelectQueryBuilder<PurchaseOrderEntity>, value) => {
         const [start, end] = value.split(",");
-        return query.andWhere(
-          "purchaseOrder.poDate BETWEEN :start AND :end",
-          { start, end }
-        );
+        return query.andWhere("purchaseOrder.poDate BETWEEN :start AND :end", {
+          start,
+          end,
+        });
       },
-      promisedDate: (
-        query: SelectQueryBuilder<PurchaseOrderEntity>,
-        value
-      ) => {
+      promisedDate: (query: SelectQueryBuilder<PurchaseOrderEntity>, value) => {
         const [start, end] = value.split(",");
         return query.andWhere(
           "purchaseOrder.promisedDate BETWEEN :start AND :end",
@@ -116,23 +104,27 @@ export class PurchaseOrderService extends BaseCrudService {
         );
       },
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('purchaseOrder.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "purchaseOrder.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.purchaseOrderRepository.createQueryBuilder('purchaseOrder')
+    return this.purchaseOrderRepository
+      .createQueryBuilder("purchaseOrder")
       .leftJoinAndSelect("purchaseOrder.poType", "poType")
       .leftJoinAndSelect("purchaseOrder.branch", "branch")
       .leftJoinAndSelect("purchaseOrder.project", "project")
       .leftJoinAndSelect("purchaseOrder.vendor", "vendor")
       .leftJoinAndSelect("purchaseOrder.updatedByUser", "updatedByUser")
-      .leftJoinAndSelect('purchaseOrder.createdByUser', 'uc')
+      .leftJoinAndSelect("purchaseOrder.createdByUser", "uc");
   }
   getAllPurchaseOrder() {
     return this.purchaseOrderRepository.find({
@@ -171,14 +163,14 @@ export class PurchaseOrderService extends BaseCrudService {
    * Create new purchase-order
    */
   public async createPurchaseOrder(
-    dto: CreatePurchaseOrderRequestDto,
+    dto: CreatePurchaseOrderRequestDto
   ): Promise<PurchaseOrderResponseDto> {
     try {
       let entity = PurchaseOrderMapper.toCreateEntity(dto);
       entity = await this.purchaseOrderRepository.save(entity);
       return PurchaseOrderMapper.toDto(entity);
     } catch (error) {
-      handleError(error, dto)
+      handleError(error, dto);
     }
   }
 
@@ -187,37 +179,37 @@ export class PurchaseOrderService extends BaseCrudService {
    */
 
   public async updatePurchaseOrder(
-      id: number,
-      dto: UpdatePurchaseOrderRequestDto
-    ): Promise<PurchaseOrderResponseDto> {
-      let entity = await this.purchaseOrderRepository.findOne({
-        where: { id },
-        relations: {
-          items: true,
-        },
-      });
-      if (!entity) {
-        throw new NotFoundException();
-      }
-      try {
-        const existingItemIds = entity.items.map((item) => item.id);
-        const dtoItemIds = dto.items?.map((item) => item.id) ?? [];
-        const itemsToRemove = existingItemIds.filter(
-          (itemId) => !dtoItemIds.includes(itemId)
-        );
-  
-        if (itemsToRemove.length > 0) {
-          await this.purchaseOrderRepository.delete(itemsToRemove);
-        }
-  
-        entity = PurchaseOrderMapper.toUpdateEntity(entity, dto);
-        console.log('before save', entity);
-        entity = await this.purchaseOrderRepository.save(entity);
-        return PurchaseOrderMapper.toDto(entity);
-      } catch (error) {
-        handleError(error, dto);
-      }
+    id: number,
+    dto: UpdatePurchaseOrderRequestDto
+  ): Promise<PurchaseOrderResponseDto> {
+    let entity = await this.purchaseOrderRepository.findOne({
+      where: { id },
+      relations: {
+        items: true,
+      },
+    });
+    if (!entity) {
+      throw new NotFoundException();
     }
+    try {
+      const existingItemIds = entity.items.map((item) => item.id);
+      const dtoItemIds = dto.items?.map((item) => item.id) ?? [];
+      const itemsToRemove = existingItemIds.filter(
+        (itemId) => !dtoItemIds.includes(itemId)
+      );
+
+      if (itemsToRemove.length > 0) {
+        await this.purchaseOrderItemRepository.delete(itemsToRemove);
+      }
+
+      entity = PurchaseOrderMapper.toUpdateEntity(entity, dto);
+      console.log("before save", entity);
+      entity = await this.purchaseOrderRepository.save(entity);
+      return PurchaseOrderMapper.toDto(entity);
+    } catch (error) {
+      handleError(error, dto);
+    }
+  }
 
   /**
    * Update purchase-order by id
