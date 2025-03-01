@@ -3,11 +3,7 @@ import { BaseCrudService } from "@common/services/base-crud.service";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { handleDeleteError, handleError } from "@utils/handle-error";
-import { Filter, FindOptionsWhere, In, Repository } from "typeorm";
-import { CategoryEntity } from "../master-data/category/category.entity";
-import { ItemGroupEntity } from "../master-data/item-group/item-group.entity";
-import { UomEntity } from "../master-data/uom/uom.entity";
-import { ValuationMethodEntity } from "../master-data/valuation-method/valuation-method.entity";
+import { Filter, In, Repository } from "typeorm";
 import {
   CreateItemRequestDto,
   ItemResponseDto,
@@ -39,7 +35,7 @@ export class ItemService extends BaseCrudService {
 
   constructor(
     @InjectRepository(ItemEntity)
-    private itemRepository: Repository<ItemEntity>,
+    private itemRepository: Repository<ItemEntity>
   ) {
     super();
   }
@@ -127,7 +123,12 @@ export class ItemService extends BaseCrudService {
       });
   }
   async getAllItem() {
-    return (await this.getListQuery().getMany()).map(ItemMapper.toSelectDto);
+    return this.itemRepository.find({
+      select: ["id", "code", "nameEn", "nameKh"],
+      relations: {
+        uom: true,
+      },
+    });
   }
 
   /**

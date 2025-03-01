@@ -154,10 +154,12 @@ export class MasterPlanService extends BaseCrudService {
   }
 
   getAllMasterPlan() {
-    return this.masterPlanRepository
-      .createQueryBuilder("masterPlan")
-      .select(["id", "unit_code"])
-      .getRawMany();
+    return this.masterPlanRepository.find({
+      select: {
+        id: true,
+        unitCode: true,
+      },
+    });
   }
 
   /**

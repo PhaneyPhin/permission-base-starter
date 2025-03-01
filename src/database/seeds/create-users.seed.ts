@@ -2,6 +2,7 @@ import { PermissionEntity } from "@admin/access/permissions/permission.entity";
 import { RoleEntity } from "@admin/access/roles/role.entity";
 import { UserStatus } from "@admin/access/users/user-status.enum";
 import { UserEntity } from "@admin/access/users/user.entity";
+import { purchaseRequests } from "@database/purchase-request.seed";
 import { faker } from "@faker-js/faker";
 import { HashHelper } from "@helpers";
 import minioClient from "@libs/pagination/minio";
@@ -12,7 +13,11 @@ import { BranchEntity } from "@modules/admin/access/branch/branch.entity";
 import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
+import { MasterPlanEntity } from "@modules/admin/access/construction/master-data/master-plan/master-plan.entity";
+import { MasterPlanMapper } from "@modules/admin/access/construction/master-data/master-plan/master-plan.mapper";
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
+import { StaffProfileEntity } from "@modules/admin/access/human-resource/staff-profile/staff-profile.entity";
+import { StaffProfileMapper } from "@modules/admin/access/human-resource/staff-profile/staff-profile.mapper";
 import { ItemEntity } from "@modules/admin/access/procurement/item/item.entity";
 import { CategoryEntity } from "@modules/admin/access/procurement/master-data/category/category.entity";
 import { ItemGroupEntity } from "@modules/admin/access/procurement/master-data/item-group/item-group.entity";
@@ -22,9 +27,17 @@ import { QuotationTypeEntity } from "@modules/admin/access/procurement/master-da
 import { RequestTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/request-type/request-type.entity";
 import { UomEntity } from "@modules/admin/access/procurement/master-data/uom/uom.entity";
 import { ValuationMethodEntity } from "@modules/admin/access/procurement/master-data/valuation-method/valuation-method.entity";
+import { PurchaseOrderEntity } from "@modules/admin/access/procurement/purchasing/purchase-order/purchase-order.entity";
+import { PurchaseOrderMapper } from "@modules/admin/access/procurement/purchasing/purchase-order/purchase-order.mapper";
+import { PurchaseQuotationEntity } from "@modules/admin/access/procurement/purchasing/purchase-quotation/purchase-quotation.entity";
+import { PurchaseQuotationMapper } from "@modules/admin/access/procurement/purchasing/purchase-quotation/purchase-quotation.mapper";
+import { PurchaseRequestEntity } from "@modules/admin/access/procurement/purchasing/purchase-request/purchase-request.entity";
+import { PurchaseRequestMapper } from "@modules/admin/access/procurement/purchasing/purchase-request/purchase-request.mapper";
 import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { VendorClassEntity } from "@modules/admin/access/vendor/vendor-class/vendor-class.entity";
 import { VendorTypeEntity } from "@modules/admin/access/vendor/vendor-type/vendor-type.entity";
+import { VendorEntity } from "@modules/admin/access/vendor/vendor/vendor.entity";
+import { VendorMapper } from "@modules/admin/access/vendor/vendor/vendor.mapper";
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
@@ -36,6 +49,7 @@ import { branches } from "./create-branch.seed";
 import { departments } from "./create-department.seed";
 import { itemGroups } from "./item-group.seed";
 import { itemSeed } from "./item.seed";
+import { masterPlanes } from "./master-plan.seed";
 import { paymentMethods } from "./payment-method.seed";
 import { paymentTerms } from "./payment-term.seed";
 import {
@@ -43,10 +57,14 @@ import {
   purchaseQuotationTypes,
   purchaseRequestTypes,
 } from "./purchase-master.seed";
+import { purchaseOrders } from "./purchase-order.seed";
+import { purchaseQuotations } from "./purchase-quotation.seed";
+import { staffProfiles } from "./staff.seed";
 import { uoms } from "./uom.seed";
 import { valuationMethods } from "./valuation-method.seed";
 import { vendorClasses } from "./vendor-class.seed";
 import { vendorTypes } from "./vendor-type.seed";
+import { vendors } from "./vendor.seed";
 import { warehouses } from "./warehouse.seed";
 
 // Define seed data
@@ -596,6 +614,65 @@ async function seedDatabase(dataSource: DataSource) {
 
   await dataSource.manager.save(dimensions);
   await dataSource.manager.save(AnalysisCodeEntity, analysisCodes);
+  await dataSource.manager.save(
+    StaffProfileEntity,
+    staffProfiles.map((item: any) =>
+      StaffProfileMapper.toCreateEntity({ ...item, createdBy: user.id })
+    )
+  );
+  await dataSource.manager.save(
+    MasterPlanEntity,
+    (masterPlanes as any).map((masterPlane) =>
+      MasterPlanMapper.toCreateEntity({
+        ...masterPlane,
+        createdBy: user.id,
+        updatedBy: user.id,
+      })
+    )
+  );
+  await dataSource.manager.save(
+    VendorEntity,
+    (vendors as any).map((vendor) =>
+      VendorMapper.toCreateEntity({
+        ...vendor,
+        createdBy: user.id,
+        updatedBy: user.id,
+      })
+    )
+  );
+
+  await dataSource.manager.save(
+    PurchaseRequestEntity,
+    (purchaseRequests as any).map((item) =>
+      PurchaseRequestMapper.toCreateEntity({
+        ...item,
+        createdBy: user.id,
+        updatedBy: user.id,
+      })
+    )
+  );
+
+  await dataSource.manager.save(
+    PurchaseOrderEntity,
+    (purchaseOrders as any).map((item) =>
+      PurchaseOrderMapper.toCreateEntity({
+        ...item,
+        createdBy: user.id,
+        updatedBy: user.id,
+      })
+    )
+  );
+
+  await dataSource.manager.save(
+    PurchaseQuotationEntity,
+    (purchaseQuotations as any).map((item) =>
+      PurchaseQuotationMapper.toCreateEntity({
+        ...item,
+        createdBy: user.id,
+        updatedBy: user.id,
+      })
+    )
+  );
 
   // await dataSource.manager.save(analysisCodes);
   console.log("Database seeded successfully!");
