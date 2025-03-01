@@ -28,6 +28,7 @@ import { VendorTypeEntity } from "@modules/admin/access/vendor/vendor-type/vendo
 import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import { analysisCodes } from "./analysis-code";
 import { banks } from "./bank.seed";
 import { categories } from "./category.seed";
 import { companies } from "./company.seed";
@@ -593,18 +594,10 @@ async function seedDatabase(dataSource: DataSource) {
     },
   ]);
 
-  const dimensionEntities = await dataSource.manager.save(dimensions);
+  await dataSource.manager.save(dimensions);
+  await dataSource.manager.save(AnalysisCodeEntity, analysisCodes);
 
-  const analysisCodes = dimensionEntities.map((dimension) => {
-    return dataSource.manager.create(AnalysisCodeEntity, {
-      dimensionId: dimension.id,
-      nameEn: faker.person.firstName(),
-      nameKh: faker.person.firstName(),
-      code: dimension.code,
-    });
-  });
-
-  await dataSource.manager.save(analysisCodes);
+  // await dataSource.manager.save(analysisCodes);
   console.log("Database seeded successfully!");
 }
 
