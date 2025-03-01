@@ -416,6 +416,22 @@ const permissions = [
     slug: "admin.access.purchase-request.delete",
     description: "Delete purchase-request",
   },
+  {
+    slug: "admin.access.purchase-order.read",
+    description: "Read purchase-order",
+  },
+  {
+    slug: "admin.access.purchase-order.create",
+    description: "Create purchase-order",
+  },
+  {
+    slug: "admin.access.purchase-order.update",
+    description: "Update purchase-order",
+  },
+  {
+    slug: "admin.access.purchase-order.delete",
+    description: "Delete purchase-order",
+  },
 ];
 
 const rolePermissions = {

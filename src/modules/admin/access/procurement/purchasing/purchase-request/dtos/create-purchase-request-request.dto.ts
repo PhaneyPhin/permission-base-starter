@@ -65,8 +65,7 @@ export class CreatePurchaseRequestRequestDto {
   totalEstimatedPrice?: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
   requestedBy: number;
 
   @ApiProperty()

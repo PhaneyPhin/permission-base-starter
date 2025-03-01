@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { commonFields } from '../common.fields';
 
-const tableName = 'admin.purchase-request';
+const tableName = 'admin.purchase-order';
 
-export class PurchaseRequestMigration1739806913193 implements MigrationInterface {
+export class PurchaseOrderMigration1740210464372 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -18,20 +18,15 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           },
           
           {
-            name: 'request_number',
+            name: 'po_number',
             type: 'varchar',
             length: '160',
+            isUnique: true,
             isNullable: false,
           },
           
           {
-            name: 'request_type_id',
-            type: 'integer',
-            isNullable: false,
-          },
-          
-          {
-            name: 'department_id',
+            name: 'po_type_id',
             type: 'integer',
             isNullable: false,
           },
@@ -49,15 +44,49 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           },
           
           {
-            name: 'request_date',
-            type: 'timestamp with time zone',
+            name: 'vendor_id',
+            type: 'integer',
             isNullable: false,
           },
           
           {
-            name: 'required_date',
-            type: 'timestamp with time zone',
+            name: 'vendor_name',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'po_date',
+            type: "timestamp with time zone",
             isNullable: false,
+          },
+          
+          {
+            name: 'promised_date',
+            type: "timestamp with time zone",
+            isNullable: false,
+          },
+          
+          {
+            name: 'document_ref',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'second_ref',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
+          },
+          
+          {
+            name: 'po_ref',
+            type: 'varchar',
+            length: '160',
+            isNullable: true,
           },
           
           {
@@ -85,7 +114,7 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           },
           
           {
-            name: 'total_cost',
+            name: 'net_amount',
             type: 'decimal',
             precision: 15,
             scale: 2,
@@ -93,7 +122,7 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           },
           
           {
-            name: 'total_estimated_price',
+            name: 'total_discount',
             type: 'decimal',
             precision: 15,
             scale: 2,
@@ -101,15 +130,10 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           },
           
           {
-            name: 'requested_by',
-            type: 'integer',
-            isNullable: false,
-          },
-          
-          {
-            name: 'priority',
-            type: 'varchar',
-            length: '160',
+            name: 'total_amount',
+            type: 'decimal',
+            precision: 15,
+            scale: 2,
             isNullable: true,
           },
           
@@ -121,14 +145,35 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           },
           
           {
-            name: 'status',
+            name: 'priority',
             type: 'varchar',
             length: '160',
-            isNullable: false,
+            isNullable: true,
+          },
+          
+          {
+            name: 'attachements',
+            type: 'varchar',
+            length: '500',
+            isNullable: true,
           },
           
           {
             name: 'description',
+            type: 'varchar',
+            length: '500',
+            isNullable: true,
+          },
+          
+          {
+            name: 'is_approved',
+            type: 'boolean',
+            isNullable: true,
+            default: false,
+          },
+          
+          {
+            name: 'status',
             type: 'varchar',
             length: '160',
             isNullable: true,
@@ -147,14 +192,8 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
           {
             name: 'active',
             type: 'boolean',
-            isNullable: false,
+            isNullable: true,
             default: true,
-          },
-          {
-            name: 'is_approved',
-            type: 'boolean',
-            isNullable: false,
-            default: false,
           },
           ...commonFields,
         ],
@@ -162,7 +201,7 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
       true,
     );
 
-    // Add the foreign key constraint
+    //Add the foreign key constraint
   //   await queryRunner.createForeignKey(
   //       tableName,
   //       new TableForeignKey({
@@ -186,11 +225,10 @@ export class PurchaseRequestMigration1739806913193 implements MigrationInterface
     const foreignKeys = [
       { column: 'created_by', refTable: 'admin.users' },
       { column: 'updated_by', refTable: 'admin.users' },
-      { column: 'request_type_id', refTable: 'admin.request-type' },
-      { column: 'department_id', refTable: 'admin.department' },
+      { column: 'po_type_id', refTable: 'admin.purchase-order-type' },
       { column: 'branch_id', refTable: 'admin.branch' },
       { column: 'project_id', refTable: 'admin.analysis-code' },
-      { column: 'requested_by', refTable: 'admin.staff-profile' },
+      { column: 'vendor_id', refTable: 'admin.vendor' },
     ];
 
     for (const fk of foreignKeys) {

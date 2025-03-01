@@ -59,7 +59,7 @@ export class PurchaseRequestResponseDto {
   totalEstimatedPrice?: number;
 
   @ApiProperty()
-  requestedBy: number;
+  requestedBy?: number;
 
   @ApiProperty()
   priority?: string;
