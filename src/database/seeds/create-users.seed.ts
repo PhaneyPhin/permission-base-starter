@@ -13,10 +13,14 @@ import { CompanyEntity } from "@modules/admin/access/company/company.entity";
 import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
 import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
+import { ItemEntity } from "@modules/admin/access/procurement/item/item.entity";
+import { CategoryEntity } from "@modules/admin/access/procurement/master-data/category/category.entity";
+import { ItemGroupEntity } from "@modules/admin/access/procurement/master-data/item-group/item-group.entity";
 import { PurchaseOrderTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/purchase-order-type/purchase-order-type.entity";
 import { PurchaseReceiptTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/purchase-receipt-type/purchase-receipt-type.entity";
 import { QuotationTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/quotation-type/quotation-type.entity";
 import { RequestTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/request-type/request-type.entity";
+import { UomEntity } from "@modules/admin/access/procurement/master-data/uom/uom.entity";
 import { ValuationMethodEntity } from "@modules/admin/access/procurement/master-data/valuation-method/valuation-method.entity";
 import { UserApproval } from "@modules/admin/access/users/user-approval";
 import { VendorClassEntity } from "@modules/admin/access/vendor/vendor-class/vendor-class.entity";
@@ -25,9 +29,12 @@ import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entit
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
 import { banks } from "./bank.seed";
+import { categories } from "./category.seed";
 import { companies } from "./company.seed";
 import { branches } from "./create-branch.seed";
 import { departments } from "./create-department.seed";
+import { itemGroups } from "./item-group.seed";
+import { itemSeed } from "./item.seed";
 import { paymentMethods } from "./payment-method.seed";
 import { paymentTerms } from "./payment-term.seed";
 import {
@@ -35,17 +42,11 @@ import {
   purchaseQuotationTypes,
   purchaseRequestTypes,
 } from "./purchase-master.seed";
+import { uoms } from "./uom.seed";
 import { valuationMethods } from "./valuation-method.seed";
 import { vendorClasses } from "./vendor-class.seed";
 import { vendorTypes } from "./vendor-type.seed";
-import { UomEntity } from "@modules/admin/access/procurement/master-data/uom/uom.entity";
-import { uoms } from "./uom.seed";
-import { ItemGroupEntity } from "@modules/admin/access/procurement/master-data/item-group/item-group.entity";
-import { itemGroups } from "./item-group.seed";
-import { CategoryEntity } from "@modules/admin/access/procurement/master-data/category/category.entity";
-import { categories } from "./category.seed";
-import { ItemEntity } from "@modules/admin/access/procurement/item/item.entity";
-import { itemSeed } from "./item.seed";
+import { warehouses } from "./warehouse.seed";
 
 // Define seed data
 const baseUsers: any[] = [
@@ -416,22 +417,6 @@ const permissions = [
     slug: "admin.access.purchase-request.delete",
     description: "Delete purchase-request",
   },
-  {
-    slug: "admin.access.purchase-order.read",
-    description: "Read purchase-order",
-  },
-  {
-    slug: "admin.access.purchase-order.create",
-    description: "Create purchase-order",
-  },
-  {
-    slug: "admin.access.purchase-order.update",
-    description: "Update purchase-order",
-  },
-  {
-    slug: "admin.access.purchase-order.delete",
-    description: "Delete purchase-order",
-  },
 ];
 
 const rolePermissions = {
@@ -560,6 +545,10 @@ async function seedDatabase(dataSource: DataSource) {
   await dataSource.manager.save(ItemGroupEntity, itemGroups);
   await dataSource.manager.save(CategoryEntity, categories);
   await dataSource.manager.save(ItemEntity, itemSeed);
+  await dataSource.manager.save(
+    WarehouseEntity,
+    warehouses.map((item) => ({ ...item, createdBy: user.id }))
+  );
 
   const defaultDimension = {
     createdBy: user.id,
