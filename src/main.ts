@@ -52,6 +52,21 @@ const bootstrap = async () => {
 
   app.setGlobalPrefix(AppModule.apiPrefix);
   SwaggerConfig(app, AppModule.apiVersion);
+  // Serve Swagger JSON at /api/v1/swagger/json
+  app
+    .getHttpAdapter()
+    .get(`/api/v${AppModule.apiVersion}/swagger/json`, (req, res) => {
+      const swaggerJsonPath = require("path").join(
+        __dirname,
+        `config/swagger-${AppModule.apiVersion}.json`
+      );
+      if (require("fs").existsSync(swaggerJsonPath)) {
+        res.sendFile(swaggerJsonPath);
+      } else {
+        res.status(404).json({ message: "Swagger JSON not found" });
+      }
+    });
+
   await app.listen(AppModule.port);
   return AppModule.port;
 };
