@@ -27,27 +27,27 @@ export class MasterPlanEntity extends BaseEntity {
   @Column({ name: "status" })
   status: MasterPlanStatus;
 
-  @ManyToOne(() => AnalysisCodeEntity, { nullable: true, eager: true })
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
   @JoinColumn({ name: "project" })
   project: AnalysisCodeEntity;
 
-  @ManyToOne(() => AnalysisCodeEntity, { nullable: true, eager: true })
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
   @JoinColumn({ name: "block" })
   block: AnalysisCodeEntity;
 
-  @ManyToOne(() => AnalysisCodeEntity, { nullable: true, eager: true })
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
   @JoinColumn({ name: "building" })
   building: AnalysisCodeEntity;
 
-  @ManyToOne(() => AnalysisCodeEntity, { nullable: true, eager: true })
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
   @JoinColumn({ name: "street" })
   street: AnalysisCodeEntity;
 
-  @ManyToOne(() => AnalysisCodeEntity, { nullable: true, eager: true })
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
   @JoinColumn({ name: "division" })
   division: AnalysisCodeEntity;
 
-  @ManyToOne(() => AnalysisCodeEntity, { nullable: true, eager: true })
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
   @JoinColumn({ name: "unit_type" })
   unitType: AnalysisCodeEntity;
 
