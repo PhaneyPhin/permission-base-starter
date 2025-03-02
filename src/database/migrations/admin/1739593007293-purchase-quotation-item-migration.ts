@@ -126,6 +126,12 @@ export class PurchaseQuotationItemMigration1739593007292
           },
 
           {
+            name: "unit_id",
+            type: "integer",
+            isNullable: true,
+          },
+
+          {
             name: "note",
             type: "varchar",
             length: "160",

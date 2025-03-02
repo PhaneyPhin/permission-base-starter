@@ -118,7 +118,9 @@ export class PurchaseQuotationService extends BaseCrudService {
         branch: true,
         createdByUser: true,
         project: true,
-        items: true,
+        items: {
+          unitAnalysisCode: true,
+        },
         updatedByUser: true,
         vendor: true,
       },

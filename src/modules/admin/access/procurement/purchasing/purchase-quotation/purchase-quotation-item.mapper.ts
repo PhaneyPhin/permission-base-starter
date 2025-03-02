@@ -1,4 +1,6 @@
 import { UserMapper } from "@admin/access/users/users.mapper";
+import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
+import { AnalysisCodeMapper } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.mapper";
 import {
   CreatePurchaseQuotationItemRequestDto,
   PurchaseQuotationItemResponseDto,
@@ -31,7 +33,12 @@ export class PurchaseQuotationItemMapper {
     dto.totalEstimatePrice = entity.totalEstimatePrice;
     dto.note = entity.note;
     dto.status = entity.status;
-
+    dto.unitId = entity.unitAnalysisCode?.id;
+    if (entity.unitAnalysisCode) {
+      dto.unitAnalysisCode = await AnalysisCodeMapper.toDto(
+        entity.unitAnalysisCode
+      );
+    }
     if (entity.createdByUser) {
       dto.createdByUser = await UserMapper.toDto(entity.createdByUser);
     }
@@ -63,6 +70,10 @@ export class PurchaseQuotationItemMapper {
     entity.note = dto.note;
     entity.status = dto.status;
 
+    if (dto.unitId) {
+      entity.unitAnalysisCode = new AnalysisCodeEntity({ id: dto.unitId });
+    }
+
     return entity;
   }
 
@@ -87,6 +98,10 @@ export class PurchaseQuotationItemMapper {
     entity.totalEstimatePrice = dto.totalEstimatePrice;
     entity.note = dto.note;
     entity.status = dto.status;
+
+    if (dto.unitId) {
+      entity.unitAnalysisCode = new AnalysisCodeEntity({ id: dto.unitId });
+    }
 
     return entity;
   }
