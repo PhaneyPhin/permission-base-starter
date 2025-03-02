@@ -1,13 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  MaxLength,
-} from "class-validator";
+import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
-export class CreatePurchaseQuotationItemRequestDto {
+export class CreatePurchaseReceiptItemRequestDto {
   @ApiProperty()
   @IsOptional()
   id: number;
@@ -20,59 +14,62 @@ export class CreatePurchaseQuotationItemRequestDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  projectId?: number;
+  projectId: number;
 
   @ApiProperty()
   @IsOptional()
-  warehouseId?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  documentRef?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  lineDocumentRef?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  actualDate?: Date;
-
-  @ApiProperty()
-  @IsOptional()
+  @IsNumber()
   lineItem: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  itemCode: number;
+  @IsOptional()
+  @IsString()
+  itemCode?: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  itemName: string;
+  @IsOptional()
+  @IsString()
+  itemName?: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @MaxLength(160)
-  unit: string;
+  @IsOptional()
+  @IsString()
+  unit?: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  unitId: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  quantity: number;
+  @IsOptional()
+  @IsString()
+  itemType?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  estimatePrice?: number;
+  quantity?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  unitPrice?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  discount?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  percentageDiscount?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  netAmount?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  amount?: number;
 
   @ApiProperty()
   @IsOptional()
@@ -86,36 +83,46 @@ export class CreatePurchaseQuotationItemRequestDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  note: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsNumber()
-  totalEstimatePrice?: number;
+  costCenter?: number;
 
   @ApiProperty()
   @IsOptional()
-  @MaxLength(160)
-  note?: string;
+  @IsString()
+  unitCode?: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsBoolean()
-  isApproved?: boolean;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsBoolean()
-  isRequireBidding?: boolean;
-
-  @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
-  currencyCode?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @MaxLength(160)
+  @IsString()
   status?: string;
 
   @ApiProperty()
   @IsOptional()
-  @MaxLength(160)
+  @IsString()
+  documentRef?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  lineDocumentRef?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  secondRef?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
   createdBy?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean;
 }

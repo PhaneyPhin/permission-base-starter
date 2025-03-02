@@ -1,4 +1,5 @@
 import { UserResponseDto } from "@admin/access/users/dtos";
+import { AnalysisCodeResponseDto } from "@modules/admin/access/construction/master-data/analysis-code/dtos";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class PurchaseQuotationItemResponseDto {
@@ -30,7 +31,7 @@ export class PurchaseQuotationItemResponseDto {
   lineItem: number;
 
   @ApiProperty()
-  itemCode: string;
+  itemCode: number;
 
   @ApiProperty()
   itemName: string;
@@ -70,6 +71,12 @@ export class PurchaseQuotationItemResponseDto {
 
   @ApiProperty({ required: false })
   isApproved?: boolean;
+
+  @ApiProperty()
+  unitId: number;
+
+  @ApiProperty()
+  unitAnalysisCode: AnalysisCodeResponseDto;
 
   @ApiProperty({ required: false })
   isRequireBidding?: boolean;

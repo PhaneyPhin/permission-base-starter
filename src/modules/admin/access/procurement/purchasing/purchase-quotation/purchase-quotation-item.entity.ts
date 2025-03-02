@@ -1,5 +1,6 @@
 import { UserEntity } from "@admin/access/users/user.entity";
 import { BaseEntity } from "@database/entities";
+import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
 import {
   Column,
   CreateDateColumn,
@@ -77,7 +78,7 @@ export class PurchaseQuotationItemEntity extends BaseEntity {
     type: "varchar",
     nullable: false,
   })
-  itemCode: string;
+  itemCode: number;
 
   @Column({
     name: "item_name",
@@ -92,6 +93,10 @@ export class PurchaseQuotationItemEntity extends BaseEntity {
     nullable: false,
   })
   unit: string;
+
+  @ManyToOne(() => AnalysisCodeEntity, { nullable: true })
+  @JoinColumn({ name: "unit_id" })
+  unitAnalysisCode: AnalysisCodeEntity;
 
   @Column({
     name: "quantity",

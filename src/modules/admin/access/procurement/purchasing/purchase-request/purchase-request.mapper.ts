@@ -52,7 +52,7 @@ export class PurchaseRequestMapper {
     // Map Items (1-to-Many Relationship)
     if (entity.items && entity.items.length > 0) {
       dto.items = await Promise.all(
-        entity.items.map((item) => PurchaseRequestItemMapper.toDto(item))
+        entity.items.map((item) => PurchaseRequestItemMapper.toDto({ ...item, branchId: entity.branch?.id, projectId: entity.project?.id }))
       );
     }
 

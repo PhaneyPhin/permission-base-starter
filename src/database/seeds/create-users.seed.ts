@@ -436,6 +436,20 @@ const permissions = [
     slug: "admin.access.purchase-request.delete",
     description: "Delete purchase-request",
   },
+
+  { slug: "admin.access.purchase-receipt.read", description: "Read receipt" },
+  {
+    slug: "admin.access.purchase-receipt.create",
+    description: "Create receipt",
+  },
+  {
+    slug: "admin.access.purchase-receipt.update",
+    description: "Update receipt",
+  },
+  {
+    slug: "admin.access.purchase-receipt.delete",
+    description: "Delete receipt",
+  },
 ];
 
 const rolePermissions = {
