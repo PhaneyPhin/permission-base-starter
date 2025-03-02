@@ -1,57 +1,48 @@
-import {
-  InternalServerErrorException,
-  RequestTimeoutException,
-  NotFoundException,
-  Injectable,
-} from '@nestjs/common';
+import { BaseCrudService } from "@common/services/base-crud.service";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { handleDeleteError, handleError } from "@utils/handle-error";
+import { Filter, Repository, SelectQueryBuilder } from "typeorm";
 import {
   CreatePurchaseRequestRequestDto,
-  UpdatePurchaseRequestRequestDto,
   PurchaseRequestResponseDto,
-} from './dtos';
-import { handleDeleteError, handleError } from "@utils/handle-error";
-import { PurchaseRequestMapper } from './purchase-request.mapper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DBErrorCode } from '@common/enums';
-import { TimeoutError } from 'rxjs';
-import { PurchaseRequestEntity } from './purchase-request.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { PurchaseRequestExistsException } from './purchase-request-exist.exception'; // e.g., custom exception
-import { BaseCrudService } from '@common/services/base-crud.service';
-import { Filter } from 'typeorm';
-import { PurchaseRequestItemEntity } from './purchase-request-item.entity';
+  UpdatePurchaseRequestRequestDto,
+} from "./dtos";
+import { PurchaseRequestItemEntity } from "./purchase-request-item.entity";
+import { PurchaseRequestEntity } from "./purchase-request.entity";
+import { PurchaseRequestMapper } from "./purchase-request.mapper";
 
 export const PURCHASE_REQUEST_FILTER_FIELDS = [
-  'requestNumber', 
-  'priority', 
-  'currencyCode', 
-  'description',
+  "requestNumber",
+  "priority",
+  "currencyCode",
+  "description",
 ];
 @Injectable()
 export class PurchaseRequestService extends BaseCrudService {
-  protected queryName: string = 'purchaseRequest';
+  protected queryName: string = "purchaseRequest";
   protected SEARCH_FIELDS = [
-    'requestNumber',  
-    'priority', 
-    'currencyCode', 
-    'description',
+    "requestNumber",
+    "priority",
+    "currencyCode",
+    "description",
   ];
-  protected FILTER_FIELDS = PURCHASE_REQUEST_FILTER_FIELDS
+  protected FILTER_FIELDS = PURCHASE_REQUEST_FILTER_FIELDS;
 
   constructor(
     @InjectRepository(PurchaseRequestEntity)
     private purchaseRequestRepository: Repository<PurchaseRequestEntity>,
     @InjectRepository(PurchaseRequestItemEntity)
-        private purchaseRequestItemRepository: Repository<PurchaseRequestItemEntity>
+    private purchaseRequestItemRepository: Repository<PurchaseRequestItemEntity>
   ) {
-    super()
+    super();
   }
- 
+
   /**
    * Convert a UserEntity to a UserResponseDto with relations.
    */
-  protected getMapperResponseEntityFields(){
-     return PurchaseRequestMapper.toDto;
+  protected getMapperResponseEntityFields() {
+    return PurchaseRequestMapper.toDto;
   }
 
   /**
@@ -59,7 +50,6 @@ export class PurchaseRequestService extends BaseCrudService {
    */
   protected getFilters() {
     const filters: { [key: string]: Filter<PurchaseRequestEntity> } = {
-
       requestType: (query, value) => {
         return query.andWhere(
           "requestType.name_en ILIKE :requestType or requestType.name_kh ILIKE :requestType",
@@ -78,10 +68,10 @@ export class PurchaseRequestService extends BaseCrudService {
           { department: `%${value}%` }
         );
       },
-      requestedByUser: (query, value) => {
+      requestedBy: (query, value) => {
         return query.andWhere(
-          "requestedByUser.name_en ILIKE :requestedByUser or requestedByUser.name_kh ILIKE :requestedByUser",
-          { requestedByUser: `%${value}%` }
+          "requestedBy.name_en ILIKE :requestedBy or requestedBy.name_kh ILIKE :requestedBy",
+          { requestedBy: `%${value}%` }
         );
       },
       project: (query, value) => {
@@ -117,24 +107,28 @@ export class PurchaseRequestService extends BaseCrudService {
         );
       },
       createdAt: (query, value) => {
-        const [start, end] = value.split(',');
-        return query.andWhere('purchaseRequest.created_at BETWEEN :start AND :end', { start, end });
-      }
+        const [start, end] = value.split(",");
+        return query.andWhere(
+          "purchaseRequest.created_at BETWEEN :start AND :end",
+          { start, end }
+        );
+      },
     };
 
-    return filters
+    return filters;
   }
 
   /** Require for base query list of feature */
   protected getListQuery() {
-    return this.purchaseRequestRepository.createQueryBuilder('purchaseRequest')
+    return this.purchaseRequestRepository
+      .createQueryBuilder("purchaseRequest")
       .leftJoinAndSelect("purchaseRequest.requestType", "requestType")
       .leftJoinAndSelect("purchaseRequest.branch", "branch")
       .leftJoinAndSelect("purchaseRequest.project", "project")
       .leftJoinAndSelect("purchaseRequest.department", "department")
-      .leftJoinAndSelect("purchaseRequest.requestedByUser", "requestedByUser")
+      .leftJoinAndSelect("purchaseRequest.requestedBy", "requestedBy")
       .leftJoinAndSelect("purchaseRequest.updatedByUser", "updatedByUser")
-      .leftJoinAndSelect('purchaseRequest.createdByUser', 'uc')
+      .leftJoinAndSelect("purchaseRequest.createdByUser", "uc");
   }
 
   getAllPurchaseRequest() {
@@ -149,7 +143,9 @@ export class PurchaseRequestService extends BaseCrudService {
   /**
    * Get purchase-request by id
    */
-  public async getPurchaseRequestById(id: number): Promise<PurchaseRequestResponseDto> {
+  public async getPurchaseRequestById(
+    id: number
+  ): Promise<PurchaseRequestResponseDto> {
     const entity = await this.purchaseRequestRepository.findOne({
       where: { id: id },
       relations: {
@@ -173,14 +169,14 @@ export class PurchaseRequestService extends BaseCrudService {
    * Create new purchase-request
    */
   public async createPurchaseRequest(
-    dto: CreatePurchaseRequestRequestDto,
+    dto: CreatePurchaseRequestRequestDto
   ): Promise<PurchaseRequestResponseDto> {
     try {
       let entity = PurchaseRequestMapper.toCreateEntity(dto);
       entity = await this.purchaseRequestRepository.save(entity);
       return PurchaseRequestMapper.toDto(entity);
     } catch (error) {
-      handleError(error, dto)
+      handleError(error, dto);
     }
   }
 
@@ -189,7 +185,7 @@ export class PurchaseRequestService extends BaseCrudService {
    */
   public async updatePurchaseRequest(
     id: number,
-    dto: UpdatePurchaseRequestRequestDto,
+    dto: UpdatePurchaseRequestRequestDto
   ): Promise<PurchaseRequestResponseDto> {
     // let entity = await this.purchaseRequestRepository.findOneBy({ id });
     let entity = await this.purchaseRequestRepository.findOne({

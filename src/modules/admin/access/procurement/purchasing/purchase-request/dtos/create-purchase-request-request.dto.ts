@@ -1,7 +1,16 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsNumber, IsString, IsDate, ValidateNested, ArrayMinSize, IsEnum, IsDateString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { CreatePurchaseRequestItemRequestDto } from './create-purchase-request-item-request.dto';
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import {
+  ArrayMinSize,
+  IsBoolean,
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator";
+import { CreatePurchaseRequestItemRequestDto } from "./create-purchase-request-item-request.dto";
 
 export class CreatePurchaseRequestRequestDto {
   @ApiProperty()
@@ -66,7 +75,7 @@ export class CreatePurchaseRequestRequestDto {
 
   @ApiProperty()
   @IsOptional()
-  requestedBy: number;
+  requestedById: number;
 
   @ApiProperty()
   @IsOptional()
@@ -97,10 +106,10 @@ export class CreatePurchaseRequestRequestDto {
   @IsNotEmpty()
   createdBy: string;
 
-   // Validate items array
-    @ApiProperty({ type: [CreatePurchaseRequestItemRequestDto] })
-    @ValidateNested({ each: true }) // Validate each item
-    @Type(() => CreatePurchaseRequestItemRequestDto) // Transform each item into the correct DTO type
-    @ArrayMinSize(1) // Ensure at least 1 item is provided
-    items: CreatePurchaseRequestItemRequestDto[];
+  // Validate items array
+  @ApiProperty({ type: [CreatePurchaseRequestItemRequestDto] })
+  @ValidateNested({ each: true }) // Validate each item
+  @Type(() => CreatePurchaseRequestItemRequestDto) // Transform each item into the correct DTO type
+  @ArrayMinSize(1) // Ensure at least 1 item is provided
+  items: CreatePurchaseRequestItemRequestDto[];
 }

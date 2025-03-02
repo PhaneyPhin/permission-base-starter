@@ -1,10 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from '@admin/access/users/dtos';
-import { PurchaseRequestItemResponseDto } from './purchase-request-item-response.dto';
-import { BranchResponseDto } from '@modules/admin/access/branch/dtos';
-import { AnalysisCodeResponseDto } from '@modules/admin/access/construction/master-data/analysis-code/dtos';
-import { DepartmentResponseDto } from '@modules/admin/access/department/dtos';
-import { RequestTypeResponseDto } from '../../../master-data/purchasing/request-type/dtos';
+import { UserResponseDto } from "@admin/access/users/dtos";
+import { BranchResponseDto } from "@modules/admin/access/branch/dtos";
+import { AnalysisCodeResponseDto } from "@modules/admin/access/construction/master-data/analysis-code/dtos";
+import { DepartmentResponseDto } from "@modules/admin/access/department/dtos";
+import { StaffProfileResponseDto } from "@modules/admin/access/human-resource/staff-profile/dtos";
+import { ApiProperty } from "@nestjs/swagger";
+import { RequestTypeResponseDto } from "../../../master-data/purchasing/request-type/dtos";
+import { PurchaseRequestItemResponseDto } from "./purchase-request-item-response.dto";
 
 export class PurchaseRequestResponseDto {
   @ApiProperty()
@@ -59,7 +60,7 @@ export class PurchaseRequestResponseDto {
   totalEstimatedPrice?: number;
 
   @ApiProperty()
-  requestedBy?: number;
+  requestedById?: number;
 
   @ApiProperty()
   priority?: string;
@@ -78,6 +79,9 @@ export class PurchaseRequestResponseDto {
 
   @ApiProperty()
   active: boolean;
+
+  @ApiProperty()
+  requestedBy: StaffProfileResponseDto;
 
   @ApiProperty()
   createdByUser: UserResponseDto;

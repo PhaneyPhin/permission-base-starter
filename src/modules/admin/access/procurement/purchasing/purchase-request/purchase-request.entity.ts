@@ -1,32 +1,38 @@
-import { BaseEntity } from '@database/entities';
-import { 
-  Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, 
-  OneToMany
-} from 'typeorm';
-import { UserEntity } from '@admin/access/users/user.entity';
-import { AnalysisCodeEntity } from '@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity';
-import { BranchEntity } from '@modules/admin/access/branch/branch.entity';
-import { DepartmentEntity } from '@modules/admin/access/department/department.entity';
-import { RequestTypeEntity } from '../../master-data/purchasing/request-type/request-type.entity';
-import { PurchaseRequestItemEntity } from './purchase-request-item.entity';
-import { StaffProfileEntity } from '@modules/admin/access/human-resource/staff-profile/staff-profile.entity';
+import { UserEntity } from "@admin/access/users/user.entity";
+import { BaseEntity } from "@database/entities";
+import { BranchEntity } from "@modules/admin/access/branch/branch.entity";
+import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
+import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
+import { StaffProfileEntity } from "@modules/admin/access/human-resource/staff-profile/staff-profile.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { RequestTypeEntity } from "../../master-data/purchasing/request-type/request-type.entity";
+import { PurchaseRequestItemEntity } from "./purchase-request-item.entity";
 
-@Entity({ schema: 'admin', name: 'purchase-request' })
+@Entity({ schema: "admin", name: "purchase-request" })
 export class PurchaseRequestEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
+  @PrimaryGeneratedColumn({ name: "id", type: "integer" })
   id: number;
 
   @Column({
-    name: 'request_number',
-    type: 'varchar',
+    name: "request_number",
+    type: "varchar",
     length: 160,
     nullable: false,
   })
   requestNumber: string;
 
   @Column({
-    name: 'request_type_id',
-    type: 'integer',
+    name: "request_type_id",
+    type: "integer",
     nullable: false,
   })
   requestTypeId: number;
@@ -36,8 +42,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   requestType: RequestTypeEntity;
 
   @Column({
-    name: 'department_id',
-    type: 'integer',
+    name: "department_id",
+    type: "integer",
     nullable: false,
   })
   departmentId: number;
@@ -47,8 +53,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   department: DepartmentEntity;
 
   @Column({
-    name: 'branch_id',
-    type: 'integer',
+    name: "branch_id",
+    type: "integer",
     nullable: false,
   })
   branchId: number;
@@ -58,8 +64,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   branch: BranchEntity;
 
   @Column({
-    name: 'project_id',
-    type: 'integer',
+    name: "project_id",
+    type: "integer",
     nullable: false,
   })
   projectId: number;
@@ -69,22 +75,22 @@ export class PurchaseRequestEntity extends BaseEntity {
   project: AnalysisCodeEntity;
 
   @Column({
-    name: 'request_date',
-    type: 'timestamp with time zone',
+    name: "request_date",
+    type: "timestamp with time zone",
     nullable: false,
   })
   requestDate: Date;
 
   @Column({
-    name: 'required_date',
-    type: 'timestamp with time zone',
+    name: "required_date",
+    type: "timestamp with time zone",
     nullable: false,
   })
   requiredDate: Date;
 
   @Column({
-    name: 'total_qty',
-    type: 'decimal',
+    name: "total_qty",
+    type: "decimal",
     precision: 15,
     scale: 2,
     nullable: true,
@@ -92,8 +98,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   totalQty: number;
 
   @Column({
-    name: 'open_qty',
-    type: 'decimal',
+    name: "open_qty",
+    type: "decimal",
     precision: 15,
     scale: 2,
     nullable: true,
@@ -101,8 +107,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   openQty: number;
 
   @Column({
-    name: 'receipt_qty',
-    type: 'decimal',
+    name: "receipt_qty",
+    type: "decimal",
     precision: 15,
     scale: 2,
     nullable: true,
@@ -110,8 +116,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   receiptQty: number;
 
   @Column({
-    name: 'total_cost',
-    type: 'decimal',
+    name: "total_cost",
+    type: "decimal",
     precision: 15,
     scale: 2,
     nullable: true,
@@ -119,8 +125,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   totalCost: number;
 
   @Column({
-    name: 'total_estimated_price',
-    type: 'decimal',
+    name: "total_estimated_price",
+    type: "decimal",
     precision: 15,
     scale: 2,
     nullable: true,
@@ -128,60 +134,59 @@ export class PurchaseRequestEntity extends BaseEntity {
   totalEstimatedPrice: number;
 
   @Column({
-    name: 'requested_by',
-    type: 'integer',
+    name: "requested_by_id",
+    type: "integer",
     nullable: false,
   })
-  requestedBy: number;
+  requestedById: number;
 
   @ManyToOne(() => StaffProfileEntity, { nullable: false })
-  @JoinColumn({ name: "requested_by" })
-  requestedByUser: StaffProfileEntity;
-  
+  @JoinColumn({ name: "requested_by_id" })
+  requestedBy: StaffProfileEntity;
 
   @Column({
-    name: 'priority',
-    type: 'varchar',
+    name: "priority",
+    type: "varchar",
     length: 160,
     nullable: true,
   })
   priority: string;
 
   @Column({
-    name: 'currency_code',
-    type: 'varchar',
+    name: "currency_code",
+    type: "varchar",
     length: 160,
     nullable: false,
   })
   currencyCode: string;
 
   @Column({
-    name: 'status',
-    type: 'varchar',
+    name: "status",
+    type: "varchar",
     length: 160,
     nullable: false,
   })
   status: string;
 
   @Column({
-    name: 'description',
-    type: 'varchar',
+    name: "description",
+    type: "varchar",
     length: 160,
     nullable: true,
   })
   description: string;
 
   @Column({
-    name: 'is_approved',
-    type: 'boolean',
+    name: "is_approved",
+    type: "boolean",
     nullable: false,
     default: false,
   })
   isApproved: boolean;
 
   @Column({
-    name: 'active',
-    type: 'boolean',
+    name: "active",
+    type: "boolean",
     nullable: false,
     default: true,
   })
@@ -199,8 +204,8 @@ export class PurchaseRequestEntity extends BaseEntity {
   createdByUser: UserEntity;
 
   @Column({
-    name: 'updated_by',
-    type: 'uuid',
+    name: "updated_by",
+    type: "uuid",
     nullable: true,
   })
   updatedBy: string;
@@ -210,14 +215,14 @@ export class PurchaseRequestEntity extends BaseEntity {
   updatedByUser: UserEntity;
 
   @OneToMany(() => PurchaseRequestItemEntity, (item) => item.purchaseRequest, {
-      cascade: true,
-    })
-    items: PurchaseRequestItemEntity[];
+    cascade: true,
+  })
+  items: PurchaseRequestItemEntity[];
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   constructor(partial?: Partial<PurchaseRequestEntity>) {

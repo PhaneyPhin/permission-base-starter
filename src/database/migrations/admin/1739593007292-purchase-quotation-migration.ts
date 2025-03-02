@@ -51,7 +51,7 @@ export class PurchaseQuotationMigration1739594952188
             isNullable: false,
           },
           {
-            name: "requested_by",
+            name: "requested_by_id",
             type: "integer",
             isNullable: false,
           },
@@ -154,7 +154,7 @@ export class PurchaseQuotationMigration1739594952188
     await queryRunner.createForeignKey(
       tableName,
       new TableForeignKey({
-        columnNames: ["requested_by"],
+        columnNames: ["requested_by_id"],
         referencedColumnNames: ["id"],
         referencedTableName: "admin.staff-profile",
         onDelete: "SET NULL",
@@ -200,7 +200,7 @@ export class PurchaseQuotationMigration1739594952188
         [
           "branch_id",
           "project_id",
-          "requested_by",
+          "requested_by_id",
           "vendor_id",
           "created_by",
           "updated_by",

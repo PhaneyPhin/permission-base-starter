@@ -1,6 +1,7 @@
 import { UserMapper } from "@admin/access/users/users.mapper";
 import { BranchMapper } from "@modules/admin/access/branch/branch.mapper";
 import { AnalysisCodeMapper } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.mapper";
+import { StaffProfileMapper } from "@modules/admin/access/human-resource/staff-profile/staff-profile.mapper";
 import { VendorMapper } from "@modules/admin/access/vendor/vendor/vendor.mapper";
 import {
   CreatePurchaseQuotationRequestDto,
@@ -31,6 +32,9 @@ export class PurchaseQuotationMapper {
     dto.documentReference = entity.documentReference;
     dto.status = entity.status;
 
+    if (entity.requestedBy) {
+      dto.requestedBy = await StaffProfileMapper.toDto(entity.requestedBy);
+    }
     // Map Relationships
     if (entity.branch) {
       dto.branch = await BranchMapper.toDto(entity.branch);
@@ -44,8 +48,8 @@ export class PurchaseQuotationMapper {
       dto.vendor = await VendorMapper.toDto(entity.vendor);
     }
 
-    // if (entity.requestedBy) {
-    //   dto.requestedBy = await StaffProfileMapper.toDto(entity.requestedByUser);
+    // if (entity.requestedById) {
+    //   dto.requestedById = await StaffProfileMapper.toDto(entity.requestedById);
     // }
 
     if (entity.createdByUser) {
@@ -94,7 +98,7 @@ export class PurchaseQuotationMapper {
     }
 
     if (dto.requestedById) {
-      entity.requestedByUser = { id: dto.requestedById } as any;
+      entity.requestedById = { id: dto.requestedById } as any;
     }
 
     // Assign Items (1-to-Many Relationship)
@@ -148,7 +152,7 @@ export class PurchaseQuotationMapper {
     }
 
     if (dto.requestedById) {
-      entity.requestedByUser = { id: dto.requestedById } as any;
+      entity.requestedById = { id: dto.requestedById } as any;
     }
 
     // Update Items (1-to-Many Relationship)

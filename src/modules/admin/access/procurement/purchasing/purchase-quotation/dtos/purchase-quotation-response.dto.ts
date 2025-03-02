@@ -1,6 +1,7 @@
 import { UserResponseDto } from "@admin/access/users/dtos";
 import { BranchResponseDto } from "@modules/admin/access/branch/dtos";
 import { AnalysisCodeResponseDto } from "@modules/admin/access/construction/master-data/analysis-code/dtos";
+import { StaffProfileResponseDto } from "@modules/admin/access/human-resource/staff-profile/dtos";
 import { VendorResponseDto } from "@modules/admin/access/vendor/vendor/dtos";
 import { ApiProperty } from "@nestjs/swagger";
 import { PurchaseQuotationItemResponseDto } from "./purchase-quotation-item-response.dto";
@@ -23,9 +24,6 @@ export class PurchaseQuotationResponseDto {
 
   @ApiProperty()
   requestDate: Date;
-
-  @ApiProperty({ type: UserResponseDto })
-  requestedBy: UserResponseDto;
 
   @ApiProperty()
   totalQty: number;
@@ -65,6 +63,9 @@ export class PurchaseQuotationResponseDto {
 
   @ApiProperty({ type: UserResponseDto })
   createdByUser: UserResponseDto;
+
+  @ApiProperty()
+  requestedBy: StaffProfileResponseDto;
 
   @ApiProperty()
   updatedBy: string;

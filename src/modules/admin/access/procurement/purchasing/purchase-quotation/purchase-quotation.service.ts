@@ -93,7 +93,7 @@ export class PurchaseQuotationService extends BaseCrudService {
       .leftJoinAndSelect("purchaseQuotation.branch", "branch")
       .leftJoinAndSelect("purchaseQuotation.project", "project")
       .leftJoinAndSelect("purchaseQuotation.vendor", "vendor")
-      .leftJoinAndSelect("purchaseQuotation.requestedByUser", "requestedByUser")
+      .leftJoinAndSelect("purchaseQuotation.requestedBy", "requestedBy")
       .leftJoinAndSelect("purchaseQuotation.createdByUser", "uc");
   }
 

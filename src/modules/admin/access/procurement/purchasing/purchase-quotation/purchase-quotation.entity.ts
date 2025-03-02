@@ -52,12 +52,12 @@ export class PurchaseQuotationEntity extends BaseEntity {
   })
   requestDate: Date;
 
-  @Column({ name: "requested_by" })
-  requestedBy: string;
+  @Column({ name: "requested_by_id" })
+  requestedById: string;
 
   @ManyToOne(() => StaffProfileEntity, { nullable: false })
-  @JoinColumn({ name: "requested_by" })
-  requestedByUser: StaffProfileEntity;
+  @JoinColumn({ name: "requested_by_id" })
+  requestedBy: StaffProfileEntity;
 
   @Column({
     name: "total_qty",
