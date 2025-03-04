@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, UnprocessableEntityException } from '@nestjs/common';
 import { HttpErrorType } from './http-error-type';
 import { ErrorType } from '../enums';
 import { Response } from 'express';
@@ -10,6 +10,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = +exception.getStatus();
     console.log(exception)
+    if (exception instanceof UnprocessableEntityException) {
+       return response.status(status).send(exception.getResponse())
+    }
+
     let { errorType, message } = exception.getResponse() as {
       errorType: ErrorType | string;
       message: string | string[];

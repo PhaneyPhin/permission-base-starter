@@ -1,7 +1,12 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { commonFields } from '../common.fields';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from "typeorm";
+import { commonFields } from "../common.fields";
 
-const tableName = 'admin.users';
+const tableName = "admin.users";
 export class createUsersTable1610321042350 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -9,57 +14,88 @@ export class createUsersTable1610321042350 implements MigrationInterface {
         name: tableName,
         columns: [
           {
-            name: 'id',
-            type: 'uuid',
+            name: "id",
+            type: "uuid",
             isPrimary: true,
-            generationStrategy: 'uuid',
+            generationStrategy: "uuid",
             isGenerated: true,
             isNullable: false,
           },
           {
-            name: 'username',
-            type: 'varchar',
-            length: '20',
+            name: "username",
+            type: "varchar",
+            length: "20",
             isUnique: true,
             isNullable: false,
           },
           {
-            name: 'first_name',
-            type: 'varchar',
-            length: '100',
+            name: "email",
+            type: "varchar",
+            length: "100",
+            isUnique: true,
             isNullable: false,
           },
           {
-            name: 'last_name',
-            type: 'varchar',
-            length: '100',
+            name: "name",
+            type: "varchar",
+            length: "100",
             isNullable: false,
           },
           {
-            name: 'password',
-            type: 'varchar',
+            name: "password",
+            type: "varchar",
             isNullable: false,
           },
           {
-            name: 'is_super_user',
-            type: 'boolean',
+            name: "is_super_user",
+            type: "boolean",
             isNullable: false,
             default: false,
           },
           {
-            name: 'status',
-            type: 'varchar',
-            length: '30',
+            name: "status",
+            type: "varchar",
+            length: "30",
             isNullable: false,
+          },
+
+          {
+            name: "expired_at",
+            type: "timestamp with time zone",
+            isNullable: true,
+          },
+          {
+            name: "created_by",
+            type: "uuid",
+            isNullable: true,
           },
           ...commonFields,
         ],
       }),
-      true,
+      true
+    );
+
+    // Add the foreign key constraint
+    await queryRunner.createForeignKey(
+      tableName,
+      new TableForeignKey({
+        columnNames: ["created_by"],
+        referencedColumnNames: ["id"],
+        referencedTableName: tableName,
+        onDelete: "SET NULL",
+      })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(tableName, true);
+    // Remove the foreign key constraint
+    const table = await queryRunner.getTable(tableName);
+    const foreignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf("created_by") !== -1
+    );
+    await queryRunner.dropForeignKey(tableName, foreignKey);
+
+    // Remove the created_by column
+    await queryRunner.dropTable(tableName);
   }
 }

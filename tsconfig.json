@@ -11,17 +11,41 @@
     "outDir": "./dist", // Output directory for transpiled files
     "baseUrl": "./", // Base directory for resolving modules
     "paths": {
-      "@common/*": ["src/common/*"],
-      "@database/*": ["src/database/*"],
-      "@config": ["src/config"],
-      "@helpers": ["src/helpers"],
-      "@modules/*": ["src/modules/*"],
-      "@admin/*": ["src/modules/admin/*"],
-      "@auth": ["src/modules/auth/"],
-      "@libs/*": ["src/libs/*"]
+      "@common/*": [
+        "src/common/*"
+      ],
+      "@database/*": [
+        "src/database/*"
+      ],
+      "@config": [
+        "src/config"
+      ],
+      "@helpers": [
+        "src/helpers"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ],
+      "@admin/*": [
+        "src/modules/admin/*"
+      ],
+      "@auth": [
+        "src/modules/auth/"
+      ],
+      "@libs/*": [
+        "src/libs/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ]
     },
     "incremental": true // Speeds up builds by storing incremental cache
   },
-  "include": ["src/**/**/*.ts"], // Include all TypeScript files in src/
-  "exclude": ["node_modules", "dist"] // Exclude build outputs and dependencies
+  "include": [
+    "src/**/**/*.ts"
+  ], // Include all TypeScript files in src/
+  "exclude": [
+    "node_modules",
+    "dist"
+  ] // Exclude build outputs and dependencies
 }

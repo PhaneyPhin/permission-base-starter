@@ -1,25 +1,20 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
-  },
-  plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
+  // By setting "root" to true, ESLint will stop looking up the tree
   root: true,
+
+  // Optionally specify the environment
   env: {
+    browser: true,
     node: true,
-    jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+
+  // If you have an extends array, remove it or replace it with an empty one
+  extends: [],
+
+  // Override or disable all rules
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    // For example, to disable "no-console":
+    "no-console": "off",
+    // Similarly, you can turn off or remove additional rules here
   },
 };

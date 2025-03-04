@@ -1,12 +1,13 @@
-import { ValidationPipe, Controller, Post, Body } from '@nestjs/common';
+import { ValidationPipe, Controller, Post, Body, Req, Res, UnauthorizedException } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiUnauthorizedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
-import { SkipAuth } from '.';
+import { SkipAuth, TOKEN_NAME } from '.';
 import {
   AuthCredentialsRequestDto,
   ValidateTokenResponseDto,
@@ -16,6 +17,7 @@ import {
   TokenDto,
 } from './dtos';
 import { TokenService, AuthService } from './services';
+import { ExtractJwt } from 'passport-jwt';
 
 @SkipAuth()
 @ApiTags('Auth')
@@ -52,5 +54,16 @@ export class AuthController {
   async validateToken(@Body(ValidationPipe) validateToken: ValidateTokenRequestDto): Promise<ValidateTokenResponseDto> {
     const { token } = validateToken;
     return this.tokenService.validateToken(token);
+  }
+
+  @ApiOperation({ description: 'Validate token' })
+  @ApiOkResponse({ description: 'Validation was successful' })
+  @ApiInternalServerErrorResponse({ description: 'Server error' })
+  @ApiBearerAuth(TOKEN_NAME)
+  @Post('/token/logout')
+  async logout(@Req() request: Request): Promise<any> {
+    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+
+    return this.authService.logout(token);
   }
 }

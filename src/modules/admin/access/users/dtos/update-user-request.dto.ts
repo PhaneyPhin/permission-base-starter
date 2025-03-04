@@ -1,34 +1,42 @@
-import { ArrayNotEmpty, IsAlphanumeric, IsArray, IsEnum, IsInt, IsNotEmpty, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { UserStatus } from '../user-status.enum';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  ArrayNotEmpty,
+  IsAlphanumeric,
+  IsArray,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from "class-validator";
+import { UserApproval } from "../user-approval";
+import { UserStatus } from "../user-status.enum";
+import { UserEntity } from "../user.entity";
 
 export class UpdateUserRequestDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   @ApiProperty({
-    example: 'jdoe',
+    example: "jdoe",
   })
   username: string;
 
   @IsNotEmpty()
   @MaxLength(100)
   @ApiProperty({
-    example: 'John',
+    example: "John",
   })
-  firstName: string;
+  name: string;
 
   @IsNotEmpty()
   @MaxLength(100)
+  @IsEmail()
   @ApiProperty({
-    example: 'Doe',
+    example: "admin@gmail.com",
   })
-  lastName: string;
-
-  @ApiProperty({ example: [1, 2] })
-  @ArrayNotEmpty()
-  @IsArray()
-  @IsInt({ each: true })
-  permissions: number[];
+  email: string;
 
   @ApiProperty({ example: [1, 2] })
   @ArrayNotEmpty()
@@ -36,9 +44,18 @@ export class UpdateUserRequestDto {
   @IsInt({ each: true })
   roles: number[];
 
-  @IsEnum(UserStatus)
+
+  createdBy: UserEntity;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  expiredAt: Date;
+
   @ApiProperty({
-    example: UserStatus.Active,
+    enum: UserStatus,
   })
+  @IsNotEmpty()
+  @IsEnum(UserStatus)
   status: UserStatus;
 }

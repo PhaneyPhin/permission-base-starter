@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ErrorType } from '@common/enums';
 import { InvalidCredentialsException, DisabledUserException } from '@common/http/exceptions';
 import { UserStatus } from '@admin/access/users/user-status.enum';
@@ -47,9 +47,13 @@ export class AuthService {
 
     const userDto = await UserMapper.toDto(user);
     const { permissions, roles } = await UserMapper.toDtoWithRelations(user);
-    const additionalPermissions = permissions.map(({ slug }) => slug);
+    // const additionalPermissions = permissions.map(({ slug }) => slug);
+    const allPermissions = []
     const mappedRoles = roles.map(({ name, permissions }) => {
-      const rolePermissions = permissions.map(({ slug }) => slug);
+      const rolePermissions = permissions.map(({ slug }) => {
+        allPermissions.push(slug)
+        return slug
+      });
       return {
         name,
         permissions: rolePermissions,
@@ -60,9 +64,18 @@ export class AuthService {
       user: userDto,
       token,
       access: {
-        additionalPermissions,
+        allPermissions: allPermissions,
         roles: mappedRoles,
       },
     };
+  }
+  async logout(token: string) {
+    if (! token) {
+      throw new UnauthorizedException()
+   }
+
+    await this.tokenService.invalidateToken(token, 3600);
+
+    return { message: 'Logout successfully' }
   }
 }

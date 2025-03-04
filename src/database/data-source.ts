@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { join } from 'path';
 
 ConfigModule.forRoot({
     envFilePath: '.env',
@@ -14,8 +15,9 @@ export const AppDataSource = new DataSource({
   username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
   password: configService.get<string>('TYPEORM_PASSWORD', 'password'),
   database: configService.get<string>('TYPEORM_DATABASE', 'nestjs_sample'),
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/migrations/admin/*{.ts,.js}'],
+  entities: [join(__dirname, '/../modules/**/*.entity.{ts,js}')],
+  migrations: [join(__dirname, '/migrations/admin/*.{ts,js}')],
+  logging: ['query'], // Enable query logging
   synchronize: false,
 });
 console.log( AppDataSource)
