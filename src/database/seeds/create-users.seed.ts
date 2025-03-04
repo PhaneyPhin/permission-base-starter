@@ -2,70 +2,11 @@ import { PermissionEntity } from "@admin/access/permissions/permission.entity";
 import { RoleEntity } from "@admin/access/roles/role.entity";
 import { UserStatus } from "@admin/access/users/user-status.enum";
 import { UserEntity } from "@admin/access/users/user.entity";
-import { purchaseRequests } from "@database/purchase-request.seed";
 import { faker } from "@faker-js/faker";
 import { HashHelper } from "@helpers";
 import minioClient from "@libs/pagination/minio";
-import { BankEntity } from "@modules/admin/access/bank-classification/bank/bank.entity";
-import { PaymentMethodEntity } from "@modules/admin/access/bank-classification/payment-method/payment-method.entity";
-import { PaymentTermEntity } from "@modules/admin/access/bank-classification/payment-term/payment-term.entity";
-import { BranchEntity } from "@modules/admin/access/branch/branch.entity";
-import { CompanyEntity } from "@modules/admin/access/company/company.entity";
-import { AnalysisCodeEntity } from "@modules/admin/access/construction/master-data/analysis-code/analysis-code.entity";
-import { DimensionEntity } from "@modules/admin/access/construction/master-data/dimension/dimension.entity";
-import { MasterPlanEntity } from "@modules/admin/access/construction/master-data/master-plan/master-plan.entity";
-import { MasterPlanMapper } from "@modules/admin/access/construction/master-data/master-plan/master-plan.mapper";
-import { DepartmentEntity } from "@modules/admin/access/department/department.entity";
-import { StaffProfileEntity } from "@modules/admin/access/human-resource/staff-profile/staff-profile.entity";
-import { StaffProfileMapper } from "@modules/admin/access/human-resource/staff-profile/staff-profile.mapper";
-import { ItemEntity } from "@modules/admin/access/procurement/item/item.entity";
-import { CategoryEntity } from "@modules/admin/access/procurement/master-data/category/category.entity";
-import { ItemGroupEntity } from "@modules/admin/access/procurement/master-data/item-group/item-group.entity";
-import { PurchaseOrderTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/purchase-order-type/purchase-order-type.entity";
-import { PurchaseReceiptTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/purchase-receipt-type/purchase-receipt-type.entity";
-import { QuotationTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/quotation-type/quotation-type.entity";
-import { RequestTypeEntity } from "@modules/admin/access/procurement/master-data/purchasing/request-type/request-type.entity";
-import { UomEntity } from "@modules/admin/access/procurement/master-data/uom/uom.entity";
-import { ValuationMethodEntity } from "@modules/admin/access/procurement/master-data/valuation-method/valuation-method.entity";
-import { PurchaseOrderEntity } from "@modules/admin/access/procurement/purchasing/purchase-order/purchase-order.entity";
-import { PurchaseOrderMapper } from "@modules/admin/access/procurement/purchasing/purchase-order/purchase-order.mapper";
-import { PurchaseQuotationEntity } from "@modules/admin/access/procurement/purchasing/purchase-quotation/purchase-quotation.entity";
-import { PurchaseQuotationMapper } from "@modules/admin/access/procurement/purchasing/purchase-quotation/purchase-quotation.mapper";
-import { PurchaseRequestEntity } from "@modules/admin/access/procurement/purchasing/purchase-request/purchase-request.entity";
-import { PurchaseRequestMapper } from "@modules/admin/access/procurement/purchasing/purchase-request/purchase-request.mapper";
-import { UserApproval } from "@modules/admin/access/users/user-approval";
-import { VendorClassEntity } from "@modules/admin/access/vendor/vendor-class/vendor-class.entity";
-import { VendorTypeEntity } from "@modules/admin/access/vendor/vendor-type/vendor-type.entity";
-import { VendorEntity } from "@modules/admin/access/vendor/vendor/vendor.entity";
-import { VendorMapper } from "@modules/admin/access/vendor/vendor/vendor.mapper";
-import { WarehouseEntity } from "@modules/admin/access/warehouse/warehouse.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
-import { analysisCodes } from "./analysis-code";
-import { banks } from "./bank.seed";
-import { categories } from "./category.seed";
-import { companies } from "./company.seed";
-import { branches } from "./create-branch.seed";
-import { departments } from "./create-department.seed";
-import { itemGroups } from "./item-group.seed";
-import { itemSeed } from "./item.seed";
-import { masterPlanes } from "./master-plan.seed";
-import { paymentMethods } from "./payment-method.seed";
-import { paymentTerms } from "./payment-term.seed";
-import {
-  purchaseOrderTypes,
-  purchaseQuotationTypes,
-  purchaseRequestTypes,
-} from "./purchase-master.seed";
-import { purchaseOrders } from "./purchase-order.seed";
-import { purchaseQuotations } from "./purchase-quotation.seed";
-import { staffProfiles } from "./staff.seed";
-import { uoms } from "./uom.seed";
-import { valuationMethods } from "./valuation-method.seed";
-import { vendorClasses } from "./vendor-class.seed";
-import { vendorTypes } from "./vendor-type.seed";
-import { vendors } from "./vendor.seed";
-import { warehouses } from "./warehouse.seed";
 
 // Define seed data
 const baseUsers: any[] = [
@@ -74,7 +15,6 @@ const baseUsers: any[] = [
     password: "Hello123",
     username: "Admin",
     isSuperUser: true,
-    userApproval: UserApproval.Approved,
     status: UserStatus.Active, // Default status which will be overridden by Faker and random assignment.
   },
 ];
@@ -514,179 +454,6 @@ async function seedDatabase(dataSource: DataSource) {
   } as any);
   console.log("firstEntity", firstUserEntity);
   await dataSource.manager.save(firstUserEntity);
-
-  // Create 200 additional users with Faker data
-  for (let i = 0; i < 2; i++) {
-    const fakeName = faker.person.fullName();
-    const fakeUsername = "admin" + i;
-    const fakeEmail = faker.internet.email();
-
-    const userData = {
-      ...baseUser,
-      name: fakeName,
-      username: fakeUsername,
-      email: fakeEmail,
-      status: UserStatus.Active,
-    };
-
-    const hashedPassword = await HashHelper.encrypt(userData.password);
-    const userEntity = dataSource.manager.create(UserEntity, {
-      ...userData,
-      password: hashedPassword,
-      roles: savedRoles,
-    } as any);
-    console.log(userEntity);
-    await dataSource.manager.save(userEntity);
-  }
-
-  const user = await dataSource.manager.findOneByOrFail(UserEntity, {
-    username: "admin1",
-  });
-  await dataSource.manager.save(BranchEntity, branches);
-
-  for (var index = 0; index < 5; index++) {
-    const warehouseEntity = dataSource.manager.create(WarehouseEntity, {
-      active: true,
-      code: "00000" + (index + 1),
-      branch_id: branches[0].id,
-      createdBy: user.id,
-      description: faker.person.jobDescriptor(),
-      nameEn: faker.person.fullName(),
-      nameKh: faker.person.fullName(),
-    });
-
-    await dataSource.manager.save(warehouseEntity);
-  }
-
-  await dataSource.manager.save(DepartmentEntity, departments);
-  await dataSource.manager.save(BranchEntity, branches);
-  await dataSource.manager.save(CompanyEntity, companies);
-  await dataSource.manager.save(ValuationMethodEntity, valuationMethods);
-  await dataSource.manager.save(BankEntity, banks);
-  await dataSource.manager.save(PaymentMethodEntity, paymentMethods);
-  await dataSource.manager.save(PaymentTermEntity, paymentTerms);
-  await dataSource.manager.save(VendorClassEntity, vendorClasses);
-  await dataSource.manager.save(
-    PurchaseReceiptTypeEntity,
-    purchaseRequestTypes
-  );
-  await dataSource.manager.save(PurchaseOrderTypeEntity, purchaseOrderTypes);
-  await dataSource.manager.save(QuotationTypeEntity, purchaseQuotationTypes);
-  await dataSource.manager.save(RequestTypeEntity, purchaseRequestTypes);
-  await dataSource.manager.save(VendorTypeEntity, vendorTypes);
-  await dataSource.manager.save(UomEntity, uoms);
-  await dataSource.manager.save(ItemGroupEntity, itemGroups);
-  await dataSource.manager.save(CategoryEntity, categories);
-  await dataSource.manager.save(ItemEntity, itemSeed);
-  await dataSource.manager.save(
-    WarehouseEntity,
-    warehouses.map((item) => ({ ...item, createdBy: user.id }))
-  );
-
-  const defaultDimension = {
-    createdBy: user.id,
-    updatedBy: user.id,
-  };
-  const dimensions = dataSource.manager.create(DimensionEntity, [
-    {
-      ...defaultDimension,
-      code: "01",
-      nameEn: "Project",
-      nameKh: "គម្រោង",
-    },
-    {
-      ...defaultDimension,
-      code: "02",
-      nameEn: "Block",
-      nameKh: "ប្លុក",
-    },
-    {
-      ...defaultDimension,
-      code: "03",
-      nameEn: "Building",
-      nameKh: "អាគារ",
-    },
-    {
-      ...defaultDimension,
-      code: "04",
-      nameEn: "Street",
-      nameKh: "ផ្លូវ",
-    },
-    {
-      ...defaultDimension,
-      code: "05",
-      nameEn: "Division",
-      nameKh: "ផ្នែក",
-    },
-    {
-      ...defaultDimension,
-      code: "06",
-      nameEn: "Unit Type",
-      nameKh: "ប្រភេទផ្ទះ",
-    },
-  ]);
-
-  await dataSource.manager.save(dimensions);
-  await dataSource.manager.save(AnalysisCodeEntity, analysisCodes);
-  await dataSource.manager.save(
-    StaffProfileEntity,
-    staffProfiles.map((item: any) =>
-      StaffProfileMapper.toCreateEntity({ ...item, createdBy: user.id })
-    )
-  );
-  await dataSource.manager.save(
-    MasterPlanEntity,
-    (masterPlanes as any).map((masterPlane) =>
-      MasterPlanMapper.toCreateEntity({
-        ...masterPlane,
-        createdBy: user.id,
-        updatedBy: user.id,
-      })
-    )
-  );
-  await dataSource.manager.save(
-    VendorEntity,
-    (vendors as any).map((vendor) =>
-      VendorMapper.toCreateEntity({
-        ...vendor,
-        createdBy: user.id,
-        updatedBy: user.id,
-      })
-    )
-  );
-
-  await dataSource.manager.save(
-    PurchaseRequestEntity,
-    (purchaseRequests as any).map((item) =>
-      PurchaseRequestMapper.toCreateEntity({
-        ...item,
-        createdBy: user.id,
-        updatedBy: user.id,
-      })
-    )
-  );
-
-  await dataSource.manager.save(
-    PurchaseOrderEntity,
-    (purchaseOrders as any).map((item) =>
-      PurchaseOrderMapper.toCreateEntity({
-        ...item,
-        createdBy: user.id,
-        updatedBy: user.id,
-      })
-    )
-  );
-
-  await dataSource.manager.save(
-    PurchaseQuotationEntity,
-    (purchaseQuotations as any).map((item) =>
-      PurchaseQuotationMapper.toCreateEntity({
-        ...item,
-        createdBy: user.id,
-        updatedBy: user.id,
-      })
-    )
-  );
 
   // await dataSource.manager.save(analysisCodes);
   console.log("Database seeded successfully!");

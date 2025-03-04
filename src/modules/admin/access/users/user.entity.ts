@@ -2,7 +2,6 @@ import { BaseEntity } from '@database/entities';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { PermissionEntity } from '../permissions/permission.entity';
 import { RoleEntity } from '../roles/role.entity';
-import { WarehouseEntity } from '../warehouse/warehouse.entity';
 import { UserApproval } from './user-approval';
 import { UserStatus } from './user-status.enum';
 
@@ -57,15 +56,6 @@ export class UserEntity extends BaseEntity {
   status: UserStatus;
 
   @Column({
-    name: 'user_approval',
-    type: 'enum',
-    enum: UserApproval,
-    nullable: false,
-    default: UserApproval.Approved
-  })
-  userApproval: UserApproval;
-
-  @Column({
     name: 'expired_at',
     type: 'timestamp',
     nullable: true,
@@ -104,23 +94,6 @@ export class UserEntity extends BaseEntity {
     },
   })
   roles: Promise<RoleEntity[]>;
-
-  @ManyToMany(() => WarehouseEntity, (warehouse) => warehouse.id, {
-    lazy: true,
-    cascade: true,
-  })
-  @JoinTable({
-    name: 'users_warehouses',
-    joinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'warehouse_id',
-      referencedColumnName: 'id',
-    },
-  })
-  warehouses: Promise<WarehouseEntity[]>;
 
   @ManyToMany(() => PermissionEntity, (permission) => permission.id, {
     lazy: true,

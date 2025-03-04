@@ -1,9 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { PermissionResponseDto } from '../../permissions/dtos';
-import { RoleResponseDto } from '../../roles/dtos';
-import { UserStatus } from '../user-status.enum';
-import { UserApproval } from '../user-approval';
-import { WarehouseResponseDto } from '../../warehouse/dtos';
+import { ApiProperty } from "@nestjs/swagger";
+import { PermissionResponseDto } from "../../permissions/dtos";
+import { RoleResponseDto } from "../../roles/dtos";
+import { UserApproval } from "../user-approval";
+import { UserStatus } from "../user-status.enum";
 
 export class UserResponseDto {
   @ApiProperty()
@@ -26,9 +25,6 @@ export class UserResponseDto {
 
   @ApiProperty({ type: [PermissionResponseDto] })
   permissions?: PermissionResponseDto[];
-
-  @ApiProperty()
-  warehouses: WarehouseResponseDto[]
 
   @ApiProperty()
   isSuperUser: boolean;

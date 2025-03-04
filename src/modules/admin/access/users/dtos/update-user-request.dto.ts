@@ -44,11 +44,6 @@ export class UpdateUserRequestDto {
   @IsInt({ each: true })
   roles: number[];
 
-  @ApiProperty({ example: [1, 2] })
-  @ArrayNotEmpty()
-  @IsArray()
-  @IsInt({ each: true })
-  warehouse: number[];
 
   createdBy: UserEntity;
 
@@ -56,13 +51,6 @@ export class UpdateUserRequestDto {
   @IsOptional()
   @IsString()
   expiredAt: Date;
-
-  @ApiProperty({
-    enum: UserApproval,
-  })
-  @IsNotEmpty()
-  @IsEnum(UserApproval)
-  userApproval: UserApproval;
 
   @ApiProperty({
     enum: UserStatus,

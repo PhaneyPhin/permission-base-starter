@@ -1,26 +1,26 @@
-import { HashHelper } from '@helpers';
-import { PermissionMapper } from '../permissions/permission.mapper';
-import { RoleEntity } from '../roles/role.entity';
-import { RoleMapper } from '../roles/role.mapper';
-import { CreateUserRequestDto, UserResponseDto, UpdateUserRequestDto } from './dtos';
-import { UserExcelDto } from './dtos/user-excel.dto';
-import { UserEntity } from './user.entity';
-import { WarehouseEntity } from '../warehouse/warehouse.entity';
-import { WarehouseMapper } from '../warehouse/warehouse.mapper';
-
+import { PermissionMapper } from "../permissions/permission.mapper";
+import { RoleEntity } from "../roles/role.entity";
+import { RoleMapper } from "../roles/role.mapper";
+import {
+  CreateUserRequestDto,
+  UpdateUserRequestDto,
+  UserResponseDto,
+} from "./dtos";
+import { UserExcelDto } from "./dtos/user-excel.dto";
+import { UserEntity } from "./user.entity";
 export class UserMapper {
   public static async toDto(entity: UserEntity): Promise<UserResponseDto> {
     const dto = new UserResponseDto();
-    console.log('entity', entity.expiredAt)
+    console.log("entity", entity.expiredAt);
     dto.id = entity.id;
     dto.username = entity.username;
     dto.name = entity.name;
-    dto.email = entity.email
-    dto.createdAt = entity.createdAt
+    dto.email = entity.email;
+    dto.createdAt = entity.createdAt;
     dto.status = entity.status;
     dto.isSuperUser = entity.isSuperUser;
-    dto.expiredAt = entity.expiredAt || new Date()
-    dto.createdBy = entity.createdBy?.name || 'System';
+    dto.expiredAt = entity.expiredAt || new Date();
+    dto.createdBy = entity.createdBy?.name || "System";
 
     if (entity.createdBy) {
     }
@@ -37,28 +37,29 @@ export class UserMapper {
     dto.username = entity.username;
     dto.name = entity.name;
     dto.status = entity.status;
-    dto.userApproval = entity.userApproval
-    dto.expiredAt = entity.expiredAt
+    dto.expiredAt = entity.expiredAt;
     dto.createdByName = entity.createdBy?.name;
 
-    return dto
+    return dto;
   }
 
-  public static async toDtoWithRelations(entity: UserEntity): Promise<UserResponseDto> {
+  public static async toDtoWithRelations(
+    entity: UserEntity
+  ): Promise<UserResponseDto> {
     const dto = new UserResponseDto();
-    console.log('entity', entity)
+    console.log("entity", entity);
     dto.id = entity.id;
     dto.username = entity.username;
     dto.name = entity.name;
-    dto.email = entity.email
-    dto.expiredAt = entity.expiredAt
+    dto.email = entity.email;
+    dto.expiredAt = entity.expiredAt;
     dto.createdBy = entity.createdBy?.name;
-    dto.permissions = await Promise.all((await entity.permissions).map(PermissionMapper.toDto));
-    /** @Todo when warehouse ready */
-    if (entity.warehouses) {
-      dto.warehouses = await Promise.all((await entity.warehouses).map(WarehouseMapper.toDto));
-    } 
-    dto.roles = await Promise.all((await entity.roles).map(RoleMapper.toDtoWithRelations));
+    dto.permissions = await Promise.all(
+      (await entity.permissions).map(PermissionMapper.toDto)
+    );
+    dto.roles = await Promise.all(
+      (await entity.roles).map(RoleMapper.toDtoWithRelations)
+    );
     dto.isSuperUser = entity.isSuperUser;
     dto.status = entity.status;
     return dto;
@@ -68,31 +69,35 @@ export class UserMapper {
     const entity = new UserEntity();
     entity.username = dto.username;
     entity.name = dto.name;
-    entity.userApproval = dto.userApproval
-    entity.status = dto.status
+    entity.status = dto.status;
     entity.password = dto.password;
     entity.email = dto.email;
     entity.createdBy = dto.createdBy;
-    entity.expiredAt = dto.expiredAt
+    entity.expiredAt = dto.expiredAt;
     // entity.warehouse = dto.warehouse
 
-    entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
-    entity.warehouses = Promise.resolve(dto.warehouse.map((id) => new WarehouseEntity({ id })));
+    entity.roles = Promise.resolve(
+      dto.roles.map((id) => new RoleEntity({ id }))
+    );
     entity.isSuperUser = false;
     return entity;
   }
 
-  public static toUpdateEntity(entity: UserEntity, dto: UpdateUserRequestDto): UserEntity {
+  public static toUpdateEntity(
+    entity: UserEntity,
+    dto: UpdateUserRequestDto
+  ): UserEntity {
     entity.username = dto.username;
     entity.name = dto.name;
-    entity.userApproval = dto.userApproval
-    entity.status = dto.status
+    entity.status = dto.status;
     entity.email = dto.email;
     entity.createdBy = dto.createdBy;
-    entity.expiredAt = dto.expiredAt
+    entity.expiredAt = dto.expiredAt;
 
-    entity.roles = Promise.resolve(dto.roles.map((id) => new RoleEntity({ id })));
-    entity.warehouses = Promise.resolve(dto.warehouse.map((id) => new WarehouseEntity({ id })));
+    entity.roles = Promise.resolve(
+      dto.roles.map((id) => new RoleEntity({ id }))
+    );
+
     return entity;
   }
 }
